@@ -1,245 +1,139 @@
-🚀 Brandkit Plugin
+# 🚀 Brandkit Plugin
 
 Turn GLPI into a showcase for your brand in just a few clicks.
+This plugin was developed to make GLPI visual identity easy for beginners or anyone who doesn't want to dive into CSS.
 
-Brandkit was created to simplify GLPI visual customization, allowing
-administrators to apply their company branding without needing to edit
-CSS or modify core files.
+**Languages:** 🇺🇸 [English](#english) | 🇧🇷 [Português (BR)](#portugues-br) | 🇪🇸 [Español](#espanol) | 🇫🇷 [Français](#francais)
 
-It provides a simple interface to customize logos, login page visuals,
-and brand elements quickly and safely.
+---
 
-------------------------------------------------------------------------
-Languages: 🇺🇸 English | 🇧🇷 Português (BR) | 🇪🇸 Español | 🇫🇷 Français
-------------------------------------------------------------------------
+## 📚 Table of Contents
+- 📦 [Installation](#-installation)
+- ⚙️ [Configuration](#-configuration)
+- 🌎 [Translations](#-translations)
+- 📜 [License](#-license)
 
-📚 Table of Contents
+---
 
--   Installation
--   Configuration
--   Known Issues
--   Translations
--   License
+## 📦 Installation
+1. Clone this repository:
+```bash
+git clone https://github.com/juniormarcati/glpi-brandkit/glpi-brandkit.git
+```
 
-------------------------------------------------------------------------
+2. Copy the project to:
+`glpi/plugins/`
 
-📦 Installation
+3. Ensure the final folder name is `brandkit`.
 
-1.  Clone this repository:
+4. In GLPI, go to:
+**Setup > Plugins > Install > Enable**
 
-git clone
-https://github.com/juniormarcati/glpi-brandkit/glpi-brandkit.git
+---
 
-2.  Copy the plugin folder to:
+## ⚙️ Configuration
 
-glpi/plugins/
+- After enabling, a **“Brandkit”** submenu appears under **Plugins**.
+- Fill in the required fields; they form the document header.
 
-3.  Ensure the final folder name is:
+---
 
-brandkit
+## 🌎 Translations
+Prefer your language? Jump to: 🇺🇸 [English](#english) | 🇧🇷 [Português (BR)](#portugues-br) | 🇪🇸 [Español](#espanol) | 🇫🇷 [Français](#francais)
 
-4.  In GLPI, go to:
-
-Setup → Plugins → Install → Enable
-
-------------------------------------------------------------------------
-
-⚙️ Configuration
-
-After enabling the plugin:
-
--   A “Brandkit” submenu will appear under Plugins
--   Configure the branding options according to your needs
--   Logos and visual elements will automatically apply across GLPI
-
-------------------------------------------------------------------------
-
-⚠️ Known Issues
-
-Nginx Proxy Manager
-
-If GLPI is running behind Nginx Proxy Manager, the plugin layout updates
-may not apply correctly.
-
-This happens because the “Block Common Exploits” security option may
-block some visual resources used by the plugin.
-
-Solution
-
-Disable the following option in your proxy host configuration:
-
-Block Common Exploits
-
-After disabling it, clear your browser cache and reload the GLPI
-interface.
-
-------------------------------------------------------------------------
-
-🌎 Translations
-
-------------------------------------------------------------------------
-
-🇺🇸 English
-
-Turn GLPI into a showcase for your brand in just a few clicks.
-
-This plugin makes it easy to customize logos and login page visuals
-without editing CSS.
-
-Installation:
-
--   Download or clone the repository
--   Extract it to:
-
-glpi/plugins/
-
--   Ensure the folder name is:
-
-brandkit
-
-In GLPI:
-
-Setup → Plugins → Install → Enable
-
-Configuration:
-
--   After enabling, the “Brandkit” submenu will appear
--   Configure visual elements as desired
-
-Known Issues:
-
-If you use Nginx Proxy Manager, you may need to disable:
-
-Block Common Exploits
-
-to allow the plugin assets to load correctly.
-
-------------------------------------------------------------------------
-
-🇧🇷 Português (PT-BR)
-
+### <a id="portugues-br"></a> 🇧🇷 Português (PT_BR)
 Transforme o GLPI em uma vitrine da sua marca em poucos cliques.
+Este plugin foi desenvolvido para facilitar a identidade visual do GLPI para iniciantes ou quem não quer se aventurar no CSS.
 
-O Brandkit facilita a personalização visual do GLPI sem precisar alterar
-CSS ou arquivos internos.
+Este plugin gera modificações de **Logotipos** e na **Página de Login**.
 
-Permite modificar logotipos e a página de login facilmente.
+Menu rápido: [Instalação](#instalacao-pt-br) | [Configuração](#configuracao-pt-br) | [Problemas conhecidos](#problemas-conhecidos-pt-br)
 
-Instalação:
+### <a id="instalacao-pt-br"></a> Instalação
+- Faça o download/clone e extraia em `glpi/plugins/`.
+- Renomeie a pasta para `brandkit`, se necessário.
+- No GLPI: **Configurar > Plug-ins > Instalar > Habilitar**.
 
--   Faça download ou clone do repositório
--   Extraia em:
+### <a id="configuracao-pt-br"></a> Configuração
+- Após habilitar, aparece o submenu **“Brandkit”**.
+- Configure cada item conforme seu gosto.
 
-glpi/plugins/
+### <a id="problemas-conhecidos-pt-br"></a> Problemas conhecidos
+- Se utilizar **Nginx Proxy Manager**, pode ser necessário desativar **Block Common Exploits** para que os recursos do plugin sejam carregados corretamente.
 
--   Certifique-se que a pasta se chama:
+---
 
-brandkit
+### <a id="espanol"></a> 🇪🇸 Español (ES)
+Transforma GLPI en un escaparate de tu marca en pocos clics.
+Este plugin fue desarrollado para facilitar la identidad visual de GLPI para principiantes o para quienes no quieren aventurarse en CSS.
 
-No GLPI:
+Este plugin genera modificaciones de **Logotipos** y en la **Página de Inicio de Sesión**.
 
-Configurar → Plug-ins → Instalar → Habilitar
+Menú rápido: [Instalación](#instalacion-es) | [Configuración](#configuracion-es) | [Problemas conocidos](#problemas-conocidos-es)
 
-Configuração:
+### <a id="instalacion-es"></a> Instalación
+- Descargue/clone y extraiga en `glpi/plugins/`.
+- Renombre la carpeta a `brandkit`, si es necesario.
+- En GLPI: **Configurar > Complementos > Instalar > Habilitar**.
 
--   Após habilitar, aparecerá o submenu “Brandkit”
--   Configure os elementos visuais conforme desejar
+### <a id="configuracion-es"></a> Configuración
+- Tras habilitarlo, aparece el submenú **“Brandkit”**.
+- Configure cada elemento según su preferencia.
 
-Problemas conhecidos:
+### <a id="problemas-conocidos-es"></a> Problemas conocidos
+- Si utiliza **Nginx Proxy Manager**, puede ser necesario desactivar **Block Common Exploits** para que los recursos del plugin se carguen correctamente.
 
-Se utilizar Nginx Proxy Manager, pode ser necessário desativar:
+---
 
-Block Common Exploits
+### <a id="english"></a> 🇺🇸 English (EN)
+Turn GLPI into a showcase for your brand in just a few clicks.
+This plugin was developed to make GLPI visual identity easy for beginners or anyone who doesn't want to dive into CSS.
 
-para que os recursos do plugin sejam carregados corretamente.
+This plugin provides changes to **Logos** and the **Login Page**.
 
-------------------------------------------------------------------------
+Quick menu: [Installation](#installation-en) | [Configuration](#configuration-en) | [Known issues](#known-issues-en)
 
-🇪🇸 Español
+### <a id="installation-en"></a> Installation
+- Download/clone and extract into `glpi/plugins/`.
+- Rename the folder to `brandkit` if needed.
+- In GLPI: **Setup > Plugins > Install > Enable**.
 
-Convierte GLPI en una vitrina para tu marca en pocos clics.
+### <a id="configuration-en"></a> Configuration
+- After enabling, the **“Brandkit”** submenu appears.
+- Configure each item to your preference.
 
-Este plugin facilita la personalización visual de GLPI sin modificar CSS
-ni archivos internos.
+### <a id="known-issues-en"></a> Known issues
+- If you use **Nginx Proxy Manager**, you may need to disable **Block Common Exploits** so the plugin assets load correctly.
 
-Permite cambiar logotipos y la página de inicio de sesión fácilmente.
+---
 
-Instalación:
+### <a id="francais"></a> 🇫🇷 Français (FR)
+Transformez GLPI en une vitrine de votre marque en quelques clics.
+Ce plugin a été développé pour faciliter l'identité visuelle de GLPI pour les débutants ou ceux qui ne veulent pas se lancer dans le CSS.
 
--   Descargue o clone el repositorio
--   Extraiga en:
+Ce plugin apporte des modifications aux **Logos** et à la **Page de Connexion**.
 
-glpi/plugins/
+Menu rapide : [Installation](#installation-fr) | [Configuration](#configuration-fr) | [Problèmes connus](#problemes-connus-fr)
 
--   Asegúrese de que la carpeta se llame:
+### <a id="installation-fr"></a> Installation
+- Téléchargez/clonez et extrayez dans `glpi/plugins/`.
+- Renommez le dossier en `brandkit` si nécessaire.
+- Dans GLPI : **Configuration > Plugins > Installer > Activer**.
 
-brandkit
+### <a id="configuration-fr"></a> Configuration
+- Après activation, le sous-menu **« Brandkit »** apparaît.
+- Configurez chaque élément selon vos préférences.
 
-En GLPI:
+### <a id="problemes-connus-fr"></a> Problèmes connus
+- Si vous utilisez **Nginx Proxy Manager**, il peut être nécessaire de désactiver **Block Common Exploits** pour que les ressources du plugin se chargent correctement.
 
-Configurar → Complementos → Instalar → Habilitar
+---
 
-Configuración:
+## 📜 License
 
--   Después de habilitar, aparecerá el submenú “Brandkit”
--   Configure los elementos visuales según su preferencia
+Este projeto está licenciado sob a **GNU General Public License v3.0 (GPL-3.0)**.
 
-Problemas conocidos:
+---
 
-Si usa Nginx Proxy Manager, puede ser necesario desactivar:
-
-Block Common Exploits
-
-para permitir que los recursos del plugin se carguen correctamente.
-
-------------------------------------------------------------------------
-
-🇫🇷 Français
-
-Transformez GLPI en une vitrine pour votre marque en quelques clics.
-
-Ce plugin facilite la personnalisation visuelle de GLPI sans modifier le
-CSS ni les fichiers internes.
-
-Il permet de modifier facilement les logos et la page de connexion.
-
-Installation :
-
--   Téléchargez ou clonez le dépôt
--   Extrayez dans :
-
-glpi/plugins/
-
--   Vérifiez que le dossier s’appelle :
-
-brandkit
-
-Dans GLPI :
-
-Configuration → Plugins → Installer → Activer
-
-Configuration :
-
--   Après activation, le sous-menu “Brandkit” apparaît
--   Configurez les éléments visuels selon vos besoins
-
-Problèmes connus :
-
-Si vous utilisez Nginx Proxy Manager, il peut être nécessaire de
-désactiver :
-
-Block Common Exploits
-
-pour permettre au plugin de charger correctement ses ressources.
-
-------------------------------------------------------------------------
-
-📜 License
-
-This project is licensed under the GNU General Public License v3.0
-(GPL-3.0).
-
-------------------------------------------------------------------------
-
-💬 Questions, suggestions or improvements? Open an Issue or submit a
-Pull Request.
+💬 **Dúvidas, sugestões ou melhorias?**
+Abra uma *Issue* ou envie um *Pull Request*! 😄
