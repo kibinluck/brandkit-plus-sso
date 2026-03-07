@@ -396,9 +396,6 @@ if (!function_exists('brandkit_resolve_wallpaper_filename')) {
                 $candidates[] = $base . '.' . $ext;
             }
         }
-        foreach (['wallpaperLogin.png', 'wallpaperLogin.webp'] as $default) {
-            $candidates[] = $default;
-        }
 
         foreach (array_unique($candidates) as $candidate) {
             if ($candidate === '') {

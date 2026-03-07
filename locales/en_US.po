@@ -538,3 +538,21 @@ msgstr "Expanded menu logo (dark mode)"
 msgid "Collapsed menu logo (dark mode)"
 msgstr "Collapsed menu logo (dark mode)"
 
+msgid "Wallpaper upload failed. The file is larger than the allowed size."
+msgstr "Wallpaper upload failed. The file is larger than the allowed size."
+
+msgid "Wallpaper upload failed because the file was only partially uploaded."
+msgstr "Wallpaper upload failed because the file was only partially uploaded."
+
+msgid "Wallpaper upload failed because the temporary upload folder is missing on the server."
+msgstr "Wallpaper upload failed because the temporary upload folder is missing on the server."
+
+msgid "Wallpaper upload failed because the server could not write the temporary file."
+msgstr "Wallpaper upload failed because the server could not write the temporary file."
+
+msgid "Wallpaper upload was blocked by a PHP extension on the server."
+msgstr "Wallpaper upload was blocked by a PHP extension on the server."
+
+#, php-format
+msgid "Wallpaper upload failed due to an unexpected error (code %d)."
+msgstr "Wallpaper upload failed due to an unexpected error (code %d)."

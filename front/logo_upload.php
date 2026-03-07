@@ -42,9 +42,58 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     Http::displayErrorAndDie(__('Method Not Allowed', 'brandkit'), 405);
 }
 
+function brandkit_get_wallpaper_upload_error_message(int $errorCode): string
+{
+    switch ($errorCode) {
+        case UPLOAD_ERR_INI_SIZE:
+        case UPLOAD_ERR_FORM_SIZE:
+            return __('Wallpaper upload failed. The file is larger than the allowed size.', 'brandkit');
+        case UPLOAD_ERR_PARTIAL:
+            return __('Wallpaper upload failed because the file was only partially uploaded.', 'brandkit');
+        case UPLOAD_ERR_NO_FILE:
+            return __('Please choose an image file to upload.', 'brandkit');
+        case UPLOAD_ERR_NO_TMP_DIR:
+            return __('Wallpaper upload failed because the temporary upload folder is missing on the server.', 'brandkit');
+        case UPLOAD_ERR_CANT_WRITE:
+            return __('Wallpaper upload failed because the server could not write the temporary file.', 'brandkit');
+        case UPLOAD_ERR_EXTENSION:
+            return __('Wallpaper upload was blocked by a PHP extension on the server.', 'brandkit');
+        default:
+            return sprintf(__('Wallpaper upload failed due to an unexpected error (code %d).', 'brandkit'), $errorCode);
+    }
+}
+
+function brandkit_delete_uploaded_wallpaper_variants(string $baseName = 'wallpaperLogin'): void
+{
+    $extensions = ['png', 'jpg', 'jpeg', 'webp'];
+    $paths = [];
+    $picsDir = brandkit_get_pics_dir();
+    if ($picsDir) {
+        $publicDir = $picsDir . '/brandkit-wallpapers';
+        foreach ($extensions as $ext) {
+            $paths[] = $publicDir . '/' . $baseName . '.' . $ext;
+        }
+    }
+
+    $pluginDir = brandkit_get_plugin_storage_dir();
+    if ($pluginDir) {
+        $legacyDir = rtrim($pluginDir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . 'wallpaper';
+        foreach ($extensions as $ext) {
+            $paths[] = $legacyDir . DIRECTORY_SEPARATOR . $baseName . '.' . $ext;
+        }
+    }
+
+    foreach (array_unique($paths) as $path) {
+        if (is_file($path)) {
+            @unlink($path);
+        }
+    }
+}
+
 $action = $_POST['brandkit_action'] ?? 'upload_logo';
-$logoRedirectUrl = Plugin::getWebDir('brandkit') . '/front/index.php?step=1';
-$wallpaperRedirectUrl = Plugin::getWebDir('brandkit') . '/front/index.php?step=3';
+$refreshToken = (string) round(microtime(true) * 1000);
+$logoRedirectUrl = Plugin::getWebDir('brandkit') . '/front/index.php?step=1&refresh=' . rawurlencode($refreshToken);
+$wallpaperRedirectUrl = Plugin::getWebDir('brandkit') . '/front/index.php?step=3&refresh=' . rawurlencode($refreshToken);
 $redirectUrl = in_array($action, ['upload_logo', 'clear_logo'], true) ? $logoRedirectUrl : $wallpaperRedirectUrl;
 
 if (empty($_POST) && empty($_FILES)) {
@@ -87,15 +136,11 @@ $wallpaperDir = $picsDir ? $picsDir . '/brandkit-wallpapers' : null;
 $wallpaperPath = $wallpaperDir ? $wallpaperDir . '/' . $wallpaperBaseName . '.png' : null;
 
 if ($action === 'clear_wallpaper') {
-    if ($wallpaperDir) {
-        foreach (['png', 'webp'] as $ext) {
-            $candidate = $wallpaperDir . '/' . $wallpaperBaseName . '.' . $ext;
-            if (is_file($candidate)) {
-                @unlink($candidate);
-            }
-        }
-    }
-    Config::setConfigurationValues('plugin:brandkit', ['login_wallpaper' => '']);
+    brandkit_delete_uploaded_wallpaper_variants($wallpaperBaseName);
+    Config::setConfigurationValues('plugin:brandkit', [
+        'login_wallpaper' => '',
+        'login_wallpaper_source' => 'custom',
+    ]);
     brandkit_write_login_css($pluginDocDir);
     Session::addMessageAfterRedirect(__('Login wallpaper cleared.', 'brandkit'), false, INFO);
     Html::redirect($wallpaperRedirectUrl);
@@ -103,27 +148,22 @@ if ($action === 'clear_wallpaper') {
 }
 
 if ($action === 'upload_wallpaper') {
-    if (!isset($_FILES['brandkit_wallpaper']) || $_FILES['brandkit_wallpaper']['error'] !== UPLOAD_ERR_OK) {
-        $error = $_FILES['brandkit_wallpaper']['error'] ?? UPLOAD_ERR_NO_FILE;
-        if (in_array($error, [UPLOAD_ERR_INI_SIZE, UPLOAD_ERR_FORM_SIZE], true)) {
-            Session::addMessageAfterRedirect(__('Wallpaper upload failed. The file is larger than the allowed size.', 'brandkit'), false, ERROR);
-        } elseif ($error === UPLOAD_ERR_NO_FILE) {
-            Session::addMessageAfterRedirect(__('Please choose an image file to upload.', 'brandkit'), false, ERROR);
-        } else {
-            Session::addMessageAfterRedirect(__('Wallpaper upload failed due to an unexpected error.', 'brandkit'), false, ERROR);
-        }
+    $wallpaperFile = $_FILES['brandkit_wallpaper'] ?? ($_FILES['login_wallpaper'] ?? null);
+    if (!$wallpaperFile || ($wallpaperFile['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK) {
+        $error = (int) ($wallpaperFile['error'] ?? UPLOAD_ERR_NO_FILE);
+        Session::addMessageAfterRedirect(brandkit_get_wallpaper_upload_error_message($error), false, ERROR);
         Html::redirect($wallpaperRedirectUrl);
         exit;
     }
 
-    $extension = strtolower(pathinfo($_FILES['brandkit_wallpaper']['name'], PATHINFO_EXTENSION));
+    $extension = strtolower(pathinfo($wallpaperFile['name'], PATHINFO_EXTENSION));
     if (!in_array($extension, $allowedExtensions, true)) {
         Session::addMessageAfterRedirect(__('Allowed formats: PNG, JPG, JPEG, WEBP.', 'brandkit'), false, ERROR);
         Html::redirect($wallpaperRedirectUrl);
         exit;
     }
 
-    $tmpName = $_FILES['brandkit_wallpaper']['tmp_name'];
+    $tmpName = $wallpaperFile['tmp_name'];
     if (!is_uploaded_file($tmpName)) {
         Session::addMessageAfterRedirect(__('The upload could not be validated.', 'brandkit'), false, ERROR);
         Html::redirect($wallpaperRedirectUrl);

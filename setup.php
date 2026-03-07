@@ -37,7 +37,7 @@ if (!defined('GLPI_ROOT')) {
     die("Sorry. You can't access this file directly");
 }
 
-define('PLUGIN_BRANDKIT_VERSION', '0.1.6');
+define('PLUGIN_BRANDKIT_VERSION', '0.1.7');
 define('PLUGIN_BRANDKIT_MIN_GLPI', '10.0.0');
 define('PLUGIN_BRANDKIT_MAX_GLPI', '11.0.99');
 

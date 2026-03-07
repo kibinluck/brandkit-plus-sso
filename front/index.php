@@ -56,6 +56,52 @@ function brandkit_is_light_color(string $hex): bool
     return $luma > 0.75;
 }
 
+function brandkit_get_upload_error_message(int $errorCode, string $fallbackMessage): string
+{
+    switch ($errorCode) {
+        case UPLOAD_ERR_INI_SIZE:
+        case UPLOAD_ERR_FORM_SIZE:
+            return __('Wallpaper upload failed. The file is larger than the allowed size.', 'brandkit');
+        case UPLOAD_ERR_PARTIAL:
+            return __('Wallpaper upload failed because the file was only partially uploaded.', 'brandkit');
+        case UPLOAD_ERR_NO_TMP_DIR:
+            return __('Wallpaper upload failed because the temporary upload folder is missing on the server.', 'brandkit');
+        case UPLOAD_ERR_CANT_WRITE:
+            return __('Wallpaper upload failed because the server could not write the temporary file.', 'brandkit');
+        case UPLOAD_ERR_EXTENSION:
+            return __('Wallpaper upload was blocked by a PHP extension on the server.', 'brandkit');
+        default:
+            return $fallbackMessage;
+    }
+}
+
+function brandkit_delete_uploaded_wallpaper_variants(string $baseName = 'wallpaperLogin'): void
+{
+    $extensions = ['png', 'jpg', 'jpeg', 'webp'];
+    $paths = [];
+    $picsDir = brandkit_get_pics_dir();
+    if ($picsDir) {
+        $publicDir = $picsDir . '/brandkit-wallpapers';
+        foreach ($extensions as $ext) {
+            $paths[] = $publicDir . '/' . $baseName . '.' . $ext;
+        }
+    }
+
+    $pluginDir = brandkit_get_plugin_storage_dir();
+    if ($pluginDir) {
+        $legacyDir = rtrim($pluginDir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . 'wallpaper';
+        foreach ($extensions as $ext) {
+            $paths[] = $legacyDir . DIRECTORY_SEPARATOR . $baseName . '.' . $ext;
+        }
+    }
+
+    foreach (array_unique($paths) as $path) {
+        if (is_file($path)) {
+            @unlink($path);
+        }
+    }
+}
+
 $currentStep = isset($_GET['step']) ? (int) $_GET['step'] : 0;
 if ($currentStep < 0 || $currentStep > 3) {
     $currentStep = 0;
@@ -117,7 +163,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['brandkit_action'] ?? '') =
     $picsDir = brandkit_get_pics_dir();
     $wallpaperDir = $picsDir ? $picsDir . '/brandkit-wallpapers' : null;
     if ($wallpaperDir) {
-        foreach (['png', 'webp'] as $ext) {
+        foreach (['png', 'jpg', 'jpeg', 'webp'] as $ext) {
             $candidate = $wallpaperDir . '/wallpaperLogin.' . $ext;
             if (is_file($candidate)) {
                 @unlink($candidate);
@@ -309,18 +355,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['brandkit_action'] ?? '') =
     $wallpaperError = null;
 
     if (!empty($_POST['login_wallpaper_remove'])) {
-        if ($wallpaperDir) {
-            foreach (['png', 'webp'] as $ext) {
-                $candidate = $wallpaperDir . '/' . $wallpaperBaseName . '.' . $ext;
-                if (is_file($candidate)) {
-                    @unlink($candidate);
-                }
-            }
-        }
+        brandkit_delete_uploaded_wallpaper_variants($wallpaperBaseName);
         $loginWallpaper = '';
+        $wallpaperSource = 'custom';
     } elseif (!empty($_FILES['login_wallpaper']) && ($_FILES['login_wallpaper']['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_NO_FILE) {
         if (($_FILES['login_wallpaper']['error'] ?? UPLOAD_ERR_OK) !== UPLOAD_ERR_OK) {
-            $wallpaperError = __('Wallpaper upload failed due to an unexpected error.', 'brandkit');
+            $errorCode = (int) ($_FILES['login_wallpaper']['error'] ?? UPLOAD_ERR_OK);
+            $wallpaperError = brandkit_get_upload_error_message(
+                $errorCode,
+                sprintf(__('Wallpaper upload failed due to an unexpected error (code %d).', 'brandkit'), $errorCode)
+            );
         } else {
             $extension = strtolower(pathinfo($_FILES['login_wallpaper']['name'], PATHINFO_EXTENSION));
             if (!in_array($extension, $allowedWallpaperExtensions, true)) {
@@ -2565,6 +2609,11 @@ Html::header(__('Brandkit', 'brandkit'), $_SERVER['PHP_SELF'], 'plugins', 'brand
                         } else {
                             $logoUrl = $pluginWebBase . '/front/logo_preview.php?name=' . rawurlencode($file);
                         }
+                        $activeLogoPath = $logoExists ? $logoPath : (($publicLogoPath && is_file($publicLogoPath)) ? $publicLogoPath : null);
+                        $logoVersion = $activeLogoPath && is_file($activeLogoPath)
+                            ? (string) filemtime($activeLogoPath)
+                            : (string) ($_GET['refresh'] ?? time());
+                        $logoUrl .= (strpos($logoUrl, '?') === false ? '?' : '&') . 'v=' . rawurlencode($logoVersion);
                         $isWhiteLogo = strpos($file, 'white') !== false;
                         $isDarkLogo = strpos($file, 'black') !== false;
                         $isLoginLogo = strpos($file, '250') !== false;
@@ -2664,13 +2713,31 @@ Html::header(__('Brandkit', 'brandkit'), $_SERVER['PHP_SELF'], 'plugins', 'brand
                                     </div>
                                 <?php elseif ($isLoginLogo) : ?>
                                     <div class="brandkit-logo-login-sample">
-                                        <div class="logo-sample"></div>
+                                        <div class="logo-sample">
+                                            <img
+                                                src="<?php echo $logoUrl; ?>"
+                                                alt="<?php echo htmlescape($label); ?>"
+                                                <?php echo $previewScale ? 'data-brandkit-logo-scale="' . htmlescape($previewScale) . '"' : ''; ?>
+                                            >
+                                            <?php if ($previewScale) : ?>
+                                                <span class="brandkit-logo-preview-value" data-brandkit-logo-value="<?php echo htmlescape($previewScale); ?>"></span>
+                                            <?php endif; ?>
+                                        </div>
                                         <div class="brandkit-logo-login-field"></div>
                                         <div class="brandkit-logo-login-field"></div>
                                     </div>
                                 <?php else : ?>
                                     <div class="brandkit-logo-header-sample">
-                                        <div class="logo-sample"></div>
+                                        <div class="logo-sample">
+                                            <img
+                                                src="<?php echo $logoUrl; ?>"
+                                                alt="<?php echo htmlescape($label); ?>"
+                                                <?php echo $previewScale ? 'data-brandkit-logo-scale="' . htmlescape($previewScale) . '"' : ''; ?>
+                                            >
+                                            <?php if ($previewScale) : ?>
+                                                <span class="brandkit-logo-preview-value" data-brandkit-logo-value="<?php echo htmlescape($previewScale); ?>"></span>
+                                            <?php endif; ?>
+                                        </div>
                                         <div class="logo-sample" style="<?php echo $isCompactLogo ? 'width: 40px;' : 'width: 70px;'; ?>">
                                             <span style="width: 100%; height: 10px; border-radius: 999px; background: rgba(148, 163, 184, 0.7); display: block;"></span>
                                         </div>
@@ -2738,6 +2805,11 @@ Html::header(__('Brandkit', 'brandkit'), $_SERVER['PHP_SELF'], 'plugins', 'brand
                         } else {
                             $logoUrl = $pluginWebBase . '/front/logo_preview.php?name=' . rawurlencode($file);
                         }
+                        $activeLogoPath = $logoExists ? $logoPath : (($publicLogoPath && is_file($publicLogoPath)) ? $publicLogoPath : null);
+                        $logoVersion = $activeLogoPath && is_file($activeLogoPath)
+                            ? (string) filemtime($activeLogoPath)
+                            : (string) ($_GET['refresh'] ?? time());
+                        $logoUrl .= (strpos($logoUrl, '?') === false ? '?' : '&') . 'v=' . rawurlencode($logoVersion);
                         $isWhiteLogo = strpos($file, 'white') !== false;
                         $isDarkLogo = strpos($file, 'black') !== false;
                         $isLoginLogo = strpos($file, '250') !== false;
@@ -2804,13 +2876,13 @@ Html::header(__('Brandkit', 'brandkit'), $_SERVER['PHP_SELF'], 'plugins', 'brand
                                     </div>
                                 <?php elseif ($isLoginLogo) : ?>
                                     <div class="brandkit-logo-login-sample">
-                                        <div class="logo-sample"></div>
+                                        <div class="logo-sample"><img src="<?php echo $logoUrl; ?>" alt="<?php echo htmlescape($label); ?>"></div>
                                         <div class="brandkit-logo-login-field"></div>
                                         <div class="brandkit-logo-login-field"></div>
                                     </div>
                                 <?php else : ?>
                                     <div class="brandkit-logo-header-sample">
-                                        <div class="logo-sample"></div>
+                                        <div class="logo-sample"><img src="<?php echo $logoUrl; ?>" alt="<?php echo htmlescape($label); ?>"></div>
                                         <div class="logo-sample" style="<?php echo $isCompactLogo ? 'width: 40px;' : 'width: 70px;'; ?>">
                                             <span style="width: 100%; height: 10px; border-radius: 999px; background: rgba(148, 163, 184, 0.7); display: block;"></span>
                                         </div>
@@ -2895,9 +2967,11 @@ Html::header(__('Brandkit', 'brandkit'), $_SERVER['PHP_SELF'], 'plugins', 'brand
             <p><?php echo __('Pick a layout and visual treatments for the GLPI login page.', 'brandkit'); ?></p>
             <?php
                 $loginWallpaper = $loginConfig['login_wallpaper'] ?? '';
-                $resolvedWallpaper = brandkit_resolve_wallpaper_filename($loginWallpaper);
-                if ($resolvedWallpaper !== '') {
-                    $loginWallpaper = $resolvedWallpaper;
+                if ($loginWallpaper) {
+                    $resolvedWallpaper = brandkit_resolve_wallpaper_filename($loginWallpaper);
+                    if ($resolvedWallpaper !== '') {
+                        $loginWallpaper = $resolvedWallpaper;
+                    }
                 }
                 $pluginStorageDir = brandkit_get_plugin_storage_dir();
                 $wallpaperSource = $loginConfig['login_wallpaper_source'] ?? '';
@@ -4500,6 +4574,22 @@ Html::header(__('Brandkit', 'brandkit'), $_SERVER['PHP_SELF'], 'plugins', 'brand
                     if (wallpaperDelete && wallpaperRemove && form) {
                         wallpaperDelete.addEventListener('click', function () {
                             wallpaperRemove.checked = true;
+                            if (wallpaperSourceInput) {
+                                wallpaperSourceInput.value = 'custom';
+                            }
+                            var saveActionButton = form.querySelector('button[name="brandkit_action"][value="save_login_settings"]');
+                            if (typeof form.requestSubmit === 'function' && saveActionButton) {
+                                form.requestSubmit(saveActionButton);
+                                return;
+                            }
+                            var actionInput = form.querySelector('input[name="brandkit_action"]');
+                            if (!actionInput) {
+                                actionInput = document.createElement('input');
+                                actionInput.type = 'hidden';
+                                actionInput.name = 'brandkit_action';
+                                form.appendChild(actionInput);
+                            }
+                            actionInput.value = 'save_login_settings';
                             form.submit();
                         });
                     }
