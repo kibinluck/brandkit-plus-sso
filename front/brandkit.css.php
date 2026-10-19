@@ -33,158 +33,128 @@
  * ------------------------------------------------------------------------
  */
 
-include_once '../../../inc/includes.php';
-include_once __DIR__ . '/../inc/paths.php';
+// GLPI 10 runs this script directly; GLPI 11 boots its kernel first (and the
+// plugin may live outside GLPI's tree, e.g. /var/glpi/marketplace in Docker).
+if (!defined('GLPI_ROOT')) {
+    include_once '../../../inc/includes.php';
+}
+require_once __DIR__ . '/../inc/login.css.php';
 
 header('Content-Type: text/css; charset=UTF-8');
 
-if (!function_exists('brandkit_clamp_int')) {
-    function brandkit_clamp_int($value, int $min, int $max, int $default): int
-    {
-        if ($value === null || $value === '' || !is_numeric($value)) {
-            return $default;
-        }
-
-        $value = (int) $value;
-        if ($value < $min) {
-            return $min;
-        }
-        if ($value > $max) {
-            return $max;
-        }
-
-        return $value;
-    }
-}
-
-$glpiFrontBase = brandkit_get_front_web_base();
-if ($glpiFrontBase === '') {
-    $glpiFrontBase = '/front';
-}
-$glpiPicsBase = brandkit_get_pics_web_base();
-
-$pluginDocDir = null;
-if (defined('GLPI_VAR_DIR')) {
-    $base = rtrim(GLPI_VAR_DIR, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . '_plugins';
-    if (is_dir($base)) {
-        $pluginDocDir = rtrim($base, DIRECTORY_SEPARATOR);
-    }
-}
-if (!$pluginDocDir && defined('GLPI_PLUGIN_DOC_DIR')) {
-    $pluginDocDir = rtrim(GLPI_PLUGIN_DOC_DIR, DIRECTORY_SEPARATOR);
-}
-$logosDir = $pluginDocDir ? $pluginDocDir . '/brandkit/logos' : null;
-$publicLogosDir = brandkit_get_pics_logos_dir();
-
-$logoFiles = [
+/**
+ * Logged-in pages: header logos and their size, as CSS variables.
+ */
+$logoVariables = [
     'logo-GLPI-100-white.png' => '--glpi-logo-light',
     'logo-G-100-white.png' => '--glpi-logo-light-reduced',
     'logo-GLPI-100-black.png' => '--glpi-logo-dark',
     'logo-G-100-black.png' => '--glpi-logo-dark-reduced',
 ];
 
-$baseUrl = $glpiFrontBase . '/pluginimage.send.php?plugin=brandkit&folder=logos&name=';
-$logoScaleDefaults = [
-    'logo_header_scale' => '100',
-    'logo_reduced_scale' => '100',
-];
-$logoScaleLegacyDefaults = [
-    'logo_header_light_scale' => '100',
-    'logo_reduced_light_scale' => '100',
-    'logo_header_dark_scale' => '100',
-    'logo_reduced_dark_scale' => '100',
-];
-$logoScaleConfig = Config::getConfigurationValues(
-    'plugin:brandkit',
-    array_merge(array_keys($logoScaleDefaults), array_keys($logoScaleLegacyDefaults))
-);
-$logoScaleConfig = array_merge(
-    $logoScaleLegacyDefaults,
-    $logoScaleDefaults,
-    array_filter($logoScaleConfig, static fn($value) => $value !== null && $value !== '')
-);
+$scaleConfig = Config::getConfigurationValues('plugin:brandkit', [
+    'logo_header_scale',
+    'logo_reduced_scale',
+    // Names used before 0.1.6.
+    'logo_header_light_scale',
+    'logo_reduced_light_scale',
+    'logo_header_dark_scale',
+    'logo_reduced_dark_scale',
+]);
+$scaleConfig = array_filter($scaleConfig, static fn($value) => $value !== null && $value !== '');
 $logoHeaderScale = brandkit_clamp_int(
-    $logoScaleConfig['logo_header_scale']
-        ?? $logoScaleConfig['logo_header_light_scale']
-        ?? $logoScaleConfig['logo_header_dark_scale']
+    $scaleConfig['logo_header_scale']
+        ?? $scaleConfig['logo_header_light_scale']
+        ?? $scaleConfig['logo_header_dark_scale']
         ?? null,
     40,
     200,
     100
 );
 $logoReducedScale = brandkit_clamp_int(
-    $logoScaleConfig['logo_reduced_scale']
-        ?? $logoScaleConfig['logo_reduced_light_scale']
-        ?? $logoScaleConfig['logo_reduced_dark_scale']
+    $scaleConfig['logo_reduced_scale']
+        ?? $scaleConfig['logo_reduced_light_scale']
+        ?? $scaleConfig['logo_reduced_dark_scale']
         ?? null,
     40,
     200,
     100
 );
 
+$publicLogosDir = brandkit_get_pics_logos_dir();
+$picsBase = brandkit_get_pics_web_base();
+$pluginImageBase = brandkit_get_front_web_base() . '/pluginimage.send.php?plugin=brandkit&folder=logos&name=';
+
 $css = ":root {\n";
-foreach ($logoFiles as $file => $variable) {
-    $publicPath = $publicLogosDir ? $publicLogosDir . DIRECTORY_SEPARATOR . $file : null;
-    if ($publicPath && is_file($publicPath)) {
-        $picsBase = $glpiPicsBase === '' ? '/pics' : $glpiPicsBase;
-        $picsBase = rtrim($picsBase, '/');
-        $css .= "  {$variable}: url(\"{$picsBase}/logos/{$file}\") !important;\n";
+foreach ($logoVariables as $file => $variable) {
+    $nativePath = $publicLogosDir !== null ? $publicLogosDir . DIRECTORY_SEPARATOR . $file : null;
+    $storedPath = brandkit_get_stored_logo_path($file);
+    $nativeExists = $nativePath !== null && is_file($nativePath);
+
+    // Serve the upload from the plugin storage when GLPI's own file could not
+    // be replaced (pics/ not writable, GLPI upgraded, new Docker container...).
+    if ($storedPath !== null && (!$nativeExists || !brandkit_files_are_identical($storedPath, $nativePath))) {
+        $css .= "  {$variable}: url(\"{$pluginImageBase}{$file}&v=" . filemtime($storedPath) . "\") !important;\n";
         continue;
     }
 
-    $path = $logosDir ? $logosDir . '/' . $file : null;
-    if ($path && is_file($path)) {
-        $css .= "  {$variable}: url(\"{$baseUrl}{$file}\") !important;\n";
+    // Otherwise GLPI's file (with the upload copied over it) is served
+    // statically and cached; the version makes browsers notice a new upload.
+    if ($nativeExists) {
+        $css .= "  {$variable}: url(\"{$picsBase}/logos/{$file}?v=" . filemtime($nativePath) . "\") !important;\n";
     }
 }
-$css .= "  --brandkit-logo-scale-light: {$logoHeaderScale};\n";
-$css .= "  --brandkit-logo-scale-light-reduced: {$logoReducedScale};\n";
-$css .= "  --brandkit-logo-scale-dark: {$logoHeaderScale};\n";
-$css .= "  --brandkit-logo-scale-dark-reduced: {$logoReducedScale};\n";
-$css .= "  --brandkit-logo-scale: var(--brandkit-logo-scale-light);\n";
-$css .= "  --brandkit-logo-scale-reduced: var(--brandkit-logo-scale-light-reduced);\n";
-$css .= "  --brandkit-logo-image: var(--glpi-logo-light, var(--logo));\n";
-$css .= "  --brandkit-logo-image-reduced: var(--glpi-logo-light-reduced, var(--logo));\n";
-$css .= "}\n";
-$css .= ":root[data-glpi-theme-dark=\"1\"],\n";
-$css .= ":root[glpi-theme-dark=\"1\"] {\n";
-$css .= "  --brandkit-logo-scale: var(--brandkit-logo-scale-dark);\n";
-$css .= "  --brandkit-logo-scale-reduced: var(--brandkit-logo-scale-dark-reduced);\n";
-$css .= "  --brandkit-logo-image: var(--glpi-logo-dark, var(--logo));\n";
-$css .= "  --brandkit-logo-image-reduced: var(--glpi-logo-dark-reduced, var(--logo));\n";
-$css .= "}\n";
-$css .= "body.navbar-collapsed .navbar-brand {\n";
-$css .= "  display: flex;\n";
-$css .= "  justify-content: center;\n";
-$css .= "  align-items: center;\n";
-$css .= "}\n";
-$css .= "body.navbar-collapsed .navbar-brand .glpi-logo {\n";
-$css .= "  background-image: var(--brandkit-logo-image-reduced);\n";
-$css .= "  background-position: center;\n";
-$css .= "  width: calc(180px * var(--brandkit-logo-scale-reduced) / 100);\n";
-$css .= "  height: calc(48px * var(--brandkit-logo-scale-reduced) / 100);\n";
-$css .= "}\n";
-$css .= "@media (max-width: 991.98px) {\n";
-$css .= "  body.navbar-collapsed .navbar-brand .glpi-logo {\n";
-$css .= "    background-image: var(--brandkit-logo-image);\n";
-$css .= "    width: calc(180px * var(--brandkit-logo-scale) / 100);\n";
-$css .= "    height: calc(48px * var(--brandkit-logo-scale) / 100);\n";
-$css .= "  }\n";
-$css .= "}\n";
-$css .= ".navbar-brand {\n";
-$css .= "  display: flex;\n";
-$css .= "  align-items: center;\n";
-$css .= "  justify-content: center;\n";
-$css .= "}\n";
-$css .= ".navbar-brand .glpi-logo {\n";
-$css .= "  background-image: var(--brandkit-logo-image);\n";
-$css .= "  background-size: contain;\n";
-$css .= "  background-repeat: no-repeat;\n";
-$css .= "  background-position: center;\n";
-$css .= "  width: calc(180px * var(--brandkit-logo-scale) / 100);\n";
-$css .= "  height: calc(48px * var(--brandkit-logo-scale) / 100);\n";
-$css .= "  max-width: 100%;\n";
-$css .= "  max-height: 100%;\n";
-$css .= "}\n";
+$css .= <<<CSS
+  --brandkit-logo-scale-light: {$logoHeaderScale};
+  --brandkit-logo-scale-light-reduced: {$logoReducedScale};
+  --brandkit-logo-scale-dark: {$logoHeaderScale};
+  --brandkit-logo-scale-dark-reduced: {$logoReducedScale};
+  --brandkit-logo-scale: var(--brandkit-logo-scale-light);
+  --brandkit-logo-scale-reduced: var(--brandkit-logo-scale-light-reduced);
+  --brandkit-logo-image: var(--glpi-logo-light, var(--logo));
+  --brandkit-logo-image-reduced: var(--glpi-logo-light-reduced, var(--logo));
+}
+:root[data-glpi-theme-dark="1"],
+:root[glpi-theme-dark="1"] {
+  --brandkit-logo-scale: var(--brandkit-logo-scale-dark);
+  --brandkit-logo-scale-reduced: var(--brandkit-logo-scale-dark-reduced);
+  --brandkit-logo-image: var(--glpi-logo-dark, var(--logo));
+  --brandkit-logo-image-reduced: var(--glpi-logo-dark-reduced, var(--logo));
+}
+body.navbar-collapsed .navbar-brand {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+body.navbar-collapsed .navbar-brand .glpi-logo {
+  background-image: var(--brandkit-logo-image-reduced);
+  background-position: center;
+  width: calc(180px * var(--brandkit-logo-scale-reduced) / 100);
+  height: calc(48px * var(--brandkit-logo-scale-reduced) / 100);
+}
+@media (max-width: 991.98px) {
+  body.navbar-collapsed .navbar-brand .glpi-logo {
+    background-image: var(--brandkit-logo-image);
+    width: calc(180px * var(--brandkit-logo-scale) / 100);
+    height: calc(48px * var(--brandkit-logo-scale) / 100);
+  }
+}
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.navbar-brand .glpi-logo {
+  background-image: var(--brandkit-logo-image);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: calc(180px * var(--brandkit-logo-scale) / 100);
+  height: calc(48px * var(--brandkit-logo-scale) / 100);
+  max-width: 100%;
+  max-height: 100%;
+}
+
+CSS;
 
 echo $css;

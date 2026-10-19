@@ -39,13 +39,18 @@ if (!defined('GLPI_ROOT')) {
     die("Sorry. You can't access this file directly");
 }
 
+require_once __DIR__ . '/paths.php';
+
+/**
+ * Menu entry and rights for the Brandkit configuration page.
+ */
 class PluginBrandkitConfig extends CommonGLPI
 {
     public static $rightname = 'config';
 
     public static function getTypeName($nb = 0)
     {
-        return __('Brandkit', 'brandkit');
+        return 'Brandkit Plus SSO';
     }
 
     public static function canView(): bool
@@ -60,12 +65,12 @@ class PluginBrandkitConfig extends CommonGLPI
 
     public static function getMenuName()
     {
-        return __('Brandkit', 'brandkit');
+        return 'Brandkit Plus SSO';
     }
 
     public static function getSearchURL($full = true)
     {
-        return Plugin::getWebDir('brandkit', $full) . '/front/index.php';
+        return brandkit_get_plugin_web_dir((bool) $full) . '/front/index.php';
     }
 
     public static function getMenuContent()
@@ -76,16 +81,10 @@ class PluginBrandkitConfig extends CommonGLPI
 
         $menu = [
             'title' => self::getTypeName(1),
-            'page' => Plugin::getWebDir('brandkit', false) . '/front/index.php',
+            'page' => brandkit_get_plugin_web_dir(false) . '/front/index.php',
             'icon' => 'ti ti-paint',
         ];
 
         return $menu;
-    }
-
-    public function showForm($ID, array $options = [])
-    {
-        echo "<div class='center'><p>" . __('Brandkit configuration will be available soon.', 'brandkit') . "</p></div>";
-        return true;
     }
 }

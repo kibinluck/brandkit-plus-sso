@@ -37,8 +37,10 @@ if (!defined('GLPI_ROOT')) {
     die("Sorry. You can't access this file directly");
 }
 
-include_once __DIR__ . '/paths.php';
+require_once __DIR__ . '/paths.php';
+require_once __DIR__ . '/assets.php';
 
+// GLPI 10.0.x ships htmlescape() only from 10.0.13 on.
 if (!function_exists('htmlescape')) {
     function htmlescape($value): string
     {
@@ -46,683 +48,13 @@ if (!function_exists('htmlescape')) {
     }
 }
 
-if (!function_exists('brandkit_get_csrf_token')) {
-    function brandkit_get_csrf_token(): string
-    {
-        if (!class_exists('Session') || !method_exists('Session', 'getNewCSRFToken')) {
-            return '';
-        }
-
-        try {
-            $method = new ReflectionMethod('Session', 'getNewCSRFToken');
-            if ($method->getNumberOfParameters() >= 1) {
-                return (string) Session::getNewCSRFToken(true);
-            }
-        } catch (ReflectionException $e) {
-            return (string) Session::getNewCSRFToken();
-        }
-
-        return (string) Session::getNewCSRFToken();
-    }
-}
-
-
-if (!function_exists('brandkit_get_plugin_storage_dir')) {
-    function brandkit_get_plugin_storage_dir(): ?string
-    {
-        if (defined('GLPI_VAR_DIR')) {
-            $base = rtrim(GLPI_VAR_DIR, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . '_plugins';
-            if (is_dir($base) || @mkdir($base, 0755, true)) {
-                $forcedDir = rtrim($base, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . 'brandkit';
-                if (is_dir($forcedDir) || @mkdir($forcedDir, 0755, true)) {
-                    return $forcedDir;
-                }
-            }
-        }
-
-        if (defined('GLPI_PLUGIN_DOC_DIR')) {
-            $base = rtrim(GLPI_PLUGIN_DOC_DIR, DIRECTORY_SEPARATOR);
-            $dir = $base . DIRECTORY_SEPARATOR . 'brandkit';
-            if (is_dir($dir) || @mkdir($dir, 0755, true)) {
-                return $dir;
-            }
-        }
-
-        return null;
-    }
-}
-
-if (!function_exists('brandkit_get_plugin_storage_dir_existing')) {
-    function brandkit_get_plugin_storage_dir_existing(): ?string
-    {
-        if (defined('GLPI_VAR_DIR')) {
-            $base = rtrim(GLPI_VAR_DIR, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . '_plugins';
-            if (is_dir($base)) {
-                $forcedDir = rtrim($base, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . 'brandkit';
-                if (is_dir($forcedDir)) {
-                    return $forcedDir;
-                }
-            }
-        }
-
-        if (defined('GLPI_PLUGIN_DOC_DIR')) {
-            $base = rtrim(GLPI_PLUGIN_DOC_DIR, DIRECTORY_SEPARATOR);
-            $dir = $base . DIRECTORY_SEPARATOR . 'brandkit';
-            if (is_dir($dir)) {
-                return $dir;
-            }
-        }
-
-        return null;
-    }
-}
-
-if (!function_exists('brandkit_get_logo_targets')) {
-    function brandkit_get_logo_targets(): array
-    {
-        return [
-            'logo-GLPI-100-white.png',
-            'logo-G-100-white.png',
-            'logo-GLPI-100-black.png',
-            'logo-G-100-black.png',
-            'logo-GLPI-250-black.png',
-            'logo-GLPI-250-white.png',
-            'favicon.ico',
-        ];
-    }
-}
-
-if (!function_exists('brandkit_get_plugin_original_logo_path')) {
-    function brandkit_get_plugin_original_logo_path(string $targetFile): ?string
-    {
-        $path = dirname(__DIR__) . '/pics/' . $targetFile;
-        return is_file($path) ? $path : null;
-    }
-}
-
-if (!function_exists('brandkit_get_native_login_logo_path')) {
-    function brandkit_get_native_login_logo_path(string $targetFile): ?string
-    {
-        if (!defined('GLPI_ROOT')) {
-            return null;
-        }
-
-        $map = [
-            'logo-GLPI-250-black.png' => 'logo-GLPI-250-black.png',
-            'logo-GLPI-250-white.png' => 'logo-GLPI-250-white.png',
-        ];
-
-        if (!isset($map[$targetFile])) {
-            return null;
-        }
-
-        $logoDir = brandkit_get_pics_logos_dir();
-        if (!$logoDir) {
-            return null;
-        }
-
-        return $logoDir . '/' . $map[$targetFile];
-    }
-}
-
-if (!function_exists('brandkit_get_native_favicon_path')) {
-    function brandkit_get_native_favicon_path(): ?string
-    {
-        if (!defined('GLPI_ROOT')) {
-            return null;
-        }
-
-        $root = rtrim(GLPI_ROOT, DIRECTORY_SEPARATOR);
-        $legacyPics = $root . DIRECTORY_SEPARATOR . 'pics';
-        $publicPics = $root . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'pics';
-
-        if (!brandkit_is_glpi11()) {
-            if (is_dir($legacyPics)) {
-                return $legacyPics . DIRECTORY_SEPARATOR . 'favicon.ico';
-            }
-        } else {
-            if (is_dir($publicPics)) {
-                return $publicPics . DIRECTORY_SEPARATOR . 'favicon.ico';
-            }
-        }
-
-        $picsDir = brandkit_get_pics_dir();
-        if ($picsDir) {
-            return $picsDir . DIRECTORY_SEPARATOR . 'favicon.ico';
-        }
-
-        return null;
-    }
-}
-
-if (!function_exists('brandkit_get_native_header_logo_path')) {
-    function brandkit_get_native_header_logo_path(string $targetFile): ?string
-    {
-        if (!defined('GLPI_ROOT')) {
-            return null;
-        }
-
-        $map = [
-            'logo-GLPI-100-white.png' => 'logo-GLPI-100-white.png',
-            'logo-G-100-white.png' => 'logo-G-100-white.png',
-            'logo-GLPI-100-black.png' => 'logo-GLPI-100-black.png',
-            'logo-G-100-black.png' => 'logo-G-100-black.png',
-        ];
-
-        if (!isset($map[$targetFile])) {
-            return null;
-        }
-
-        $logoDir = brandkit_get_pics_logos_dir();
-        if (!$logoDir) {
-            return null;
-        }
-
-        return $logoDir . '/' . $map[$targetFile];
-    }
-}
-
-if (!function_exists('brandkit_restore_original_logo_assets')) {
-    function brandkit_restore_original_logo_assets(string $targetFile, ?string $logosDir = null): array
-    {
-        $errors = [];
-
-        if ($logosDir) {
-            $storedLogo = $logosDir . '/' . $targetFile;
-            if (is_file($storedLogo)) {
-                @unlink($storedLogo);
-            }
-        }
-
-        if ($targetFile === 'favicon.ico') {
-            $nativeFavicon = brandkit_get_native_favicon_path();
-            $backupFavicon = $logosDir ? $logosDir . '/favicon.ico.bak' : null;
-            $originalFavicon = brandkit_get_plugin_original_logo_path($targetFile);
-            if ($nativeFavicon) {
-                $restored = false;
-                if ($originalFavicon && @copy($originalFavicon, $nativeFavicon)) {
-                    $restored = true;
-                } elseif ($backupFavicon && is_file($backupFavicon) && @copy($backupFavicon, $nativeFavicon)) {
-                    $restored = true;
-                }
-                if (!$restored) {
-                    $errors[] = 'favicon_restore_failed';
-                }
-            }
-        }
-
-        $nativeLoginLogo = brandkit_get_native_login_logo_path($targetFile);
-        if ($nativeLoginLogo) {
-            $originalLoginLogo = brandkit_get_plugin_original_logo_path($targetFile);
-            if ($originalLoginLogo) {
-                if (!@copy($originalLoginLogo, $nativeLoginLogo)) {
-                    $errors[] = 'login_restore_failed';
-                }
-            } else {
-                $errors[] = 'login_original_missing';
-            }
-        }
-
-        $nativeHeaderLogo = brandkit_get_native_header_logo_path($targetFile);
-        if ($nativeHeaderLogo) {
-            $originalHeaderLogo = brandkit_get_plugin_original_logo_path($targetFile);
-            if ($originalHeaderLogo) {
-                if (!@copy($originalHeaderLogo, $nativeHeaderLogo)) {
-                    $errors[] = 'header_restore_failed';
-                }
-            } else {
-                $errors[] = 'header_original_missing';
-            }
-        }
-
-        return $errors;
-    }
-}
-
-if (!function_exists('brandkit_restore_original_glpi_assets')) {
-    function brandkit_restore_original_glpi_assets(): void
-    {
-        $storageDir = brandkit_get_plugin_storage_dir_existing();
-        $logosDir = $storageDir ? $storageDir . '/logos' : null;
-
-        foreach (brandkit_get_logo_targets() as $targetFile) {
-            brandkit_restore_original_logo_assets($targetFile, $logosDir);
-        }
-    }
-}
-
-if (!function_exists('brandkit_get_plugin_image_url')) {
-    function brandkit_get_plugin_image_url(string $folder, string $name, ?int $version = null): string
-    {
-        $frontBase = brandkit_get_front_web_base();
-        if ($frontBase === '') {
-            $frontBase = '/front';
-        }
-        $url = rtrim($frontBase, '/') . '/pluginimage.send.php?plugin=brandkit&folder=' . rawurlencode($folder)
-            . '&name=' . rawurlencode($name);
-        if ($version !== null) {
-            $url .= '&v=' . $version;
-        }
-
-        return $url;
-    }
-}
-
-if (!function_exists('brandkit_get_wallpaper_image_url')) {
-    function brandkit_get_wallpaper_image_url(string $name, ?int $version = null): string
-    {
-        $base = brandkit_get_pics_web_base();
-        if ($base === '') {
-            $base = '/pics';
-        }
-        $url = rtrim($base, '/') . '/brandkit-wallpapers/' . rawurlencode($name);
-        if ($version !== null) {
-            $url .= '?v=' . $version;
-        }
-
-        return $url;
-    }
-}
-
-if (!function_exists('brandkit_get_wallpaper_storage_dir')) {
-    function brandkit_get_wallpaper_storage_dir(): ?string
-    {
-        $picsDir = brandkit_get_pics_dir();
-        if ($picsDir) {
-            $dir = $picsDir . DIRECTORY_SEPARATOR . 'brandkit-wallpapers';
-            if (is_dir($dir) || @mkdir($dir, 0755, true)) {
-                return $dir;
-            }
-        }
-
-        $base = brandkit_get_plugin_storage_dir();
-        if ($base) {
-            $dir = rtrim($base, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . 'wallpaper';
-            if (is_dir($dir)) {
-                return $dir;
-            }
-        }
-
-        return null;
-    }
-}
-
-if (!function_exists('brandkit_get_wallpaper_path')) {
-    function brandkit_get_wallpaper_path(string $filename): ?string
-    {
-        $dir = brandkit_get_wallpaper_storage_dir();
-        if ($dir) {
-            $path = $dir . DIRECTORY_SEPARATOR . $filename;
-            if (is_file($path)) {
-                return $path;
-            }
-        }
-
-        $base = brandkit_get_plugin_storage_dir();
-        if ($base) {
-            $legacyDir = rtrim($base, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . 'wallpaper';
-            $legacyPath = $legacyDir . DIRECTORY_SEPARATOR . $filename;
-            if (is_file($legacyPath)) {
-                $picsDir = brandkit_get_pics_dir();
-                if ($picsDir) {
-                    $publicDir = $picsDir . DIRECTORY_SEPARATOR . 'brandkit-wallpapers';
-                    if (is_dir($publicDir) || @mkdir($publicDir, 0755, true)) {
-                        $publicPath = $publicDir . DIRECTORY_SEPARATOR . $filename;
-                        if (!is_file($publicPath)) {
-                            @copy($legacyPath, $publicPath);
-                        }
-                        if (is_file($publicPath)) {
-                            return $publicPath;
-                        }
-                    }
-                }
-
-                return $legacyPath;
-            }
-        }
-
-        return null;
-    }
-}
-
-if (!function_exists('brandkit_resolve_wallpaper_filename')) {
-    function brandkit_resolve_wallpaper_filename(?string $filename): string
-    {
-        $candidates = [];
-        if ($filename) {
-            $candidates[] = $filename;
-            $base = preg_replace('/\.[^.]+$/', '', $filename);
-            foreach (['png', 'jpg', 'jpeg', 'webp'] as $ext) {
-                $candidates[] = $base . '.' . $ext;
-            }
-        }
-
-        foreach (array_unique($candidates) as $candidate) {
-            if ($candidate === '') {
-                continue;
-            }
-            $path = brandkit_get_wallpaper_path($candidate);
-            if ($path && is_file($path)) {
-                return $candidate;
-            }
-        }
-
-        return '';
-    }
-}
-
-if (!function_exists('brandkit_get_wallpaper_presets')) {
-    function brandkit_get_wallpaper_presets(): array
-    {
-        $baseDir = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'pics' . DIRECTORY_SEPARATOR . 'wallpapers';
-        $allowedExtensions = ['jpg', 'jpeg', 'png', 'webp'];
-        $presets = [];
-
-        if (!is_dir($baseDir)) {
-            return $presets;
-        }
-
-        foreach (scandir($baseDir) as $entry) {
-            if ($entry === '.' || $entry === '..') {
-                continue;
-            }
-            $path = $baseDir . DIRECTORY_SEPARATOR . $entry;
-            if (!is_file($path)) {
-                continue;
-            }
-            $extension = strtolower(pathinfo($entry, PATHINFO_EXTENSION));
-            if (!in_array($extension, $allowedExtensions, true)) {
-                continue;
-            }
-            $presets[] = $entry;
-        }
-
-        sort($presets, SORT_NATURAL | SORT_FLAG_CASE);
-        return $presets;
-    }
-}
-
-if (!function_exists('brandkit_get_wallpaper_preset_default')) {
-    function brandkit_get_wallpaper_preset_default(array $presets): string
-    {
-        $preferred = 'top-view-of-office.png';
-        if (in_array($preferred, $presets, true)) {
-            return $preferred;
-        }
-
-        return $presets[0] ?? '';
-    }
-}
-
-
-if (!function_exists('brandkit_can_process_images')) {
-    function brandkit_can_process_images(): bool
-    {
-        return extension_loaded('gd')
-            && function_exists('imagecreatetruecolor')
-            && function_exists('imagecopyresampled');
-    }
-}
-
-if (!function_exists('brandkit_convert_image_to_png')) {
-    function brandkit_convert_image_to_png(string $source, string $destination): bool
-    {
-        if (!brandkit_can_process_images() || !function_exists('imagecreatefromstring') || !is_file($source)) {
-            return false;
-        }
-
-        $data = @file_get_contents($source);
-        if ($data === false) {
-            return false;
-        }
-
-        $image = @imagecreatefromstring($data);
-        if (!$image) {
-            return false;
-        }
-
-        imagealphablending($image, false);
-        imagesavealpha($image, true);
-
-        $saved = @imagepng($image, $destination, 6);
-        imagedestroy($image);
-
-        return $saved;
-    }
-}
-
-if (!function_exists('brandkit_guess_mime_from_filename')) {
-    function brandkit_guess_mime_from_filename(string $filename): string
-    {
-        $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
-        switch ($extension) {
-            case 'jpeg':
-            case 'jpg':
-                return 'image/jpeg';
-            case 'png':
-                return 'image/png';
-            case 'webp':
-                return 'image/webp';
-            default:
-                return 'image/jpeg';
-        }
-    }
-}
-
-if (!function_exists('brandkit_resize_image')) {
-    function brandkit_resize_image(string $source, string $destination, int $maxWidth = 1920, int $maxHeight = 1080, int $quality = 80): bool
-    {
-        if (!brandkit_can_process_images() || !is_file($source)) {
-            return false;
-        }
-
-        $info = @getimagesize($source);
-        if (!$info || empty($info['mime'])) {
-            return false;
-        }
-
-        $mime = $info['mime'];
-        $createMap = [
-            'image/jpeg' => 'imagecreatefromjpeg',
-            'image/png' => 'imagecreatefrompng',
-            'image/webp' => 'imagecreatefromwebp',
-        ];
-        $saveMap = [
-            'image/jpeg' => 'imagejpeg',
-            'image/png' => 'imagepng',
-            'image/webp' => 'imagewebp',
-        ];
-        if (!isset($createMap[$mime], $saveMap[$mime])) {
-            return false;
-        }
-        if (!function_exists($createMap[$mime]) || !function_exists($saveMap[$mime])) {
-            return false;
-        }
-
-        $width = (int) $info[0];
-        $height = (int) $info[1];
-        if ($width <= 0 || $height <= 0) {
-            return false;
-        }
-
-        $ratio = min($maxWidth / $width, $maxHeight / $height, 1);
-        $targetWidth = (int) round($width * $ratio);
-        $targetHeight = (int) round($height * $ratio);
-
-        $srcImage = @$createMap[$mime]($source);
-        if (!$srcImage) {
-            return false;
-        }
-
-        $destImage = imagecreatetruecolor($targetWidth, $targetHeight);
-        if (!$destImage) {
-            imagedestroy($srcImage);
-            return false;
-        }
-
-        if ($mime === 'image/png' || $mime === 'image/webp') {
-            imagealphablending($destImage, false);
-            imagesavealpha($destImage, true);
-            $transparent = imagecolorallocatealpha($destImage, 0, 0, 0, 127);
-            imagefilledrectangle($destImage, 0, 0, $targetWidth, $targetHeight, $transparent);
-        }
-
-        $resampled = imagecopyresampled(
-            $destImage,
-            $srcImage,
-            0,
-            0,
-            0,
-            0,
-            $targetWidth,
-            $targetHeight,
-            $width,
-            $height
-        );
-
-        $saved = false;
-        if ($resampled) {
-            if ($mime === 'image/jpeg') {
-                $saved = $saveMap[$mime]($destImage, $destination, max(40, min(95, $quality)));
-            } elseif ($mime === 'image/png') {
-                $compression = 6;
-                $saved = $saveMap[$mime]($destImage, $destination, $compression);
-            } else {
-                $saved = $saveMap[$mime]($destImage, $destination, max(40, min(95, $quality)));
-            }
-        }
-
-        imagedestroy($srcImage);
-        imagedestroy($destImage);
-
-        return $saved;
-    }
-}
-
-if (!function_exists('brandkit_resize_image_to_webp')) {
-    function brandkit_resize_image_to_webp(string $source, string $destination, int $maxWidth = 1920, int $maxHeight = 1080, int $quality = 80): bool
-    {
-        if (!brandkit_can_process_images() || !function_exists('imagewebp') || !is_file($source)) {
-            return false;
-        }
-
-        $info = @getimagesize($source);
-        if (!$info || empty($info['mime'])) {
-            return false;
-        }
-
-        $mime = $info['mime'];
-        $createMap = [
-            'image/jpeg' => 'imagecreatefromjpeg',
-            'image/png' => 'imagecreatefrompng',
-            'image/webp' => 'imagecreatefromwebp',
-        ];
-        if (!isset($createMap[$mime]) || !function_exists($createMap[$mime])) {
-            return false;
-        }
-
-        $width = (int) $info[0];
-        $height = (int) $info[1];
-        if ($width <= 0 || $height <= 0) {
-            return false;
-        }
-
-        $ratio = min($maxWidth / $width, $maxHeight / $height, 1);
-        $targetWidth = (int) round($width * $ratio);
-        $targetHeight = (int) round($height * $ratio);
-
-        $srcImage = @$createMap[$mime]($source);
-        if (!$srcImage) {
-            return false;
-        }
-
-        $destImage = imagecreatetruecolor($targetWidth, $targetHeight);
-        if (!$destImage) {
-            imagedestroy($srcImage);
-            return false;
-        }
-
-        imagealphablending($destImage, false);
-        imagesavealpha($destImage, true);
-        $transparent = imagecolorallocatealpha($destImage, 0, 0, 0, 127);
-        imagefilledrectangle($destImage, 0, 0, $targetWidth, $targetHeight, $transparent);
-
-        $resampled = imagecopyresampled(
-            $destImage,
-            $srcImage,
-            0,
-            0,
-            0,
-            0,
-            $targetWidth,
-            $targetHeight,
-            $width,
-            $height
-        );
-
-        $saved = false;
-        if ($resampled) {
-            $saved = imagewebp($destImage, $destination, max(40, min(95, $quality)));
-        }
-
-        imagedestroy($srcImage);
-        imagedestroy($destImage);
-
-        return $saved;
-    }
-}
-
-if (!function_exists('brandkit_get_wallpaper_preset_assets')) {
-    function brandkit_get_wallpaper_preset_assets(string $presetFile): array
-    {
-        $presetDir = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'pics' . DIRECTORY_SEPARATOR . 'wallpapers';
-        $presetPath = $presetDir . DIRECTORY_SEPARATOR . $presetFile;
-        if (!is_file($presetPath)) {
-            return ['url' => '', 'webp_url' => '', 'mime' => 'image/jpeg'];
-        }
-
-        $picsDir = brandkit_get_pics_dir();
-        $publicDir = $picsDir ? $picsDir . DIRECTORY_SEPARATOR . 'brandkit-wallpapers' : null;
-        $publicPath = $publicDir ? $publicDir . DIRECTORY_SEPARATOR . $presetFile : null;
-        $presetMtime = (int) filemtime($presetPath);
-
-        if ($publicDir && (is_dir($publicDir) || @mkdir($publicDir, 0755, true))) {
-            $needsCopy = !is_file($publicPath);
-            if (!$needsCopy && $publicPath) {
-                $publicMtime = (int) filemtime($publicPath);
-                $needsCopy = $publicMtime < $presetMtime;
-            }
-            if ($needsCopy && $publicPath) {
-                if (!brandkit_resize_image($presetPath, $publicPath, 1920, 1080, 80)) {
-                    @copy($presetPath, $publicPath);
-                }
-            }
-            if ($publicPath && is_file($publicPath)) {
-                $publicMtime = (int) filemtime($publicPath);
-                $url = brandkit_get_pics_web_base() . '/brandkit-wallpapers/' . rawurlencode($presetFile) . '?v=' . $publicMtime;
-                return [
-                    'url' => $url,
-                    'webp_url' => '',
-                    'mime' => brandkit_guess_mime_from_filename($presetFile),
-                ];
-            }
-        }
-
-        $pluginWebBase = rtrim(Plugin::getWebDir('brandkit', true), '/');
-        return [
-            'url' => $pluginWebBase . '/pics/wallpapers/' . rawurlencode($presetFile) . '?v=' . $presetMtime,
-            'webp_url' => '',
-            'mime' => brandkit_guess_mime_from_filename($presetFile),
-        ];
-    }
-}
-
-if (!function_exists('brandkit_get_wallpaper_preset_url')) {
-    function brandkit_get_wallpaper_preset_url(string $presetFile): string
-    {
-        $assets = brandkit_get_wallpaper_preset_assets($presetFile);
-        return $assets['url'] ?? '';
-    }
+/**
+ * Standalone CSRF token for a form (GLPI checks every POST centrally,
+ * in inc/includes.php on 10.x and in a kernel listener on 11.x).
+ */
+function brandkit_get_csrf_token(): string
+{
+    return (string) Session::getNewCSRFToken(true);
 }
 
 function brandkit_get_login_defaults(): array
@@ -783,6 +115,15 @@ function brandkit_get_login_defaults(): array
         'login_logo_height' => '110',
         'login_logo_scale' => '290',
         'login_apply_error_page' => '1',
+        // SSO mode: hide the local login form when an SSO button is present.
+        'login_sso_mode' => '0',
+        'login_sso_local_link' => '1',
+        'login_sso_title' => '',
+        'login_sso_button_colors' => 'login',
+        'login_sso_button_bg' => '#ffffff',
+        'login_sso_button_text' => '#1f2937',
+        'login_sso_button_label' => '',
+        'login_sso_button_icon' => 'provider',
     ];
 
     if (brandkit_is_glpi11()) {
@@ -3394,31 +2735,512 @@ function brandkit_build_login_css(array $settings): string
     $css .= "  -webkit-appearance: none !important;\n";
     $css .= "}\n";
 
+    // GLPI 11 moved the "Forgotten password?" link under the submit button,
+    // inside a wider .form-footer: keep it under the button, centered.
+    $css .= "body.welcome-anonymous .form-footer .forgot_password {\n";
+    $css .= "  width: min(100%, var(--brandkit-login-field-width));\n";
+    $css .= "  margin-left: auto !important;\n";
+    $css .= "  margin-right: auto !important;\n";
+    $css .= "  text-align: center !important;\n";
+    $css .= "}\n";
+    $css .= brandkit_build_login_footer_css();
+    $css .= brandkit_build_login_extras_css();
+    $css .= brandkit_build_sso_button_vars_css($settings);
+    $css .= brandkit_build_sso_button_content_css($settings);
+    $css .= brandkit_build_secondary_pages_css();
+
     return $css;
 }
 
-function brandkit_write_login_css(?string $pluginDocDir, ?array $settings = null): bool
+/**
+ * GLPI's "Copyright ... Teclib' and contributors" footer of the login page:
+ * kept under the login area and pushed to the bottom of the screen.
+ *
+ * Two cases, because samlSSO 1.3.x prints one "</div>" too many in the login
+ * page: that closes GLPI's containers early and moves the footer out of
+ * .container-tight into .flex-fill, where it showed up in the middle of the
+ * screen instead of under the login area.
+ *
+ * Only layout in normal flow (auto margins), no fixed positioning:
+ * .container-tight is transformed, which would anchor a fixed footer to it.
+ */
+function brandkit_build_login_footer_css(): string
 {
-    $settings = $settings ?? brandkit_get_login_settings();
+    $page = 'body.welcome-anonymous:has(#login_name)';
+    $footer = '.text-center.text-muted.mt-3';
 
-    $css = brandkit_build_login_css($settings);
+    return <<<CSS
+/* Brandkit: GLPI copyright footer under the login area, at the bottom */
+{$page} .flex-fill > {$footer} {
+  width: min(100%, var(--brandkit-login-field-width));
+  margin-left: auto;
+  margin-right: auto;
+}
+@media screen and (min-width: 768px) {
+  {$page} .flex-fill > {$footer} {
+    margin-left: var(--brandkit-login-container-left);
+    margin-right: var(--brandkit-login-container-right);
+    transform: translateX(var(--brandkit-login-container-translate));
+  }
+}
+@media screen and (max-width: 767px) {
+  /* The copyright width follows the split panel, which is a thin strip on phones. */
+  {$page} {$footer} .copyright {
+    width: 100% !important;
+  }
+}
+@media screen and (min-width: 768px) and (min-height: 600px) {
+  {$page} .flex-fill:has(> {$footer}) > .container-tight,
+  {$page} .flex-fill > {$footer} {
+    margin-top: auto !important;
+  }
+  {$page} .container-tight:has(> {$footer} > .copyright) {
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100vh - 2rem - var(--brandkit-login-logo-offset, 0px));
+  }
+  {$page} .container-tight:has(> {$footer} > .copyright) > .text-center:first-child,
+  {$page} .container-tight > {$footer} {
+    margin-top: auto !important;
+  }
+}
 
-    $docWritten = false;
+CSS;
+}
 
-    if ($pluginDocDir) {
-        $normalizedDir = rtrim($pluginDocDir, DIRECTORY_SEPARATOR);
-        $cssTargetDir = (basename($normalizedDir) === 'brandkit')
-            ? $normalizedDir
-            : $normalizedDir . DIRECTORY_SEPARATOR . 'brandkit';
-        if (is_dir($cssTargetDir) || @mkdir($cssTargetDir, 0755, true)) {
-            $cssPath = $cssTargetDir . '/brandkit-login.css';
-            if (@file_put_contents($cssPath, $css) !== false) {
-                $docWritten = true;
-            }
-            $scssPath = $cssTargetDir . '/brandkit-login.scss';
-            @file_put_contents($scssPath, $css);
+/**
+ * Error page button text and GLPI's public FAQ button.
+ */
+function brandkit_build_login_extras_css(): string
+{
+    $page = 'body.welcome-anonymous:has(#login_name)';
+    // Not "form > ...": samlSSO's extra </div> moves this block out of the form.
+    $faq = $page . ' .main-content-card .text-center.border-top:has(> a[href*="helpdesk.faq.php"])';
+
+    return <<<CSS
+/* Brandkit: buttons inside error messages ("Log in again"): the alert text
+   color was also painting the button's label and icon, which disappeared
+   on dark buttons. They follow the button text color instead. */
+body.welcome-anonymous .alert .btn *,
+body.brandkit-error-page #page .alert .btn *,
+body.horizontal-layout:not(.central):not(.helpdesk) #page .alert .btn * {
+  color: inherit !important;
+}
+/* Brandkit: GLPI public FAQ button on the login page, under the login area
+   and in the login button style (outlined). */
+{$faq} {
+  width: min(100%, var(--brandkit-login-field-width));
+  margin: 1.5rem auto 0 !important;
+  padding-top: 0.25rem;
+  text-align: center !important;
+  border-top-color: color-mix(in srgb, var(--brandkit-login-text-color) 25%, transparent) !important;
+}
+{$faq} > a.btn {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  width: 100%;
+  margin-top: 1rem !important;
+  padding: 0.6rem 1.25rem !important;
+  background: transparent !important;
+  border: 1px solid var(--brandkit-login-button-border) !important;
+  border-radius: var(--brandkit-login-button-radius) !important;
+  color: var(--brandkit-login-text-color) !important;
+  font-size: calc(var(--brandkit-login-button-text-size) * 0.8);
+  font-weight: 600;
+  box-shadow: none !important;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+{$faq} > a.btn:hover {
+  background: var(--brandkit-login-button-bg) !important;
+  color: var(--brandkit-login-button-text) !important;
+}
+{$faq} > a.btn * {
+  color: inherit !important;
+}
+
+CSS;
+}
+
+/**
+ * Own colors for the SSO button (SSO mode), used by public/css/brandkit-sso.css.
+ * Without them the SSO button takes the login button colors.
+ */
+function brandkit_build_sso_button_vars_css(array $settings): string
+{
+    if (($settings['login_sso_button_colors'] ?? 'login') !== 'custom') {
+        return '';
+    }
+
+    $bg = brandkit_normalize_hex_color($settings['login_sso_button_bg'] ?? '', '#ffffff');
+    $text = brandkit_normalize_hex_color($settings['login_sso_button_text'] ?? '', brandkit_get_contrast_color($bg));
+
+    return ":root {\n"
+        . "  --brandkit-sso-button-bg: {$bg};\n"
+        . "  --brandkit-sso-button-border: {$bg};\n"
+        . "  --brandkit-sso-button-text: {$text};\n"
+        . "}\n";
+}
+
+/**
+ * Text for a CSS `content` property: every character but letters, digits and
+ * spaces becomes a CSS escape, so nothing in the text can end the string or
+ * start a SCSS interpolation (the file is compiled by GLPI's SCSS compiler).
+ */
+function brandkit_css_string(string $text): string
+{
+    $out = '';
+    foreach (preg_split('//u', $text, -1, PREG_SPLIT_NO_EMPTY) ?: [] as $char) {
+        if (preg_match('/^[A-Za-z0-9 ]$/', $char) === 1) {
+            $out .= $char;
+        } else {
+            $out .= '\\' . dechex(mb_ord($char, 'UTF-8')) . ' ';
         }
     }
 
-    return $docWritten;
+    return '"' . $out . '"';
+}
+
+/**
+ * Colored Microsoft logo (four squares), as used on "Sign in with Microsoft" buttons.
+ */
+function brandkit_get_microsoft_logo_uri(): string
+{
+    return brandkit_svg_data_uri(
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 21 21">'
+        . '<rect x="1" y="1" width="9" height="9" fill="#f25022"/>'
+        . '<rect x="11" y="1" width="9" height="9" fill="#7fba00"/>'
+        . '<rect x="1" y="11" width="9" height="9" fill="#00a4ef"/>'
+        . '<rect x="11" y="11" width="9" height="9" fill="#ffb900"/>'
+        . '</svg>'
+    );
+}
+
+/**
+ * Text and icon of the samlSSO button.
+ *
+ * samlSSO cuts the identity provider name to 12 characters for its small
+ * tiles ("Entrar com Microsoft" became "Entrar com M"). The text set here
+ * replaces it, and only when there is a single SSO button. The icon can be
+ * replaced by the colored Microsoft logo or hidden.
+ */
+function brandkit_build_sso_button_content_css(array $settings): string
+{
+    $scope = 'body.welcome-anonymous .plugin_glpisaml_login #saml_buttons';
+    $css = '';
+
+    $label = trim((string) ($settings['login_sso_button_label'] ?? ''));
+    if ($label !== '') {
+        $label = function_exists('mb_substr') ? mb_substr($label, 0, 60) : substr($label, 0, 60);
+        $single = $scope . ':has(> [class*="col-"]:only-child) button';
+        $css .= "{$single} span > b {\n  display: none !important;\n}\n"
+            . "{$single} span::after {\n  content: " . brandkit_css_string($label) . ";\n  font-weight: 600;\n}\n";
+    }
+
+    $icon = $settings['login_sso_button_icon'] ?? 'provider';
+    if ($icon === 'microsoft') {
+        $css .= "{$scope} button i {\n"
+            . "  display: inline-block !important;\n"
+            . "  width: 1em !important;\n"
+            . "  height: 1em !important;\n"
+            . "  background: " . brandkit_get_microsoft_logo_uri() . " center / contain no-repeat !important;\n"
+            . "  color: transparent !important;\n"
+            . "  -webkit-mask: none !important;\n"
+            . "  mask: none !important;\n"
+            . "}\n"
+            . "{$scope} button i::before,\n{$scope} button i::after {\n  content: none !important;\n}\n";
+    } elseif ($icon === 'none') {
+        $css .= "{$scope} button i {\n  display: none !important;\n}\n";
+    }
+
+    return $css;
+}
+
+/**
+ * Other anonymous pages that GLPI renders in the same card as the login form:
+ * two-factor code prompt, two-factor setup, backup codes, password reset.
+ *
+ * The login rules above size every field and button of the card for the
+ * login form (fixed field width, icons, full-width submit button, 650px
+ * container). On these pages that broke the layout (issue #4: 2FA code
+ * inputs crushed, buttons stacked and cut off). They keep the branding
+ * (wallpaper, panel, logo, colors) but get back GLPI's own layout.
+ *
+ * Pages are told apart with :has(#login_name): only the login form has it.
+ */
+function brandkit_build_secondary_pages_css(): string
+{
+    $page = 'body.welcome-anonymous:not(:has(#login_name))';
+    $card = $page . ' .main-content-card';
+
+    return <<<CSS
+/* Brandkit: secondary anonymous pages (2FA, backup codes, password reset) */
+/* Tall pages (2FA setup) must scroll from the top instead of being cut off. */
+{$page} {
+  align-items: flex-start !important;
+}
+{$page} .flex-fill {
+  min-height: 100vh;
+  justify-content: center;
+}
+{$page} .container-tight {
+  min-width: 0 !important;
+  width: min(100%, 34rem, var(--brandkit-login-container-max-effective)) !important;
+  max-width: min(100%, 34rem, var(--brandkit-login-container-max-effective)) !important;
+}
+@media screen and (max-width: 767px) {
+  {$page} .container-tight {
+    width: min(100%, 34rem) !important;
+    max-width: min(100%, 34rem) !important;
+  }
+}
+{$card} {
+  width: 100% !important;
+  height: auto !important;
+  max-height: none !important;
+}
+{$card} .card-header {
+  display: block !important;
+  padding: 0 0 0.75rem !important;
+  text-align: center;
+}
+{$card} .card-header:empty {
+  display: none !important;
+}
+{$card} .card-title {
+  color: inherit !important;
+  font-size: 1.1em;
+  font-weight: 600;
+  margin: 0;
+}
+{$card} .card-body {
+  overflow: visible !important;
+}
+{$card} form[data-code-type],
+{$card} form.m-n5 {
+  margin: 0 !important;
+}
+{$card} .form-control:not([type="checkbox"]):not([type="radio"]) {
+  width: 100% !important;
+  max-width: none !important;
+  height: auto !important;
+  min-height: 2.5rem;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  padding: 0.5rem 0.75rem !important;
+  background-image: none !important;
+  text-align: start;
+}
+{$card} input.form-control[name="totp_code[]"]:not([type="checkbox"]):not([type="radio"]) {
+  flex: 0 0 auto;
+  width: 2.6em !important;
+  height: 2.6em !important;
+  min-height: 0;
+  padding: 0 !important;
+  font-size: 1.4em !important;
+  text-align: center !important;
+}
+{$card} input.form-control[name="totp_code[]"]:not([type="checkbox"]):not([type="radio"]) + input[name="totp_code[]"] {
+  margin-left: 0.4rem !important;
+}
+{$card} .btn-group .form-control {
+  flex: 1 1 auto;
+  width: auto !important;
+}
+{$card} form .btn {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  width: auto !important;
+  max-width: none !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  padding: 0.5rem 1rem !important;
+  font-size: 0.95em !important;
+  vertical-align: middle;
+}
+{$card} .border-top > .ms-auto,
+{$card} .card-footer > .ms-auto {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.4rem;
+}
+{$card} input[name="backup_code"]:not(.d-none) {
+  flex: 1 0 100%;
+}
+{$card} .btn-link,
+{$card} .btn-outline-secondary,
+{$card} .btn-icon {
+  background: transparent !important;
+  color: var(--brandkit-login-text-color) !important;
+  box-shadow: none !important;
+}
+{$card} .btn-outline-secondary,
+{$card} .btn-icon {
+  border: 1px solid currentColor !important;
+}
+{$card} .btn-link {
+  border-color: transparent !important;
+  text-decoration: underline;
+}
+{$card} .form-footer .btn {
+  width: 100% !important;
+}
+{$card} .card {
+  width: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+{$card} .card .card-body {
+  padding: 0.5rem 0 !important;
+}
+{$card} .card-footer {
+  gap: 0.5rem;
+  align-items: center;
+  padding: 0.75rem 0 0 !important;
+  background: transparent !important;
+  border-top: 1px solid rgba(127, 127, 127, 0.35) !important;
+  color: inherit !important;
+}
+{$card} img[alt="QR Code"] {
+  max-width: 100%;
+  height: auto;
+  padding: 8px;
+  border-radius: 8px;
+  background: #ffffff;
+}
+{$card} .border-top {
+  border-color: rgba(127, 127, 127, 0.35) !important;
+}
+
+CSS;
+}
+
+/**
+ * Absolute path of the generated login stylesheet (served through GLPI's
+ * front/css.php, which accepts files from GLPI_PLUGIN_DOC_DIR).
+ */
+function brandkit_get_login_css_path(bool $create = false): ?string
+{
+    $dir = brandkit_get_plugin_storage_dir($create);
+    return $dir !== null ? $dir . DIRECTORY_SEPARATOR . 'brandkit-login.scss' : null;
+}
+
+/**
+ * URL GLPI's css.php needs to serve the generated login stylesheet, or null
+ * when it has not been generated yet.
+ */
+function brandkit_get_login_css_url(): ?string
+{
+    $path = brandkit_get_login_css_path();
+    if ($path === null || !is_file($path)) {
+        return null;
+    }
+
+    $glpiRoot = realpath(GLPI_ROOT);
+    $realPath = realpath($path);
+    if ($glpiRoot === false || $realPath === false) {
+        return null;
+    }
+
+    // css.php resolves "file" relative to GLPI_ROOT and appends ".scss".
+    $relative = brandkit_relative_path($glpiRoot, dirname($realPath)) . '/brandkit-login';
+
+    return brandkit_get_glpi_root_doc() . '/front/css.php?file='
+        . str_replace('%2F', '/', rawurlencode(ltrim($relative, '/')))
+        . '&bk=' . filemtime($realPath);
+}
+
+/**
+ * Regenerate the login stylesheet. The file is only rewritten when its
+ * content changes, so its mtime (used as cache buster) stays stable.
+ */
+function brandkit_write_login_css(?array $settings = null): bool
+{
+    $path = brandkit_get_login_css_path(true);
+    if ($path === null) {
+        return false;
+    }
+
+    $css = brandkit_build_login_css($settings ?? brandkit_get_login_settings());
+
+    return brandkit_write_file_if_changed($path, $css);
+}
+
+/**
+ * Name of the query parameter that shows the local login form while SSO mode
+ * is on. Same convention as the samlSSO plugin (?bypass=1), so a single URL
+ * skips both plugins' SSO-only behaviour.
+ */
+const BRANDKIT_SSO_BYPASS_PARAM = 'bypass';
+
+function brandkit_is_sso_bypass_requested(): bool
+{
+    return isset($_GET[BRANDKIT_SSO_BYPASS_PARAM]) && (string) $_GET[BRANDKIT_SSO_BYPASS_PARAM] === '1';
+}
+
+/**
+ * Login page URL that shows the local (user/password) form.
+ * noAUTO=1 also stops GLPI/samlSSO automatic SSO redirections.
+ */
+function brandkit_get_sso_bypass_url(bool $absolute = false): string
+{
+    $base = brandkit_get_glpi_root_doc();
+    if ($absolute) {
+        $urlBase = $GLOBALS['CFG_GLPI']['url_base'] ?? '';
+        if (is_string($urlBase) && $urlBase !== '') {
+            $base = rtrim($urlBase, '/');
+        }
+    }
+
+    return $base . '/?' . BRANDKIT_SSO_BYPASS_PARAM . '=1&noAUTO=1';
+}
+
+/**
+ * @return array{enabled: bool, local_link: bool, title: string}
+ */
+function brandkit_get_sso_settings(): array
+{
+    $defaults = brandkit_get_login_defaults();
+    $config = Config::getConfigurationValues('plugin:brandkit', ['login_sso_mode', 'login_sso_local_link', 'login_sso_title']);
+
+    return [
+        'enabled' => ($config['login_sso_mode'] ?? $defaults['login_sso_mode']) === '1',
+        'local_link' => ($config['login_sso_local_link'] ?? $defaults['login_sso_local_link']) === '1',
+        'title' => trim((string) ($config['login_sso_title'] ?? '')),
+    ];
+}
+
+/**
+ * HTML printed in the login page's plugin area (display_login hook):
+ * the optional title above the SSO buttons and the local access link.
+ */
+function brandkit_render_sso_login_extras(): string
+{
+    $sso = brandkit_get_sso_settings();
+    if (!$sso['enabled']) {
+        return '';
+    }
+
+    if (brandkit_is_sso_bypass_requested()) {
+        return '<a class="brandkit-sso-back" href="' . htmlescape(brandkit_get_glpi_root_doc() . '/') . '">'
+            . htmlescape(__('Back to single sign-on', 'brandkit')) . '</a>';
+    }
+
+    $html = '';
+    if ($sso['title'] !== '') {
+        $html .= '<div class="brandkit-sso-title">' . htmlescape($sso['title']) . '</div>';
+    }
+    if ($sso['local_link']) {
+        $html .= '<a class="brandkit-local-login" href="' . htmlescape(brandkit_get_sso_bypass_url()) . '">'
+            . htmlescape(__('Sign in with a local account', 'brandkit')) . '</a>';
+    }
+
+    return $html;
 }

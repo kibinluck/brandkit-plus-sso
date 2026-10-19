@@ -1,7 +1,14 @@
-# 🚀 Brandkit Plugin
+# 🚀 Brandkit Plus SSO
 
 Turn GLPI into a showcase for your brand in just a few clicks.
 This plugin was developed to make GLPI visual identity easy for beginners or anyone who doesn't want to dive into CSS.
+
+> **Fork of [Brandkit](https://github.com/juniormarcati/glpi-brandkit), created by
+> [Marcati](https://github.com/juniormarcati).** Brandkit Plus SSO adds an SSO mode
+> that works with the single sign-on of the [samlSSO](https://github.com/DonutsNL/samlsso)
+> plugin and fixes issues found in the original. It was developed with Claude
+> (Anthropic), under the guidance and supervision of Bruno Braz. All credit for the
+> original plugin goes to its author. See [CHANGELOG.md](CHANGELOG.md) for the changes.
 
 **Languages:** 🇺🇸 [English](#english) | 🇧🇷 [Português (BR)](#portugues-br) | 🇪🇸 [Español](#espanol) | 🇫🇷 [Français](#francais)
 
@@ -11,30 +18,39 @@ This plugin was developed to make GLPI visual identity easy for beginners or any
 - 📦 [Installation](#-installation)
 - ⚙️ [Configuration](#-configuration)
 - 🌎 [Translations](#-translations)
+- 🤝 [Credits](#-credits)
 - 📜 [License](#-license)
 
 ---
 
 ## 📦 Installation
-1. Clone this repository:
+1. Clone this repository straight into GLPI's plugin folder, as `brandkit`:
 ```bash
-git clone https://github.com/juniormarcati/glpi-brandkit/glpi-brandkit.git
+cd /path/to/glpi/plugins
+git clone https://github.com/kibinluck/brandkit-plus-sso.git brandkit
 ```
 
-2. Copy the project to:
-`glpi/plugins/`
+2. The folder name **must** be `brandkit` (it is the plugin key).
 
-3. Ensure the final folder name is `brandkit`.
-
-4. In GLPI, go to:
+3. In GLPI, go to:
 **Setup > Plugins > Install > Enable**
+
+**Requirements:** GLPI 10.0 or 11.0, PHP 7.4+ (8.2+ for GLPI 11), the PHP `gd` extension (already required by GLPI).
+GLPI 12 is not supported yet: GLPI will refuse to enable the plugin there until it has been tested.
+The web server user needs write access to GLPI's `pics/` folder (`public/pics/` on GLPI 11): Brandkit
+replaces GLPI's own logo and favicon files there and publishes the login wallpaper next to them.
+Originals are backed up and put back when a logo is removed or the plugin is uninstalled.
 
 ---
 
 ## ⚙️ Configuration
 
-- After enabling, a **“Brandkit”** submenu appears under **Plugins**.
-- Fill in the required fields; they form the document header.
+- After enabling, a **“Brandkit”** submenu appears under **Plugins** (only for profiles allowed to update the GLPI setup).
+- **GLPI logos**: upload the menu logos (light/dark, expanded/collapsed), the login logo and the favicon.
+- **Login Page**: choose the layout, colors, fields, button and wallpaper.
+- **SSO mode** (Login Page step): with an SSO plugin such as samlSSO, hide the user/password
+  fields and show only the SSO button. Local accounts can still sign in at
+  `https://your-glpi/?bypass=1&noAUTO=1`.
 
 ---
 
@@ -126,6 +142,19 @@ Menu rapide : [Installation](#installation-fr) | [Configuration](#configuration-
 
 ### <a id="problemes-connus-fr"></a> Problèmes connus
 - Si vous utilisez **Nginx Proxy Manager**, il peut être nécessaire de désactiver **Block Common Exploits** pour que les ressources du plugin se chargent correctement.
+
+---
+
+## 🤝 Credits
+
+- **Brandkit** (original plugin): [Marcati](https://github.com/juniormarcati) —
+  <https://github.com/juniormarcati/glpi-brandkit>
+- **Brandkit Plus SSO** (this fork): <https://github.com/kibinluck/brandkit-plus-sso>, developed with Claude (Anthropic), under the
+  guidance and supervision of Bruno Braz. Goal: compatibility with the samlSSO plugin's
+  single sign-on and fixes for issues found in the original.
+
+The plugin key is still `brandkit`, so this fork installs over the original and keeps
+its settings and uploaded images.
 
 ---
 
