@@ -37,9 +37,15 @@ if (!defined('GLPI_ROOT')) {
     die("Sorry. You can't access this file directly");
 }
 
-define('PLUGIN_BRANDKIT_VERSION', '0.3.4');
+define('PLUGIN_BRANDKIT_VERSION', '0.4.0');
 define('PLUGIN_BRANDKIT_MIN_GLPI', '10.0.0');
+// GLPI 12 is not supported yet: GLPI refuses to load the plugin there, which
+// is the safe behaviour until it has been tested.
 define('PLUGIN_BRANDKIT_MAX_GLPI', '11.0.99');
+
+define('PLUGIN_BRANDKIT_NAME', 'Brandkit Plus SSO');
+define('PLUGIN_BRANDKIT_FORK_MAINTAINER', 'Bruno Braz');
+define('PLUGIN_BRANDKIT_ORIGINAL_URL', 'https://github.com/juniormarcati/glpi-brandkit');
 
 require_once __DIR__ . '/inc/paths.php';
 require_once __DIR__ . '/hook.php';
@@ -59,7 +65,8 @@ function plugin_init_brandkit()
     // native logo files, see plugin_brandkit_display_login().
     $PLUGIN_HOOKS['display_login'][PLUGIN_BRANDKIT_KEY] = 'plugin_brandkit_display_login';
     $loginCssUrl = brandkit_get_login_css_url();
-    if ($loginCssUrl === null) {
+    $storageDir = $loginCssUrl === null ? brandkit_get_plugin_storage_dir() : null;
+    if ($loginCssUrl === null && $storageDir !== null && is_writable($storageDir)) {
         // First run (or storage wiped): generate it now so the very first
         // login page is styled. Never let this break GLPI's bootstrap.
         try {
@@ -142,9 +149,11 @@ function plugin_init_brandkit()
 function plugin_version_brandkit()
 {
     return [
-        'name' => 'Brandkit',
+        'name' => PLUGIN_BRANDKIT_NAME,
         'version' => PLUGIN_BRANDKIT_VERSION,
-        'author' => '<a href="https://github.com/juniormarcati">Marcati</a>',
+        // Fork of Brandkit by Marcati: original author first.
+        'author' => '<a href="https://github.com/juniormarcati">Marcati</a> (Brandkit), '
+            . PLUGIN_BRANDKIT_FORK_MAINTAINER . ' (Plus SSO)',
         'license' => 'AGPLv3+',
         'homepage' => 'https://github.com/juniormarcati/glpi-brandkit',
         'readme' => 'https://github.com/juniormarcati/glpi-brandkit/blob/main/Readme.md',

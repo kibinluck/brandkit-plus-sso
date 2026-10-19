@@ -50,7 +50,7 @@ class PluginBrandkitConfig extends CommonGLPI
 
     public static function getTypeName($nb = 0)
     {
-        return __('Brandkit', 'brandkit');
+        return 'Brandkit Plus SSO';
     }
 
     public static function canView(): bool
@@ -65,7 +65,7 @@ class PluginBrandkitConfig extends CommonGLPI
 
     public static function getMenuName()
     {
-        return __('Brandkit', 'brandkit');
+        return 'Brandkit Plus SSO';
     }
 
     public static function getSearchURL($full = true)

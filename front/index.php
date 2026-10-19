@@ -61,15 +61,11 @@ function brandkit_is_light_color(string $hex): bool
 }
 
 $currentStep = isset($_GET['step']) ? (int) $_GET['step'] : 0;
-if ($currentStep < 0 || $currentStep > 3) {
+if ($currentStep < 0 || $currentStep > 2) {
     $currentStep = 0;
 }
 
 $baseUrl = brandkit_get_plugin_web_dir() . '/front/index.php';
-$pluginWebBase = brandkit_get_plugin_web_dir();
-$picsWebBase = brandkit_get_pics_web_base();
-$logosDir = brandkit_get_storage_subdir('logos');
-$publicLogosDir = brandkit_get_pics_logos_dir();
 $logoFiles = [
     'logo-GLPI-100-white.png' => __('Expanded menu logo', 'brandkit'),
     'logo-G-100-white.png' => __('Collapsed menu logo', 'brandkit'),
@@ -415,7 +411,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['brandkit_action'] ?? '') =
     exit;
 }
 
-Html::header(__('Brandkit', 'brandkit'), $_SERVER['PHP_SELF'], 'plugins', 'brandkit');
+Html::header(PLUGIN_BRANDKIT_NAME, $_SERVER['PHP_SELF'], 'plugins', 'brandkit');
 
 ?>
 
@@ -425,28 +421,14 @@ Html::header(__('Brandkit', 'brandkit'), $_SERVER['PHP_SELF'], 'plugins', 'brand
     <div class="brandkit-hero">
         <div class="brandkit-hero-inner">
             <h2>
-                <?php echo htmlescape(__('Brandkit', 'brandkit')); ?>
-                <?php if (defined('PLUGIN_BRANDKIT_VERSION')) : ?>
-                    <span class="brandkit-hero-version">v<?php echo PLUGIN_BRANDKIT_VERSION; ?></span>
-                <?php endif; ?>
+                <?php echo htmlescape(PLUGIN_BRANDKIT_NAME); ?>
+                <span class="brandkit-hero-version">v<?php echo htmlescape(PLUGIN_BRANDKIT_VERSION); ?></span>
             </h2>
             <p><?php echo htmlescape(__('Turn GLPI into a showcase for your brand in just a few clicks.', 'brandkit')); ?></p>
             <div class="brandkit-hero-links">
-                <a class="brandkit-hero-link" href="https://www.marcati.com.br" target="_blank" rel="noopener noreferrer">
-                    <i class="fas fa-globe" aria-hidden="true"></i>
-                    <span>Marcati</span>
-                </a>
-                <a class="brandkit-hero-link" href="https://wa.me/5519981121515" target="_blank" rel="noopener noreferrer">
-                    <i class="fab fa-whatsapp" aria-hidden="true"></i>
-                    <span>Whatsapp</span>
-                </a>
-                <a class="brandkit-hero-link" href="https://www.linkedin.com/company/marcati" target="_blank" rel="noopener noreferrer">
-                    <i class="fab fa-linkedin-in" aria-hidden="true"></i>
-                    <span>LinkedIn</span>
-                </a>
-                <a class="brandkit-hero-link" href="http://instagram.com/marca.ti" target="_blank" rel="noopener noreferrer">
-                    <i class="fab fa-instagram" aria-hidden="true"></i>
-                    <span>Instagram</span>
+                <a class="brandkit-hero-link" href="<?php echo htmlescape(PLUGIN_BRANDKIT_ORIGINAL_URL); ?>" target="_blank" rel="noopener noreferrer">
+                    <i class="ti ti-brand-github" aria-hidden="true"></i>
+                    <span><?php echo htmlescape(__('Original project', 'brandkit')); ?></span>
                 </a>
             </div>
         </div>
@@ -462,23 +444,27 @@ Html::header(__('Brandkit', 'brandkit'), $_SERVER['PHP_SELF'], 'plugins', 'brand
         <a class="brandkit-timeline-step <?php echo $currentStep === 2 ? 'active' : ''; ?>" href="<?php echo htmlescape($baseUrl); ?>?step=2">
             <?php echo htmlescape(__('Login Page', 'brandkit')); ?>
         </a>
-        <a class="brandkit-timeline-step <?php echo $currentStep === 3 ? 'active' : ''; ?>" href="<?php echo htmlescape($baseUrl); ?>?step=3">
-            &#x1F512; <?php echo htmlescape(__('Premium', 'brandkit')); ?>
-        </a>
     </div>
 
     <div class="brandkit-content">
         <?php if ($currentStep === 0) : ?>
             <div class="brandkit-intro">
                 <div class="brandkit-intro-copy">
-                    <span class="brandkit-intro-eyebrow"><?php echo htmlescape(__('Brandkit by Marcati', 'brandkit')); ?></span>
+                    <span class="brandkit-intro-eyebrow"><?php echo htmlescape(PLUGIN_BRANDKIT_NAME); ?></span>
                     <h3><?php echo htmlescape(__('The visual evolution of your GLPI starts here.', 'brandkit')); ?></h3>
                     <p><?php echo htmlescape(__('Brandkit delivers logos, login screens, and colors aligned with your identity. No CSS, no effort, just professional results.', 'brandkit')); ?></p>
-                    <p><?php echo htmlescape(__('Discover Marcati at', 'brandkit')); ?> <a href="https://brandkit.marcati.com.br" target="_blank" rel="noopener noreferrer">brandkit.marcati.com.br</a>.</p>
+                    <div class="brandkit-fork-credits">
+                        <p>
+                            <?php echo htmlescape(__('Brandkit Plus SSO is a fork of Brandkit, created by Marcati.', 'brandkit')); ?>
+                            <a href="<?php echo htmlescape(PLUGIN_BRANDKIT_ORIGINAL_URL); ?>" target="_blank" rel="noopener noreferrer"><?php echo htmlescape(__('See the original project', 'brandkit')); ?></a>.
+                        </p>
+                        <p><?php echo htmlescape(__('Its goal is to work with the single sign-on (SSO) of the samlSSO plugin and to fix issues found in the original.', 'brandkit')); ?></p>
+                        <p><?php echo htmlescape(sprintf(__('Developed with Claude (Anthropic), under the guidance and supervision of %s.', 'brandkit'), PLUGIN_BRANDKIT_FORK_MAINTAINER)); ?></p>
+                    </div>
                     <div class="brandkit-intro-actions">
                         <a class="brandkit-cta primary" href="<?php echo htmlescape($baseUrl); ?>?step=1"><?php echo htmlescape(__('GLPI logos', 'brandkit')); ?></a>
                         <a class="brandkit-cta secondary" href="<?php echo htmlescape($baseUrl); ?>?step=2"><?php echo htmlescape(__('Login Page', 'brandkit')); ?></a>
-                        <a class="brandkit-cta ghost" href="https://brandkit.marcati.com.br" target="_blank" rel="noopener noreferrer"><?php echo htmlescape(__('Meet Marcati', 'brandkit')); ?></a>
+                        <a class="brandkit-cta ghost" href="<?php echo htmlescape(PLUGIN_BRANDKIT_ORIGINAL_URL); ?>" target="_blank" rel="noopener noreferrer"><?php echo htmlescape(__('Original project', 'brandkit')); ?></a>
                     </div>
                 </div>
                 <div class="brandkit-intro-panel">
@@ -1578,30 +1564,6 @@ Html::header(__('Brandkit', 'brandkit'), $_SERVER['PHP_SELF'], 'plugins', 'brand
                 <input type="hidden" name="_glpi_csrf_token" value="<?php echo htmlescape(brandkit_get_csrf_token()); ?>">
             </form>
             <script src="<?php echo htmlescape(brandkit_get_public_asset_url('js/admin-login.js') . '?v=' . PLUGIN_BRANDKIT_VERSION); ?>"></script>
-        <?php elseif ($currentStep === 3) : ?>
-            <div class="brandkit-intro">
-                <div class="brandkit-intro-copy">
-                    <span class="brandkit-intro-eyebrow"><?php echo htmlescape(__('Premium features', 'brandkit')); ?></span>
-                    <h3><?php echo htmlescape(__('Unlock advanced Brandkit upgrades.', 'brandkit')); ?></h3>
-                    <p><?php echo htmlescape(__('This area is available in the paid version. Get more control and deeper customization for your GLPI experience.', 'brandkit')); ?></p>
-                    <ul>
-                        <li><?php echo htmlescape(__('Download and upload configuration presets.', 'brandkit')); ?></li>
-                        <li><?php echo htmlescape(__('Theme customization with one-click presets.', 'brandkit')); ?></li>
-                        <li><?php echo htmlescape(__('Menu color variations and layout tuning for GLPI.', 'brandkit')); ?></li>
-                        <li><?php echo htmlescape(__('Extra custom colors beyond the default GLPI palette.', 'brandkit')); ?></li>
-                    </ul>
-                    <div class="brandkit-intro-actions">
-                        <a class="brandkit-cta primary" href="https://brandkit.marcati.com.br" target="_blank" rel="noopener noreferrer"><?php echo htmlescape(__('See plans', 'brandkit')); ?></a>
-                    </div>
-                </div>
-                <div class="brandkit-intro-panel">
-                    <div class="brandkit-intro-card">
-                        <span>&#x1F512;</span>
-                        <h4><?php echo htmlescape(__('Premium access', 'brandkit')); ?></h4>
-                        <p><?php echo htmlescape(__('Request access to unlock these features for your team.', 'brandkit')); ?></p>
-                    </div>
-                </div>
-            </div>
         <?php endif; ?>
     </div>
 </div>

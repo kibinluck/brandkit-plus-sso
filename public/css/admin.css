@@ -1899,3 +1899,59 @@ form + .brandkit-section {
     word-break: break-all;
     user-select: all;
 }
+
+/* SSO section: six controls in one grid; keep every control inside its column
+   and at the same height (selects, text and color inputs). */
+#brandkit_sso_section .brandkit-form-grid {
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    align-items: end;
+}
+
+#brandkit_sso_section .brandkit-form-grid select,
+#brandkit_sso_section .brandkit-form-grid input[type="text"],
+#brandkit_sso_section .brandkit-form-grid input[type="color"] {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: 40px;
+    box-sizing: border-box;
+    margin: 0;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    background-color: #ffffff;
+    font-size: 0.9rem;
+}
+
+#brandkit_sso_section .brandkit-form-grid select,
+#brandkit_sso_section .brandkit-form-grid input[type="text"] {
+    padding: 0 12px;
+}
+
+#brandkit_sso_section .brandkit-form-grid input[type="color"] {
+    padding: 4px;
+    cursor: pointer;
+}
+
+:root[data-glpi-theme-dark="1"] #brandkit_sso_section .brandkit-form-grid :is(select, input[type="text"], input[type="color"]) {
+    border-color: #374151;
+    background-color: #111827;
+    color: #e5e7eb;
+}
+
+.brandkit-fork-credits {
+    margin: 12px 0 18px;
+    padding: 12px 14px;
+    border-left: 3px solid var(--brandkit-primary, #0ea5e9);
+    border-radius: 6px;
+    background: rgba(14, 165, 233, 0.06);
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.brandkit-fork-credits p {
+    margin: 0 0 6px;
+}
+
+.brandkit-fork-credits p:last-child {
+    margin-bottom: 0;
+}

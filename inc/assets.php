@@ -475,6 +475,12 @@ function brandkit_publish_wallpaper_preset(string $presetFile, string $publicDir
         }
     }
 
+    // Decoding a full-HD image is costly: never attempt it when the result
+    // cannot be saved anyway (this runs on every login page view).
+    if (!is_writable($publicDir)) {
+        return null;
+    }
+
     $image = brandkit_load_image($presetPath);
     if ($image) {
         $output = brandkit_fit_image($image, 1920, 1080);

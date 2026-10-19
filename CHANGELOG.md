@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.4.0
+
+### Changed
+- The plugin is now called **Brandkit Plus SSO**: a fork of Brandkit by Marcati,
+  with credits and a link to the original project on the About page, in the
+  README and in the plugin list. The plugin key is still `brandkit`, so it
+  upgrades the original in place and keeps all settings and images.
+- About page: removed the Marcati contact links, the "Meet Marcati" block and
+  the Premium step (it only advertised the paid version of the original).
+- GLPI 12 is explicitly not supported yet (maximum GLPI version 11.0.x).
+
+### Fixed
+- Login page step, SSO mode: the fields were misaligned and of uneven height;
+  they now sit on a regular grid.
+- When GLPI's `files/_plugins/brandkit` or `pics/` folder is not writable,
+  the plugin no longer retries (and re-decodes the wallpaper image) on every
+  page view.
+
 ## 0.3.4
 
 ### Fixed
