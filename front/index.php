@@ -264,6 +264,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['brandkit_action'] ?? '') =
     $ssoButtonColors = ($_POST['login_sso_button_colors'] ?? 'login') === 'custom' ? 'custom' : 'login';
     $ssoButtonBg = brandkit_normalize_hex_color($_POST['login_sso_button_bg'] ?? '', $loginDefaults['login_sso_button_bg']);
     $ssoButtonText = brandkit_normalize_hex_color($_POST['login_sso_button_text'] ?? '', $loginDefaults['login_sso_button_text']);
+    $ssoButtonLabel = is_string($_POST['login_sso_button_label'] ?? null) ? trim($_POST['login_sso_button_label']) : '';
+    $ssoButtonLabel = function_exists('mb_substr') ? mb_substr($ssoButtonLabel, 0, 60) : substr($ssoButtonLabel, 0, 60);
+    $ssoButtonIcon = in_array($_POST['login_sso_button_icon'] ?? '', ['provider', 'microsoft', 'none'], true)
+        ? $_POST['login_sso_button_icon']
+        : 'provider';
     $loginLogoWidth = brandkit_clamp_int(
         $_POST['login_logo_width'] ?? ($loginConfig['login_logo_width'] ?? $loginDefaults['login_logo_width']),
         80,
@@ -369,6 +374,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['brandkit_action'] ?? '') =
         'login_sso_button_colors' => $ssoButtonColors,
         'login_sso_button_bg' => $ssoButtonBg,
         'login_sso_button_text' => $ssoButtonText,
+        'login_sso_button_label' => $ssoButtonLabel,
+        'login_sso_button_icon' => $ssoButtonIcon,
     ];
     if (!$isGlpi11) {
         $loginConfig['login_field_spacing'] = (string) $fieldSpacing;
@@ -821,6 +828,8 @@ Html::header(__('Brandkit', 'brandkit'), $_SERVER['PHP_SELF'], 'plugins', 'brand
                 $ssoButtonColors = ($loginConfig['login_sso_button_colors'] ?? 'login') === 'custom' ? 'custom' : 'login';
                 $ssoButtonBg = brandkit_normalize_hex_color($loginConfig['login_sso_button_bg'] ?? '', $loginDefaults['login_sso_button_bg']);
                 $ssoButtonText = brandkit_normalize_hex_color($loginConfig['login_sso_button_text'] ?? '', $loginDefaults['login_sso_button_text']);
+                $ssoButtonLabel = (string) ($loginConfig['login_sso_button_label'] ?? '');
+                $ssoButtonIcon = (string) ($loginConfig['login_sso_button_icon'] ?? 'provider');
                 $buttonStyleLabels = [
                     'primary' => __('Primary (default)', 'brandkit'),
                     'secondary' => __('Secondary', 'brandkit'),
@@ -1520,6 +1529,18 @@ Html::header(__('Brandkit', 'brandkit'), $_SERVER['PHP_SELF'], 'plugins', 'brand
                                 <div>
                                     <label for="brandkit_login_sso_title"><?php echo htmlescape(__('Text above the SSO button (optional)', 'brandkit')); ?></label>
                                     <input type="text" id="brandkit_login_sso_title" name="login_sso_title" maxlength="120" value="<?php echo htmlescape($loginSso['title']); ?>" placeholder="<?php echo htmlescape(__('e.g. Sign in with your corporate account', 'brandkit')); ?>">
+                                </div>
+                                <div>
+                                    <label for="brandkit_login_sso_button_label"><?php echo htmlescape(__('SSO button text (optional)', 'brandkit')); ?></label>
+                                    <input type="text" id="brandkit_login_sso_button_label" name="login_sso_button_label" maxlength="60" value="<?php echo htmlescape($ssoButtonLabel); ?>" placeholder="<?php echo htmlescape(__('e.g. Sign in with Microsoft', 'brandkit')); ?>">
+                                </div>
+                                <div>
+                                    <label for="brandkit_login_sso_button_icon"><?php echo htmlescape(__('SSO button icon', 'brandkit')); ?></label>
+                                    <select id="brandkit_login_sso_button_icon" name="login_sso_button_icon">
+                                        <option value="provider" <?php echo $ssoButtonIcon === 'provider' ? 'selected' : ''; ?>><?php echo htmlescape(__('From the SSO plugin', 'brandkit')); ?></option>
+                                        <option value="microsoft" <?php echo $ssoButtonIcon === 'microsoft' ? 'selected' : ''; ?>><?php echo htmlescape(__('Microsoft logo (colored)', 'brandkit')); ?></option>
+                                        <option value="none" <?php echo $ssoButtonIcon === 'none' ? 'selected' : ''; ?>><?php echo htmlescape(__('No icon', 'brandkit')); ?></option>
+                                    </select>
                                 </div>
                                 <div>
                                     <label for="brandkit_login_sso_button_colors"><?php echo htmlescape(__('SSO button colors', 'brandkit')); ?></label>

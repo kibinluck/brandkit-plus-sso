@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.3.3
+
+### Added
+- SSO mode: "SSO button text" option. samlSSO cuts the identity provider name
+  to 12 characters ("Entrar com Microsoft" became "Entrar com M"); the text set
+  here replaces it (single SSO button only).
+- SSO mode: "SSO button icon" option: the SSO plugin's icon, the colored
+  Microsoft logo, or no icon.
+
 ## 0.3.2
 
 ### Added

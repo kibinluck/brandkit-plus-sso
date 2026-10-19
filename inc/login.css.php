@@ -122,6 +122,8 @@ function brandkit_get_login_defaults(): array
         'login_sso_button_colors' => 'login',
         'login_sso_button_bg' => '#ffffff',
         'login_sso_button_text' => '#1f2937',
+        'login_sso_button_label' => '',
+        'login_sso_button_icon' => 'provider',
     ];
 
     if (brandkit_is_glpi11()) {
@@ -2743,6 +2745,7 @@ function brandkit_build_login_css(array $settings): string
     $css .= "}\n";
     $css .= brandkit_build_login_footer_css();
     $css .= brandkit_build_sso_button_vars_css($settings);
+    $css .= brandkit_build_sso_button_content_css($settings);
     $css .= brandkit_build_secondary_pages_css();
 
     return $css;
@@ -2816,6 +2819,80 @@ function brandkit_build_sso_button_vars_css(array $settings): string
         . "  --brandkit-sso-button-border: {$bg};\n"
         . "  --brandkit-sso-button-text: {$text};\n"
         . "}\n";
+}
+
+/**
+ * Text for a CSS `content` property: every character but letters, digits and
+ * spaces becomes a CSS escape, so nothing in the text can end the string or
+ * start a SCSS interpolation (the file is compiled by GLPI's SCSS compiler).
+ */
+function brandkit_css_string(string $text): string
+{
+    $out = '';
+    foreach (preg_split('//u', $text, -1, PREG_SPLIT_NO_EMPTY) ?: [] as $char) {
+        if (preg_match('/^[A-Za-z0-9 ]$/', $char) === 1) {
+            $out .= $char;
+        } else {
+            $out .= '\\' . dechex(mb_ord($char, 'UTF-8')) . ' ';
+        }
+    }
+
+    return '"' . $out . '"';
+}
+
+/**
+ * Colored Microsoft logo (four squares), as used on "Sign in with Microsoft" buttons.
+ */
+function brandkit_get_microsoft_logo_uri(): string
+{
+    return brandkit_svg_data_uri(
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 21 21">'
+        . '<rect x="1" y="1" width="9" height="9" fill="#f25022"/>'
+        . '<rect x="11" y="1" width="9" height="9" fill="#7fba00"/>'
+        . '<rect x="1" y="11" width="9" height="9" fill="#00a4ef"/>'
+        . '<rect x="11" y="11" width="9" height="9" fill="#ffb900"/>'
+        . '</svg>'
+    );
+}
+
+/**
+ * Text and icon of the samlSSO button.
+ *
+ * samlSSO cuts the identity provider name to 12 characters for its small
+ * tiles ("Entrar com Microsoft" became "Entrar com M"). The text set here
+ * replaces it, and only when there is a single SSO button. The icon can be
+ * replaced by the colored Microsoft logo or hidden.
+ */
+function brandkit_build_sso_button_content_css(array $settings): string
+{
+    $scope = 'body.welcome-anonymous .plugin_glpisaml_login #saml_buttons';
+    $css = '';
+
+    $label = trim((string) ($settings['login_sso_button_label'] ?? ''));
+    if ($label !== '') {
+        $label = function_exists('mb_substr') ? mb_substr($label, 0, 60) : substr($label, 0, 60);
+        $single = $scope . ':has(> [class*="col-"]:only-child) button';
+        $css .= "{$single} span > b {\n  display: none !important;\n}\n"
+            . "{$single} span::after {\n  content: " . brandkit_css_string($label) . ";\n  font-weight: 600;\n}\n";
+    }
+
+    $icon = $settings['login_sso_button_icon'] ?? 'provider';
+    if ($icon === 'microsoft') {
+        $css .= "{$scope} button i {\n"
+            . "  display: inline-block !important;\n"
+            . "  width: 1em !important;\n"
+            . "  height: 1em !important;\n"
+            . "  background: " . brandkit_get_microsoft_logo_uri() . " center / contain no-repeat !important;\n"
+            . "  color: transparent !important;\n"
+            . "  -webkit-mask: none !important;\n"
+            . "  mask: none !important;\n"
+            . "}\n"
+            . "{$scope} button i::before,\n{$scope} button i::after {\n  content: none !important;\n}\n";
+    } elseif ($icon === 'none') {
+        $css .= "{$scope} button i {\n  display: none !important;\n}\n";
+    }
+
+    return $css;
 }
 
 /**
