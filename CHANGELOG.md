@@ -34,6 +34,13 @@ GLPI 10 and 11 layouts); the only intended visual change is the lighter wallpape
 - File names reaching the filesystem are whitelisted.
 
 ### Changed
+- Works from GLPI 11's marketplace directory outside the GLPI tree (official Docker
+  image: `/var/glpi/marketplace`): front scripts no longer include `inc/includes.php`
+  on GLPI 11, where the kernel already boots GLPI.
+- Uploaded wallpapers keep a master copy in the plugin storage and are republished
+  automatically when `pics/` is reset (GLPI upgrade, new Docker container).
+- Header logos are served from the plugin storage when GLPI's own file could not be
+  replaced, so a reset `pics/` never shows the GLPI logo instead of yours.
 - GLPI's own logo/favicon files are backed up (`files/_plugins/brandkit/originals/`)
   before being replaced, and restored from there.
 - Custom logos are re-applied on the login page if a GLPI upgrade overwrote them.

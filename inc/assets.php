@@ -330,8 +330,8 @@ function brandkit_is_safe_filename(string $filename): bool
 }
 
 /**
- * Absolute path of an uploaded wallpaper, migrating files left in the
- * pre-0.1.6 private "wallpaper" folder to the public one on the fly.
+ * Absolute path of an uploaded wallpaper, (re)publishing it from the master
+ * copy in the plugin storage when the public copy is missing.
  */
 function brandkit_get_wallpaper_path(string $filename): ?string
 {
@@ -898,9 +898,18 @@ function brandkit_store_uploaded_wallpaper(?array $file, string $baseName = 'wal
     }
 
     brandkit_delete_uploaded_wallpaper_variants($baseName);
-    if (!@rename($tmp, $publicDir . DIRECTORY_SEPARATOR . $filename)) {
+    $publicPath = $publicDir . DIRECTORY_SEPARATOR . $filename;
+    if (!@rename($tmp, $publicPath)) {
         @unlink($tmp);
         return [null, __('Unable to save the uploaded wallpaper. Check file permissions.', 'brandkit')];
+    }
+
+    // Master copy in the plugin storage: pics/ is part of GLPI's code and is
+    // replaced by GLPI upgrades (and by a new container in Docker setups);
+    // brandkit_get_wallpaper_path() republishes it from here when missing.
+    $masterDir = brandkit_get_storage_subdir('wallpaper');
+    if ($masterDir !== null) {
+        @copy($publicPath, $masterDir . DIRECTORY_SEPARATOR . $filename);
     }
 
     return [$filename, null];

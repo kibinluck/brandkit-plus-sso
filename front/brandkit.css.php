@@ -33,7 +33,11 @@
  * ------------------------------------------------------------------------
  */
 
-include_once '../../../inc/includes.php';
+// GLPI 10 runs this script directly; GLPI 11 boots its kernel first (and the
+// plugin may live outside GLPI's tree, e.g. /var/glpi/marketplace in Docker).
+if (!defined('GLPI_ROOT')) {
+    include_once '../../../inc/includes.php';
+}
 require_once __DIR__ . '/../inc/login.css.php';
 
 header('Content-Type: text/css; charset=UTF-8');
@@ -83,17 +87,21 @@ $pluginImageBase = brandkit_get_front_web_base() . '/pluginimage.send.php?plugin
 
 $css = ":root {\n";
 foreach ($logoVariables as $file => $variable) {
-    // GLPI's own file (Brandkit copies uploads over it) is served statically
-    // and cached; the version parameter makes browsers notice a new upload.
     $nativePath = $publicLogosDir !== null ? $publicLogosDir . DIRECTORY_SEPARATOR . $file : null;
-    if ($nativePath !== null && is_file($nativePath)) {
-        $css .= "  {$variable}: url(\"{$picsBase}/logos/{$file}?v=" . filemtime($nativePath) . "\") !important;\n";
+    $storedPath = brandkit_get_stored_logo_path($file);
+    $nativeExists = $nativePath !== null && is_file($nativePath);
+
+    // Serve the upload from the plugin storage when GLPI's own file could not
+    // be replaced (pics/ not writable, GLPI upgraded, new Docker container...).
+    if ($storedPath !== null && (!$nativeExists || !brandkit_files_are_identical($storedPath, $nativePath))) {
+        $css .= "  {$variable}: url(\"{$pluginImageBase}{$file}&v=" . filemtime($storedPath) . "\") !important;\n";
         continue;
     }
 
-    $storedPath = brandkit_get_stored_logo_path($file);
-    if ($storedPath !== null) {
-        $css .= "  {$variable}: url(\"{$pluginImageBase}{$file}&v=" . filemtime($storedPath) . "\") !important;\n";
+    // Otherwise GLPI's file (with the upload copied over it) is served
+    // statically and cached; the version makes browsers notice a new upload.
+    if ($nativeExists) {
+        $css .= "  {$variable}: url(\"{$picsBase}/logos/{$file}?v=" . filemtime($nativePath) . "\") !important;\n";
     }
 }
 $css .= <<<CSS

@@ -33,7 +33,11 @@
  * ------------------------------------------------------------------------
  */
 
-include_once '../../../inc/includes.php';
+// GLPI 10 runs this script directly; GLPI 11 boots its kernel first (and the
+// plugin may live outside GLPI's tree, e.g. /var/glpi/marketplace in Docker).
+if (!defined('GLPI_ROOT')) {
+    include_once '../../../inc/includes.php';
+}
 require_once __DIR__ . '/../inc/login.css.php';
 
 /**
