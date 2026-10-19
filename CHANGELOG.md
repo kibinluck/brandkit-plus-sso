@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.2.1
+
+### Fixed
+- Two-factor authentication screens were broken by the login page styles
+  (issue #4): the 6 code inputs were squashed or overflowing, the title was
+  misaligned and the Cancel/Verify buttons were stacked and cut off. The same
+  rules also broke the GLPI 11 2FA setup page (QR code) and squeezed the error
+  page button. These pages, as well as backup codes, password reset and the
+  login error page, now keep the branding (wallpaper, panel, logo, colors) with
+  GLPI's own layout. Tall pages scroll instead of being cut off at the top.
+- GLPI 11: the "Forgotten password?" link is centered under the sign-in button
+  again instead of sticking to the left edge.
+
 ## 0.2.0
 
 Refactoring and hardening of 0.1.7. The generated login stylesheet is byte-for-byte

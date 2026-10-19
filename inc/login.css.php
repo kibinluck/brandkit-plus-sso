@@ -2726,7 +2726,182 @@ function brandkit_build_login_css(array $settings): string
     $css .= "  -webkit-appearance: none !important;\n";
     $css .= "}\n";
 
+    // GLPI 11 moved the "Forgotten password?" link under the submit button,
+    // inside a wider .form-footer: keep it under the button, centered.
+    $css .= "body.welcome-anonymous .form-footer .forgot_password {\n";
+    $css .= "  width: min(100%, var(--brandkit-login-field-width));\n";
+    $css .= "  margin-left: auto !important;\n";
+    $css .= "  margin-right: auto !important;\n";
+    $css .= "  text-align: center !important;\n";
+    $css .= "}\n";
+    $css .= brandkit_build_secondary_pages_css();
+
     return $css;
+}
+
+/**
+ * Other anonymous pages that GLPI renders in the same card as the login form:
+ * two-factor code prompt, two-factor setup, backup codes, password reset.
+ *
+ * The login rules above size every field and button of the card for the
+ * login form (fixed field width, icons, full-width submit button, 650px
+ * container). On these pages that broke the layout (issue #4: 2FA code
+ * inputs crushed, buttons stacked and cut off). They keep the branding
+ * (wallpaper, panel, logo, colors) but get back GLPI's own layout.
+ *
+ * Pages are told apart with :has(#login_name): only the login form has it.
+ */
+function brandkit_build_secondary_pages_css(): string
+{
+    $page = 'body.welcome-anonymous:not(:has(#login_name))';
+    $card = $page . ' .main-content-card';
+
+    return <<<CSS
+/* Brandkit: secondary anonymous pages (2FA, backup codes, password reset) */
+/* Tall pages (2FA setup) must scroll from the top instead of being cut off. */
+{$page} {
+  align-items: flex-start !important;
+}
+{$page} .flex-fill {
+  min-height: 100vh;
+  justify-content: center;
+}
+{$page} .container-tight {
+  min-width: 0 !important;
+  width: min(100%, 34rem, var(--brandkit-login-container-max-effective)) !important;
+  max-width: min(100%, 34rem, var(--brandkit-login-container-max-effective)) !important;
+}
+@media screen and (max-width: 767px) {
+  {$page} .container-tight {
+    width: min(100%, 34rem) !important;
+    max-width: min(100%, 34rem) !important;
+  }
+}
+{$card} {
+  width: 100% !important;
+  height: auto !important;
+  max-height: none !important;
+}
+{$card} .card-header {
+  display: block !important;
+  padding: 0 0 0.75rem !important;
+  text-align: center;
+}
+{$card} .card-header:empty {
+  display: none !important;
+}
+{$card} .card-title {
+  color: inherit !important;
+  font-size: 1.1em;
+  font-weight: 600;
+  margin: 0;
+}
+{$card} .card-body {
+  overflow: visible !important;
+}
+{$card} form[data-code-type],
+{$card} form.m-n5 {
+  margin: 0 !important;
+}
+{$card} .form-control:not([type="checkbox"]):not([type="radio"]) {
+  width: 100% !important;
+  max-width: none !important;
+  height: auto !important;
+  min-height: 2.5rem;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  padding: 0.5rem 0.75rem !important;
+  background-image: none !important;
+  text-align: start;
+}
+{$card} input.form-control[name="totp_code[]"]:not([type="checkbox"]):not([type="radio"]) {
+  flex: 0 0 auto;
+  width: 2.6em !important;
+  height: 2.6em !important;
+  min-height: 0;
+  padding: 0 !important;
+  font-size: 1.4em !important;
+  text-align: center !important;
+}
+{$card} input.form-control[name="totp_code[]"]:not([type="checkbox"]):not([type="radio"]) + input[name="totp_code[]"] {
+  margin-left: 0.4rem !important;
+}
+{$card} .btn-group .form-control {
+  flex: 1 1 auto;
+  width: auto !important;
+}
+{$card} form .btn {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  width: auto !important;
+  max-width: none !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  padding: 0.5rem 1rem !important;
+  font-size: 0.95em !important;
+  vertical-align: middle;
+}
+{$card} .border-top > .ms-auto,
+{$card} .card-footer > .ms-auto {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.4rem;
+}
+{$card} input[name="backup_code"]:not(.d-none) {
+  flex: 1 0 100%;
+}
+{$card} .btn-link,
+{$card} .btn-outline-secondary,
+{$card} .btn-icon {
+  background: transparent !important;
+  color: var(--brandkit-login-text-color) !important;
+  box-shadow: none !important;
+}
+{$card} .btn-outline-secondary,
+{$card} .btn-icon {
+  border: 1px solid currentColor !important;
+}
+{$card} .btn-link {
+  border-color: transparent !important;
+  text-decoration: underline;
+}
+{$card} .form-footer .btn {
+  width: 100% !important;
+}
+{$card} .card {
+  width: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+{$card} .card .card-body {
+  padding: 0.5rem 0 !important;
+}
+{$card} .card-footer {
+  gap: 0.5rem;
+  align-items: center;
+  padding: 0.75rem 0 0 !important;
+  background: transparent !important;
+  border-top: 1px solid rgba(127, 127, 127, 0.35) !important;
+  color: inherit !important;
+}
+{$card} img[alt="QR Code"] {
+  max-width: 100%;
+  height: auto;
+  padding: 8px;
+  border-radius: 8px;
+  background: #ffffff;
+}
+{$card} .border-top {
+  border-color: rgba(127, 127, 127, 0.35) !important;
+}
+
+CSS;
 }
 
 /**
