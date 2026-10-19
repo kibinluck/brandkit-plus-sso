@@ -10,6 +10,8 @@ This plugin was developed to make GLPI visual identity easy for beginners or any
 > (Anthropic), under the guidance and supervision of Bruno Braz. All credit for the
 > original plugin goes to its author. See [CHANGELOG.md](CHANGELOG.md) for the changes.
 
+🌐 **Project page:** <https://kibinluck.github.io/brandkit-plus-sso/>
+
 **Languages:** 🇺🇸 [English](#english) | 🇧🇷 [Português (BR)](#portugues-br) | 🇪🇸 [Español](#espanol) | 🇫🇷 [Français](#francais)
 
 ---
