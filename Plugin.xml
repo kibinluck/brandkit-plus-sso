@@ -17,10 +17,10 @@
          <fr_FR><![CDATA[Facilite la personnalisation de l'identité visuelle de GLPI avec des modifications des logos et de la page de connexion, sans avoir à toucher au CSS.]]></fr_FR>
       </long>
    </description>
-   <homepage>https://github.com/juniormarcati/glpi-brandkit</homepage>
-   <download>https://github.com/juniormarcati/glpi-brandkit/releases</download>
-   <issues>https://github.com/juniormarcati/glpi-brandkit/issues</issues>
-   <readme>https://github.com/juniormarcati/glpi-brandkit/blob/main/Readme.md</readme>
+   <homepage>https://github.com/kibinluck/brandkit-plus-sso</homepage>
+   <download>https://github.com/kibinluck/brandkit-plus-sso/releases</download>
+   <issues>https://github.com/kibinluck/brandkit-plus-sso/issues</issues>
+   <readme>https://github.com/kibinluck/brandkit-plus-sso/blob/main/Readme.md</readme>
    <authors>
       <author>Marcati</author>
       <author>Bruno Braz</author>

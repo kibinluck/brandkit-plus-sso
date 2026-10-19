@@ -46,6 +46,7 @@ define('PLUGIN_BRANDKIT_MAX_GLPI', '11.0.99');
 define('PLUGIN_BRANDKIT_NAME', 'Brandkit Plus SSO');
 define('PLUGIN_BRANDKIT_FORK_MAINTAINER', 'Bruno Braz');
 define('PLUGIN_BRANDKIT_ORIGINAL_URL', 'https://github.com/juniormarcati/glpi-brandkit');
+define('PLUGIN_BRANDKIT_FORK_URL', 'https://github.com/kibinluck/brandkit-plus-sso');
 
 require_once __DIR__ . '/inc/paths.php';
 require_once __DIR__ . '/hook.php';
@@ -155,9 +156,9 @@ function plugin_version_brandkit()
         'author' => '<a href="https://github.com/juniormarcati">Marcati</a> (Brandkit), '
             . PLUGIN_BRANDKIT_FORK_MAINTAINER . ' (Plus SSO)',
         'license' => 'AGPLv3+',
-        'homepage' => 'https://github.com/juniormarcati/glpi-brandkit',
-        'readme' => 'https://github.com/juniormarcati/glpi-brandkit/blob/main/Readme.md',
-        'issues' => 'https://github.com/juniormarcati/glpi-brandkit/issues',
+        'homepage' => PLUGIN_BRANDKIT_FORK_URL,
+        'readme' => PLUGIN_BRANDKIT_FORK_URL . '/blob/main/Readme.md',
+        'issues' => PLUGIN_BRANDKIT_FORK_URL . '/issues',
         'requirements' => [
             'glpi' => [
                 'min' => PLUGIN_BRANDKIT_MIN_GLPI,

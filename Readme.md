@@ -27,7 +27,7 @@ This plugin was developed to make GLPI visual identity easy for beginners or any
 1. Clone this repository straight into GLPI's plugin folder, as `brandkit`:
 ```bash
 cd /path/to/glpi/plugins
-git clone https://github.com/juniormarcati/glpi-brandkit.git brandkit
+git clone https://github.com/kibinluck/brandkit-plus-sso.git brandkit
 ```
 
 2. The folder name **must** be `brandkit` (it is the plugin key).
@@ -149,7 +149,7 @@ Menu rapide : [Installation](#installation-fr) | [Configuration](#configuration-
 
 - **Brandkit** (original plugin): [Marcati](https://github.com/juniormarcati) —
   <https://github.com/juniormarcati/glpi-brandkit>
-- **Brandkit Plus SSO** (this fork): developed with Claude (Anthropic), under the
+- **Brandkit Plus SSO** (this fork): <https://github.com/kibinluck/brandkit-plus-sso>, developed with Claude (Anthropic), under the
   guidance and supervision of Bruno Braz. Goal: compatibility with the samlSSO plugin's
   single sign-on and fixes for issues found in the original.
 

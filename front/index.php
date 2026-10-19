@@ -426,6 +426,10 @@ Html::header(PLUGIN_BRANDKIT_NAME, $_SERVER['PHP_SELF'], 'plugins', 'brandkit');
             </h2>
             <p><?php echo htmlescape(__('Turn GLPI into a showcase for your brand in just a few clicks.', 'brandkit')); ?></p>
             <div class="brandkit-hero-links">
+                <a class="brandkit-hero-link" href="<?php echo htmlescape(PLUGIN_BRANDKIT_FORK_URL); ?>" target="_blank" rel="noopener noreferrer">
+                    <i class="ti ti-code" aria-hidden="true"></i>
+                    <span><?php echo htmlescape(__('Source code', 'brandkit')); ?></span>
+                </a>
                 <a class="brandkit-hero-link" href="<?php echo htmlescape(PLUGIN_BRANDKIT_ORIGINAL_URL); ?>" target="_blank" rel="noopener noreferrer">
                     <i class="ti ti-brand-github" aria-hidden="true"></i>
                     <span><?php echo htmlescape(__('Original project', 'brandkit')); ?></span>
