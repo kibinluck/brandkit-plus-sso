@@ -37,7 +37,7 @@ if (!defined('GLPI_ROOT')) {
     die("Sorry. You can't access this file directly");
 }
 
-define('PLUGIN_BRANDKIT_VERSION', '0.3.3');
+define('PLUGIN_BRANDKIT_VERSION', '0.3.4');
 define('PLUGIN_BRANDKIT_MIN_GLPI', '10.0.0');
 define('PLUGIN_BRANDKIT_MAX_GLPI', '11.0.99');
 
@@ -82,14 +82,17 @@ function plugin_init_brandkit()
     }
     // SSO mode hides the local login form, unless ?bypass=1 asks for it.
     // Decided here, server side, so the local form can always be reached.
-    if (!Session::getLoginUserID() && !brandkit_is_sso_bypass_requested()) {
+    // With ?bypass=1 it is the other way round: the page is for local
+    // accounts only, so the SSO buttons are hidden instead.
+    if (!Session::getLoginUserID()) {
         try {
             if (brandkit_get_sso_settings()['enabled']) {
+                $stylesheet = brandkit_is_sso_bypass_requested() ? 'css/brandkit-sso-local.css' : 'css/brandkit-sso.css';
                 $anonymousHeaderTags[] = [
                     'tag' => 'link',
                     'properties' => [
                         'rel' => 'stylesheet',
-                        'href' => brandkit_get_public_asset_url('css/brandkit-sso.css') . '?v=' . PLUGIN_BRANDKIT_VERSION,
+                        'href' => brandkit_get_public_asset_url($stylesheet) . '?v=' . PLUGIN_BRANDKIT_VERSION,
                     ],
                 ];
             }

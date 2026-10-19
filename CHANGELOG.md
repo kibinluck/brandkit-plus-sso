@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.3.4
+
+### Fixed
+- Error messages ("Invalid TOTP code", "Log in again"): the button label and
+  icon took the message text color and disappeared on dark buttons. They now
+  follow the button text color.
+- SSO mode, local account page (`?bypass=1`): the SSO buttons are hidden, only
+  the user/password form and the "Back to single sign-on" link remain.
+- GLPI public FAQ button on the login page: centered under the login area and
+  styled like the login button (outlined, filled on hover).
+- Phones: the GLPI copyright footer was squeezed into a narrow column.
+
 ## 0.3.3
 
 ### Added

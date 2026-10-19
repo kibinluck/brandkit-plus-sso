@@ -2744,6 +2744,7 @@ function brandkit_build_login_css(array $settings): string
     $css .= "  text-align: center !important;\n";
     $css .= "}\n";
     $css .= brandkit_build_login_footer_css();
+    $css .= brandkit_build_login_extras_css();
     $css .= brandkit_build_sso_button_vars_css($settings);
     $css .= brandkit_build_sso_button_content_css($settings);
     $css .= brandkit_build_secondary_pages_css();
@@ -2782,6 +2783,12 @@ function brandkit_build_login_footer_css(): string
     transform: translateX(var(--brandkit-login-container-translate));
   }
 }
+@media screen and (max-width: 767px) {
+  /* The copyright width follows the split panel, which is a thin strip on phones. */
+  {$page} {$footer} .copyright {
+    width: 100% !important;
+  }
+}
 @media screen and (min-width: 768px) and (min-height: 600px) {
   {$page} .flex-fill:has(> {$footer}) > .container-tight,
   {$page} .flex-fill > {$footer} {
@@ -2796,6 +2803,61 @@ function brandkit_build_login_footer_css(): string
   {$page} .container-tight > {$footer} {
     margin-top: auto !important;
   }
+}
+
+CSS;
+}
+
+/**
+ * Error page button text and GLPI's public FAQ button.
+ */
+function brandkit_build_login_extras_css(): string
+{
+    $page = 'body.welcome-anonymous:has(#login_name)';
+    // Not "form > ...": samlSSO's extra </div> moves this block out of the form.
+    $faq = $page . ' .main-content-card .text-center.border-top:has(> a[href*="helpdesk.faq.php"])';
+
+    return <<<CSS
+/* Brandkit: buttons inside error messages ("Log in again"): the alert text
+   color was also painting the button's label and icon, which disappeared
+   on dark buttons. They follow the button text color instead. */
+body.welcome-anonymous .alert .btn *,
+body.brandkit-error-page #page .alert .btn *,
+body.horizontal-layout:not(.central):not(.helpdesk) #page .alert .btn * {
+  color: inherit !important;
+}
+/* Brandkit: GLPI public FAQ button on the login page, under the login area
+   and in the login button style (outlined). */
+{$faq} {
+  width: min(100%, var(--brandkit-login-field-width));
+  margin: 1.5rem auto 0 !important;
+  padding-top: 0.25rem;
+  text-align: center !important;
+  border-top-color: color-mix(in srgb, var(--brandkit-login-text-color) 25%, transparent) !important;
+}
+{$faq} > a.btn {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  width: 100%;
+  margin-top: 1rem !important;
+  padding: 0.6rem 1.25rem !important;
+  background: transparent !important;
+  border: 1px solid var(--brandkit-login-button-border) !important;
+  border-radius: var(--brandkit-login-button-radius) !important;
+  color: var(--brandkit-login-text-color) !important;
+  font-size: calc(var(--brandkit-login-button-text-size) * 0.8);
+  font-weight: 600;
+  box-shadow: none !important;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+{$faq} > a.btn:hover {
+  background: var(--brandkit-login-button-bg) !important;
+  color: var(--brandkit-login-button-text) !important;
+}
+{$faq} > a.btn * {
+  color: inherit !important;
 }
 
 CSS;

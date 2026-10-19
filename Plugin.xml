@@ -26,7 +26,7 @@
    </authors>
    <versions>
       <version>
-         <num>0.3.3</num>
+         <num>0.3.4</num>
          <compatibility>10.0</compatibility>
          <compatibility>10.1</compatibility>
          <compatibility>11.0</compatibility>
