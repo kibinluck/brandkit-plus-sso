@@ -1,4 +1,4 @@
-# 🚀 Brandkit Plus SSO
+# Brandkit Plus SSO
 
 Turn GLPI into a showcase for your brand in just a few clicks.
 This plugin was developed to make GLPI visual identity easy for beginners or anyone who doesn't want to dive into CSS.
