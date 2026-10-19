@@ -115,6 +115,10 @@ function brandkit_get_login_defaults(): array
         'login_logo_height' => '110',
         'login_logo_scale' => '290',
         'login_apply_error_page' => '1',
+        // SSO mode: hide the local login form when an SSO button is present.
+        'login_sso_mode' => '0',
+        'login_sso_local_link' => '1',
+        'login_sso_title' => '',
     ];
 
     if (brandkit_is_glpi11()) {
@@ -2953,4 +2957,76 @@ function brandkit_write_login_css(?array $settings = null): bool
     $css = brandkit_build_login_css($settings ?? brandkit_get_login_settings());
 
     return brandkit_write_file_if_changed($path, $css);
+}
+
+/**
+ * Name of the query parameter that shows the local login form while SSO mode
+ * is on. Same convention as the samlSSO plugin (?bypass=1), so a single URL
+ * skips both plugins' SSO-only behaviour.
+ */
+const BRANDKIT_SSO_BYPASS_PARAM = 'bypass';
+
+function brandkit_is_sso_bypass_requested(): bool
+{
+    return isset($_GET[BRANDKIT_SSO_BYPASS_PARAM]) && (string) $_GET[BRANDKIT_SSO_BYPASS_PARAM] === '1';
+}
+
+/**
+ * Login page URL that shows the local (user/password) form.
+ * noAUTO=1 also stops GLPI/samlSSO automatic SSO redirections.
+ */
+function brandkit_get_sso_bypass_url(bool $absolute = false): string
+{
+    $base = brandkit_get_glpi_root_doc();
+    if ($absolute) {
+        $urlBase = $GLOBALS['CFG_GLPI']['url_base'] ?? '';
+        if (is_string($urlBase) && $urlBase !== '') {
+            $base = rtrim($urlBase, '/');
+        }
+    }
+
+    return $base . '/?' . BRANDKIT_SSO_BYPASS_PARAM . '=1&noAUTO=1';
+}
+
+/**
+ * @return array{enabled: bool, local_link: bool, title: string}
+ */
+function brandkit_get_sso_settings(): array
+{
+    $defaults = brandkit_get_login_defaults();
+    $config = Config::getConfigurationValues('plugin:brandkit', ['login_sso_mode', 'login_sso_local_link', 'login_sso_title']);
+
+    return [
+        'enabled' => ($config['login_sso_mode'] ?? $defaults['login_sso_mode']) === '1',
+        'local_link' => ($config['login_sso_local_link'] ?? $defaults['login_sso_local_link']) === '1',
+        'title' => trim((string) ($config['login_sso_title'] ?? '')),
+    ];
+}
+
+/**
+ * HTML printed in the login page's plugin area (display_login hook):
+ * the optional title above the SSO buttons and the local access link.
+ */
+function brandkit_render_sso_login_extras(): string
+{
+    $sso = brandkit_get_sso_settings();
+    if (!$sso['enabled']) {
+        return '';
+    }
+
+    if (brandkit_is_sso_bypass_requested()) {
+        return '<a class="brandkit-sso-back" href="' . htmlescape(brandkit_get_glpi_root_doc() . '/') . '">'
+            . htmlescape(__('Back to single sign-on', 'brandkit')) . '</a>';
+    }
+
+    $html = '';
+    if ($sso['title'] !== '') {
+        $html .= '<div class="brandkit-sso-title">' . htmlescape($sso['title']) . '</div>';
+    }
+    if ($sso['local_link']) {
+        $html .= '<a class="brandkit-local-login" href="' . htmlescape(brandkit_get_sso_bypass_url()) . '">'
+            . htmlescape(__('Sign in with a local account', 'brandkit')) . '</a>';
+    }
+
+    return $html;
 }

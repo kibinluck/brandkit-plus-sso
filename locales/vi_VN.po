@@ -1,428 +1,428 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Brandkit 0.2.0\n"
+"Project-Id-Version: Brandkit 0.3.0\n"
 "Language: vi_VN\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: front/index.php:831
+#: front/index.php:843
 msgid "Dynamic cut for a bolder call-to-action."
 msgstr "Kiểu cắt năng động để kêu gọi hành động táo bạo hơn."
 
-#: front/index.php:862
+#: front/index.php:874
 msgid "Email"
 msgstr "E-mail"
 
-#: front/index.php:1190
+#: front/index.php:1202
 msgid "Field background"
 msgstr "Nền trường"
 
-#: front/index.php:1194
+#: front/index.php:1206
 msgid "Field border"
 msgstr "Đường viền trường"
 
-#: front/index.php:1198
+#: front/index.php:1210
 msgid "Field border width (px)"
 msgstr "Chiều rộng đường viền trường (px)"
 
-#: front/index.php:1255
+#: front/index.php:1267
 msgid "Field focus glow"
 msgstr "Ánh sáng tiêu điểm trường"
 
-#: front/index.php:1281
+#: front/index.php:1293
 msgid "Field icons"
 msgstr "Biểu tượng trường"
 
-#: front/index.php:1259
+#: front/index.php:1271
 msgid "Field radius (px)"
 msgstr "Bán kính trường (px)"
 
-#: front/index.php:1177
+#: front/index.php:1189
 msgid "Fields"
 msgstr "Trường"
 
-#: front/index.php:1247
+#: front/index.php:1259
 msgid "Field spacing (px)"
 msgstr "Khoảng cách trường (px)"
 
-#: front/index.php:1180
+#: front/index.php:1192
 msgid "Field style"
 msgstr "Kiểu trường"
 
-#: front/index.php:1205
+#: front/index.php:1217
 msgid "Field text"
 msgstr "Văn bản trường"
 
-#: front/index.php:1225
+#: front/index.php:1237
 msgid "Field text size (px)"
 msgstr "Kích thước văn bản trường (px)"
 
-#: front/index.php:852
+#: front/index.php:864
 msgid "Fill with color"
 msgstr "Đổ đầy màu sắc"
 
-#: front/index.php:896
+#: front/index.php:908
 msgid "Fixed"
 msgstr "Đã sửa"
 
-#: front/index.php:830
+#: front/index.php:842
 msgid "Friendly, fully rounded shape."
 msgstr "Thân thiện, hình dáng tròn trịa."
 
-#: front/index.php:836
+#: front/index.php:848
 msgid "Glass blur"
 msgstr "Kính mờ"
 
-#: front/index.php:986
+#: front/index.php:998
 msgid "Hide login text"
 msgstr "Ẩn văn bản đăng nhập"
 
-#: front/index.php:1138
+#: front/index.php:1150
 msgid "Hover effect"
 msgstr "Hiệu ứng di chuột"
 
-#: front/index.php:1151
+#: front/index.php:1163
 msgid "Hover fill custom color"
 msgstr "Di chuột tô màu tùy chỉnh"
 
-#: front/index.php:1155
+#: front/index.php:1167
 msgid "Hover text color"
 msgstr "Màu văn bản di chuột"
 
-#: front/index.php:1323
+#: front/index.php:1335
 msgid "Icon color"
 msgstr "Màu biểu tượng"
 
-#: front/index.php:1327
+#: front/index.php:1339
 msgid "Icon position"
 msgstr "Vị trí biểu tượng"
 
-#: front/index.php:861
+#: front/index.php:873
 msgid "ID card"
 msgstr "CMND"
 
-#: front/index.php:809
+#: front/index.php:821
 msgid "Info"
 msgstr "Thông tin"
 
-#: front/index.php:967
+#: front/index.php:979
 msgid "Inside panel"
 msgstr "Bảng điều khiển bên trong"
 
-#: front/index.php:867
+#: front/index.php:879
 msgid "Key"
 msgstr "Chìa khóa"
 
-#: front/index.php:918
+#: front/index.php:930
 msgid "Layout"
 msgstr "Cách trình bày"
 
-#: front/index.php:915
+#: front/index.php:927
 msgid "Layout & logo"
 msgstr "Bố cục & logo"
 
-#: front/index.php:872 front/index.php:892
+#: front/index.php:884 front/index.php:904
 msgid "Left"
 msgstr "Bên trái"
 
-#: front/index.php:811
+#: front/index.php:823
 msgid "Light"
 msgstr "Ánh sáng"
 
-#: front/index.php:866
+#: front/index.php:878
 msgid "Lock"
 msgstr "Khóa"
 
-#: front/index.php:1285
+#: front/index.php:1297
 msgid "Login icon"
 msgstr "Biểu tượng đăng nhập"
 
-#: front/index.php:957
+#: front/index.php:969
 msgid "Login logo size (px)"
 msgstr "Kích thước logo đăng nhập (px)"
 
-#: front/index.php:579
+#: front/index.php:590
 msgid "Login page configuration"
 msgstr "Cấu hình trang đăng nhập"
 
-#: front/index.php:971
+#: front/index.php:983
 msgid "Logo offset from top (px)"
 msgstr "Logo lệch từ trên xuống (px)"
 
-#: front/index.php:964
+#: front/index.php:976
 msgid "Logo position"
 msgstr "Vị trí logo"
 
-#: front/index.php:840
+#: front/index.php:852
 msgid "Neon glow"
 msgstr "Ánh đèn neon"
 
-#: front/index.php:938
+#: front/index.php:950
 msgid "No (disable)"
 msgstr "Không (tắt)"
 
-#: front/index.php:859 front/index.php:865
+#: front/index.php:871 front/index.php:877
 msgid "None"
 msgstr "Không có"
 
-#: front/index.php:930
+#: front/index.php:942
 msgid "No (show panel)"
 msgstr "Không (hiển thị bảng điều khiển)"
 
-#: front/index.php:886
+#: front/index.php:898
 msgid "Original size"
 msgstr "Kích thước ban đầu"
 
-#: front/index.php:838
+#: front/index.php:850
 msgid "Outline"
 msgstr "phác thảo"
 
-#: front/index.php:815
+#: front/index.php:827
 msgid "Outline danger"
 msgstr "Phác thảo mối nguy hiểm"
 
-#: front/index.php:818
+#: front/index.php:830
 msgid "Outline dark"
 msgstr "Phác thảo tối"
 
-#: front/index.php:817
+#: front/index.php:829
 msgid "Outline info"
 msgstr "thông tin phác thảo"
 
-#: front/index.php:848
+#: front/index.php:860
 msgid "Outline only"
 msgstr "Chỉ phác thảo"
 
-#: front/index.php:812
+#: front/index.php:824
 msgid "Outline primary"
 msgstr "phác thảo chính"
 
-#: front/index.php:813
+#: front/index.php:825
 msgid "Outline secondary"
 msgstr "phác thảo thứ cấp"
 
-#: front/index.php:814
+#: front/index.php:826
 msgid "Outline success"
 msgstr "phác thảo thành công"
 
-#: front/index.php:816
+#: front/index.php:828
 msgid "Outline warning"
 msgstr "cảnh báo phác thảo"
 
-#: front/index.php:1437
+#: front/index.php:1449
 msgid "Overlay color"
 msgstr "Màu lớp phủ"
 
-#: front/index.php:1441
+#: front/index.php:1453
 #, php-format
 msgid "Overlay opacity (%)"
 msgstr "Độ mờ của lớp phủ (%)"
 
-#: front/index.php:1209
+#: front/index.php:1221
 msgid "Page text size (px)"
 msgstr "Kích thước văn bản trang (px)"
 
-#: front/index.php:1032
+#: front/index.php:1044
 msgid "Panel blur (px)"
 msgstr "Độ mờ của bảng điều khiển (px)"
 
-#: front/index.php:1028
+#: front/index.php:1040
 msgid "Panel color"
 msgstr "Màu bảng điều khiển"
 
-#: front/index.php:950
+#: front/index.php:962
 msgid "Panel height (px)"
 msgstr "Chiều cao của bảng điều khiển (px)"
 
-#: front/index.php:935
+#: front/index.php:947
 msgid "Panel hover effect"
 msgstr "Hiệu ứng di chuột của bảng điều khiển"
 
-#: front/index.php:1021
+#: front/index.php:1033
 #, php-format
 msgid "Panel opacity (%)"
 msgstr "Độ mờ của bảng điều khiển (%)"
 
-#: front/index.php:1018
+#: front/index.php:1030
 msgid "Panel & split styling"
 msgstr "Kiểu dáng bảng điều khiển & phân chia"
 
-#: front/index.php:942
+#: front/index.php:954
 msgid "Panel width (px)"
 msgstr "Chiều rộng bảng điều khiển (px)"
 
-#: front/index.php:1304
+#: front/index.php:1316
 msgid "Password icon"
 msgstr "Biểu tượng mật khẩu"
 
-#: front/index.php:856
+#: front/index.php:868
 msgid "Pick a custom color"
 msgstr "Chọn một màu tùy chỉnh"
 
-#: front/index.php:580
+#: front/index.php:591
 msgid "Pick a layout and visual treatments for the GLPI login page."
 msgstr "Chọn bố cục và cách xử lý hình ảnh cho trang đăng nhập GLPI."
 
-#: front/index.php:823
+#: front/index.php:835
 msgid "Pill"
 msgstr "Thuốc viên"
 
-#: front/index.php:1417
+#: front/index.php:1429
 msgid "Position"
 msgstr "Chức vụ"
 
-#: front/index.php:843
+#: front/index.php:855
 msgid "Preset palette"
 msgstr "Bảng màu cài sẵn"
 
-#: front/index.php:851
+#: front/index.php:863
 msgid "Press on hover"
 msgstr "Nhấn vào di chuột"
 
-#: front/index.php:804
+#: front/index.php:816
 msgid "Primary (default)"
 msgstr "Chính (mặc định)"
 
-#: front/index.php:1366 front/index.php:1367 front/index.php:1368
+#: front/index.php:1378 front/index.php:1379 front/index.php:1380
 msgid "Recommended: 1920x1080 or larger."
 msgstr "Khuyến nghị: 1920x1080 hoặc lớn hơn."
 
-#: front/index.php:871 front/index.php:893
+#: front/index.php:883 front/index.php:905
 msgid "Right"
 msgstr "Phải"
 
-#: front/index.php:822
+#: front/index.php:834
 msgid "Rounded"
 msgstr "làm tròn"
 
-#: front/index.php:1480
+#: front/index.php:1530
 msgid "Save login page"
 msgstr "Lưu trang đăng nhập"
 
-#: front/index.php:897
+#: front/index.php:909
 msgid "Scroll"
 msgstr "Cuộn"
 
-#: front/index.php:805
+#: front/index.php:817
 msgid "Secondary"
 msgstr "Sơ trung"
 
-#: front/index.php:828
+#: front/index.php:840
 msgid "Sharp edges with a confident shadow."
 msgstr "Các cạnh sắc nét với một cái bóng tự tin."
 
-#: front/index.php:868
+#: front/index.php:880
 msgid "Shield"
 msgstr "Khiên"
 
-#: front/index.php:1407
+#: front/index.php:1419
 msgid "Size"
 msgstr "Kích cỡ"
 
-#: front/index.php:825
+#: front/index.php:837
 msgid "Soft depth"
 msgstr "Độ sâu mềm"
 
-#: front/index.php:837
+#: front/index.php:849
 msgid "Soft shadow"
 msgstr "Bóng mềm"
 
-#: front/index.php:835
+#: front/index.php:847
 msgid "Solid"
 msgstr "Chất rắn"
 
-#: front/index.php:1059
+#: front/index.php:1071
 msgid "Split blur (px)"
 msgstr "Tách mờ (px)"
 
-#: front/index.php:1055
+#: front/index.php:1067
 msgid "Split color"
 msgstr "Tách màu"
 
-#: front/index.php:902
+#: front/index.php:914
 msgid "Split left"
 msgstr "Chia trái"
 
-#: front/index.php:1048
+#: front/index.php:1060
 #, php-format
 msgid "Split opacity (%)"
 msgstr "Độ mờ phân chia (%)"
 
-#: front/index.php:904
+#: front/index.php:916
 msgid "Split right"
 msgstr "Chia phải"
 
-#: front/index.php:1041
+#: front/index.php:1053
 #, php-format
 msgid "Split width (%)"
 msgstr "Chiều rộng phân chia (%)"
 
-#: front/index.php:821
+#: front/index.php:833
 msgid "Square"
 msgstr "Quảng trường"
 
-#: front/index.php:885
+#: front/index.php:897
 msgid "Stretch"
 msgstr "Kéo dài"
 
-#: front/index.php:806
+#: front/index.php:818
 msgid "Success"
 msgstr "Thành công"
 
-#: front/index.php:982
+#: front/index.php:994
 msgid "Text color"
 msgstr "Màu văn bản"
 
-#: front/index.php:1217
+#: front/index.php:1229
 msgid "Title text size (px)"
 msgstr "Kích thước văn bản tiêu đề (px)"
 
-#: front/index.php:890
+#: front/index.php:902
 msgid "Top"
 msgstr "Đứng đầu"
 
-#: front/index.php:928
+#: front/index.php:940
 msgid "Transparent panel"
 msgstr "Bảng trong suốt"
 
-#: front/index.php:839
+#: front/index.php:851
 msgid "Underline"
 msgstr "gạch chân"
 
-#: front/index.php:1455
+#: front/index.php:1467
 msgid "Upload wallpaper"
 msgstr "Tải hình nền lên"
 
-#: front/index.php:855
+#: front/index.php:867
 msgid "Use button color"
 msgstr "Sử dụng màu nút"
 
-#: front/index.php:860
+#: front/index.php:872
 msgid "User"
 msgstr "người dùng"
 
-#: front/index.php:1363
+#: front/index.php:1375
 msgid "Wallpaper"
 msgstr "Hình nền"
 
-#: front/index.php:808
+#: front/index.php:820
 msgid "Warning"
 msgstr "Cảnh báo"
 
-#: front/index.php:989
+#: front/index.php:1001 front/index.php:1507
 msgid "Yes"
 msgstr "Đúng"
 
-#: front/index.php:937
+#: front/index.php:949
 msgid "Yes (enable)"
 msgstr "Có (bật)"
 
-#: front/index.php:931
+#: front/index.php:943
 msgid "Yes (hide panel)"
 msgstr "Có (ẩn bảng điều khiển)"
 
-#: front/index.php:521
+#: front/index.php:532
 msgid ""
 "Light mode logos: used when the system is in light mode, ensuring good "
 "visibility on white or light backgrounds."
@@ -430,7 +430,7 @@ msgstr ""
 "Logo chế độ sáng: sử dụng khi hệ thống ở chế độ sáng, đảm bảo hiển thị tốt "
 "trên nền trắng hoặc sáng."
 
-#: front/index.php:526
+#: front/index.php:537
 msgid ""
 "Dark mode logos: used when the system is in dark mode, ensuring contrast and"
 " readability on black or dark backgrounds."
@@ -438,7 +438,7 @@ msgstr ""
 "Logo chế độ tối: được sử dụng khi hệ thống ở chế độ tối, đảm bảo độ tương "
 "phản và dễ đọc trên nền đen hoặc tối."
 
-#: front/index.php:532
+#: front/index.php:543
 msgid ""
 "The favicon is the small icon that appears in the browser tab (and also in "
 "bookmarks)."
@@ -446,7 +446,7 @@ msgstr ""
 "Favicon là biểu tượng nhỏ xuất hiện trong tab trình duyệt (và cả trong dấu "
 "trang)."
 
-#: front/index.php:512 front/index.php:514
+#: front/index.php:523 front/index.php:525
 msgid ""
 "Expanded menu logo: the logo displayed when the sidebar menu is open, with "
 "more space available."
@@ -454,7 +454,7 @@ msgstr ""
 "Logo menu mở rộng: logo hiển thị khi menu thanh bên được mở, có nhiều không "
 "gian hơn."
 
-#: front/index.php:513 front/index.php:515
+#: front/index.php:524 front/index.php:526
 msgid ""
 "Collapsed menu logo: the logo displayed when the sidebar menu is collapsed, "
 "so it needs to be a more compact version."
@@ -462,7 +462,7 @@ msgstr ""
 "Logo menu thu gọn: logo hiển thị khi menu sidebar được thu gọn nên cần có "
 "phiên bản nhỏ gọn hơn."
 
-#: front/index.php:516
+#: front/index.php:527
 msgid ""
 "Login page logo: the logo displayed on the login screen before the user "
 "enters the system."
@@ -470,7 +470,7 @@ msgstr ""
 "Logo trang đăng nhập: logo hiển thị trên màn hình đăng nhập trước khi người "
 "dùng vào hệ thống."
 
-#: front/index.php:548
+#: front/index.php:559
 #, php-format
 msgid "Logo size (%)"
 msgstr "Kích thước biểu tượng (%)"
@@ -479,130 +479,130 @@ msgstr "Kích thước biểu tượng (%)"
 msgid "Favicon active"
 msgstr "Biểu tượng yêu thích đang hoạt động"
 
-#: front/index.php:1089
+#: front/index.php:1101
 msgid "Button"
 msgstr "Cái nút"
 
-#: front/index.php:1375
+#: front/index.php:1387
 msgid "Wallpaper source"
 msgstr "Nguồn hình nền"
 
-#: front/index.php:1382
+#: front/index.php:1394
 msgid "Preset wallpaper"
 msgstr "Hình nền cài sẵn"
 
-#: front/index.php:1427
+#: front/index.php:1439
 msgid "Attachment"
 msgstr "Tệp đính kèm"
 
-#: front/index.php:1092
+#: front/index.php:1104
 msgid "Button shape"
 msgstr "Hình dạng nút"
 
-#: front/index.php:1103
+#: front/index.php:1115
 msgid "Button fill style"
 msgstr "Kiểu điền nút"
 
-#: front/index.php:1113
+#: front/index.php:1125
 msgid "Button text size (px)"
 msgstr "Kích thước văn bản nút (px)"
 
-#: front/index.php:1120
+#: front/index.php:1132
 msgid "Color mode"
 msgstr "Chế độ màu"
 
-#: front/index.php:479
+#: front/index.php:490
 msgid "GLPI logo configuration"
 msgstr "Cấu hình biểu tượng GLPI"
 
-#: front/index.php:480
+#: front/index.php:491
 msgid ""
 "Upload logos that will replace the default GLPI assets using CSS variables."
 msgstr ""
 "Tải lên các biểu trưng sẽ thay thế nội dung GLPI mặc định bằng cách sử dụng "
 "các biến CSS."
 
-#: front/index.php:551
+#: front/index.php:562
 #, php-format
 msgid "Expanded menu logo size (%)"
 msgstr "Kích thước logo menu mở rộng (%)"
 
-#: front/index.php:558
+#: front/index.php:569
 #, php-format
 msgid "Collapsed menu logo size (%)"
 msgstr "Kích thước logo menu được thu gọn (%)"
 
-#: front/index.php:75
+#: front/index.php:79
 msgid "Favicon (browser tab)"
 msgstr "Favicon (tab trình duyệt)"
 
-#: front/index.php:1232
+#: front/index.php:1244
 msgid "Field height (px)"
 msgstr "Chiều cao trường (px)"
 
-#: front/index.php:1377
+#: front/index.php:1389
 msgid "Preset wallpapers"
 msgstr "Hình nền cài sẵn"
 
-#: front/index.php:1378
+#: front/index.php:1390
 msgid "Custom upload"
 msgstr "Tải lên tùy chỉnh"
 
-#: front/index.php:903
+#: front/index.php:915
 msgid "Classic centered"
 msgstr "Cổ điển tập trung"
 
-#: front/index.php:966
+#: front/index.php:978
 msgid "Above panel"
 msgstr "Bảng trên"
 
-#: front/index.php:988
+#: front/index.php:1000
 msgid "No"
 msgstr "KHÔNG"
 
-#: front/index.php:847
+#: front/index.php:859
 msgid "Default fill"
 msgstr "Điền mặc định"
 
-#: front/index.php:1132
+#: front/index.php:1144
 msgid "Custom color"
 msgstr "Màu tùy chỉnh"
 
-#: front/index.php:978
+#: front/index.php:990
 msgid "Accent color"
 msgstr "Màu nhấn"
 
-#: front/index.php:409
+#: front/index.php:420
 msgid "Turn GLPI into a showcase for your brand in just a few clicks."
 msgstr ""
 "Biến GLPI thành nơi trưng bày thương hiệu của bạn chỉ bằng vài cú nhấp "
 "chuột."
 
-#: front/index.php:433
+#: front/index.php:444
 msgid "About"
 msgstr "Về"
 
-#: front/index.php:436 front/index.php:455
+#: front/index.php:447 front/index.php:466
 msgid "GLPI logos"
 msgstr "GLPI biểu tượng"
 
-#: front/index.php:439 front/index.php:456
+#: front/index.php:450 front/index.php:467
 msgid "Login Page"
 msgstr "Trang đăng nhập"
 
-#: front/index.php:442
+#: front/index.php:453
 msgid "Premium"
 msgstr "Premium"
 
-#: front/index.php:450
+#: front/index.php:461
 msgid "Brandkit by Marcati"
 msgstr "Brandkit bởi Marcati"
 
-#: front/index.php:451
+#: front/index.php:462
 msgid "The visual evolution of your GLPI starts here."
 msgstr "Quá trình phát triển trực quan của GLPI của bạn bắt đầu từ đây."
 
-#: front/index.php:452
+#: front/index.php:463
 msgid ""
 "Brandkit delivers logos, login screens, and colors aligned with your "
 "identity. No CSS, no effort, just professional results."
@@ -610,27 +610,27 @@ msgstr ""
 "Brandkit cung cấp logo, màn hình đăng nhập và màu sắc phù hợp với danh tính "
 "của bạn. Không CSS, không cần nỗ lực, chỉ cần kết quả chuyên nghiệp."
 
-#: front/index.php:453
+#: front/index.php:464
 msgid "Discover Marcati at"
 msgstr "Khám phá Marcati tại"
 
-#: front/index.php:457
+#: front/index.php:468
 msgid "Meet Marcati"
 msgstr "Gặp Marcati"
 
-#: front/index.php:463
+#: front/index.php:474
 msgid "Consistent logos"
 msgstr "Logo nhất quán"
 
-#: front/index.php:464
+#: front/index.php:475
 msgid "Ready uploads for header, favicon, and login."
 msgstr "Sẵn sàng tải lên tiêu đề, favicon và đăng nhập."
 
-#: front/index.php:468
+#: front/index.php:479
 msgid "Login with presence"
 msgstr "Đăng nhập với sự hiện diện"
 
-#: front/index.php:469
+#: front/index.php:480
 msgid ""
 "Pick layouts, colors, and effects for an authentication screen that sells "
 "your brand."
@@ -638,37 +638,37 @@ msgstr ""
 "Chọn bố cục, màu sắc và hiệu ứng cho màn hình xác thực bán thương hiệu của "
 "bạn."
 
-#: front/index.php:473
+#: front/index.php:484
 msgid "Fast delivery"
 msgstr "Giao hàng nhanh"
 
-#: front/index.php:474
+#: front/index.php:485
 msgid "Settings saved directly in GLPI to activate branding without rework."
 msgstr ""
 "Cài đặt được lưu trực tiếp trong GLPI để kích hoạt nhãn hiệu mà không cần "
 "làm lại."
 
-#: front/index.php:844
+#: front/index.php:856
 msgid "Custom hex color"
 msgstr "Màu lục giác tùy chỉnh"
 
-#: front/index.php:566
+#: front/index.php:577
 msgid "Save logo sizes"
 msgstr "Lưu kích thước logo"
 
-#: front/index.php:1481
+#: front/index.php:1531
 msgid "Restore defaults"
 msgstr "Restore defaults"
 
-#: front/index.php:70
+#: front/index.php:74
 msgid "Expanded menu logo"
 msgstr "Logo menu mở rộng"
 
-#: front/index.php:71
+#: front/index.php:75
 msgid "Collapsed menu logo"
 msgstr "Logo menu thu gọn"
 
-#: front/index.php:74
+#: front/index.php:78
 msgid "Login logo"
 msgstr "Logo đăng nhập"
 
@@ -680,19 +680,19 @@ msgstr "Chưa tải lên logo tùy chỉnh."
 msgid "No favicon yet"
 msgstr "Chưa có favicon"
 
-#: front/index.php:1239
+#: front/index.php:1251
 msgid "Field width (px)"
 msgstr "Chiều rộng trường (px)"
 
-#: front/index.php:520
+#: front/index.php:531
 msgid "Light mode logos"
 msgstr "Logo chế độ sáng"
 
-#: front/index.php:525
+#: front/index.php:536
 msgid "Dark mode logos"
 msgstr "Logo chế độ tối"
 
-#: front/index.php:531
+#: front/index.php:542
 msgid "Favicon"
 msgstr "Favicon"
 
@@ -708,205 +708,205 @@ msgstr "Xóa logo"
 msgid "No custom favicon uploaded yet."
 msgstr "Chưa có favicon tùy chỉnh nào được tải lên."
 
-#: front/index.php:72
+#: front/index.php:76
 msgid "Expanded menu logo (dark mode)"
 msgstr "Logo menu mở rộng (chế độ tối)"
 
-#: front/index.php:73
+#: front/index.php:77
 msgid "Collapsed menu logo (dark mode)"
 msgstr "Logo menu thu gọn (chế độ tối)"
 
-#: front/index.php:115 front/index.php:366
+#: front/index.php:119 front/index.php:377
 msgid "Login page settings saved."
 msgstr ""
 
-#: front/index.php:117 front/index.php:368
+#: front/index.php:121 front/index.php:379
 msgid "Settings saved, but the login CSS file could not be written."
 msgstr ""
 
-#: front/index.php:389
+#: front/index.php:400
 msgid "Logo sizes updated."
 msgstr ""
 
-#: front/index.php:394 front/index.php:404 inc/config.class.php:53
+#: front/index.php:405 front/index.php:415 inc/config.class.php:53
 #: inc/config.class.php:68
 msgid "Brandkit"
 msgstr ""
 
-#: front/index.php:807
+#: front/index.php:819
 msgid "Danger"
 msgstr ""
 
-#: front/index.php:810
+#: front/index.php:822
 msgid "Dark"
 msgstr ""
 
-#: front/index.php:824
+#: front/index.php:836
 msgid "Cut corner"
 msgstr ""
 
-#: front/index.php:829
+#: front/index.php:841
 msgid "Balanced corners for modern brands."
 msgstr ""
 
-#: front/index.php:832
+#: front/index.php:844
 msgid "Cushioned look with soft depth."
 msgstr ""
 
-#: front/index.php:883
+#: front/index.php:895
 msgid "Cover"
 msgstr ""
 
-#: front/index.php:884
+#: front/index.php:896
 msgid "Contain"
 msgstr ""
 
-#: front/index.php:889
+#: front/index.php:901
 msgid "Center"
 msgstr ""
 
-#: front/index.php:891
+#: front/index.php:903
 msgid "Bottom"
 msgstr ""
 
-#: front/index.php:1000
+#: front/index.php:1012
 msgid "Sign in to your account"
 msgstr ""
 
-#: front/index.php:1002 front/index.php:1073 front/index.php:1270
-#: front/index.php:1345
+#: front/index.php:1014 front/index.php:1085 front/index.php:1282
+#: front/index.php:1357
 msgid "Login"
 msgstr ""
 
-#: front/index.php:1006 front/index.php:1077 front/index.php:1273
-#: front/index.php:1353
+#: front/index.php:1018 front/index.php:1089 front/index.php:1285
+#: front/index.php:1365
 msgid "Password"
 msgstr ""
 
-#: front/index.php:1009 front/index.php:1080 front/index.php:1166
+#: front/index.php:1021 front/index.php:1092 front/index.php:1178
 msgid "Sign in"
 msgstr ""
 
-#: front/index.php:1385
+#: front/index.php:1397
 msgid "No preset wallpapers available."
 msgstr ""
 
-#: front/index.php:1457
+#: front/index.php:1469
 msgid "Remove uploaded wallpaper"
 msgstr ""
 
-#: front/index.php:1471
+#: front/index.php:1483
 msgid "No wallpaper selected yet."
 msgstr ""
 
-#: front/index.php:1489
+#: front/index.php:1539
 msgid "Premium features"
 msgstr ""
 
-#: front/index.php:1490
+#: front/index.php:1540
 msgid "Unlock advanced Brandkit upgrades."
 msgstr ""
 
-#: front/index.php:1491
+#: front/index.php:1541
 msgid ""
 "This area is available in the paid version. Get more control and deeper "
 "customization for your GLPI experience."
 msgstr ""
 
-#: front/index.php:1493
+#: front/index.php:1543
 msgid "Download and upload configuration presets."
 msgstr ""
 
-#: front/index.php:1494
+#: front/index.php:1544
 msgid "Theme customization with one-click presets."
 msgstr ""
 
-#: front/index.php:1495
+#: front/index.php:1545
 msgid "Menu color variations and layout tuning for GLPI."
 msgstr ""
 
-#: front/index.php:1496
+#: front/index.php:1546
 msgid "Extra custom colors beyond the default GLPI palette."
 msgstr ""
 
-#: front/index.php:1499
+#: front/index.php:1549
 msgid "See plans"
 msgstr ""
 
-#: front/index.php:1505
+#: front/index.php:1555
 msgid "Premium access"
 msgstr ""
 
-#: front/index.php:1506
+#: front/index.php:1556
 msgid "Request access to unlock these features for your team."
 msgstr ""
 
-#: front/logo_upload.php:53
+#: front/logo_upload.php:57
 msgid "Upload failed. The file may be too large for the server limits."
 msgstr ""
 
-#: front/logo_upload.php:61
+#: front/logo_upload.php:65
 msgid "Invalid logo target selected."
 msgstr ""
 
-#: front/logo_upload.php:68
+#: front/logo_upload.php:72
 msgid "Unable to restore the original favicon. Check file permissions."
 msgstr ""
 
-#: front/logo_upload.php:69
+#: front/logo_upload.php:73
 msgid "Unable to restore the original login logo. Check file permissions."
 msgstr ""
 
-#: front/logo_upload.php:70
+#: front/logo_upload.php:74
 msgid "Original login logo not found in plugin pics."
 msgstr ""
 
-#: front/logo_upload.php:71
+#: front/logo_upload.php:75
 msgid "Unable to restore the original header logo. Check file permissions."
 msgstr ""
 
-#: front/logo_upload.php:72
+#: front/logo_upload.php:76
 msgid "Original header logo not found in plugin pics."
 msgstr ""
 
-#: front/logo_upload.php:77
+#: front/logo_upload.php:81
 msgid "Logo cleared. GLPI will use the default asset."
 msgstr ""
 
-#: front/logo_upload.php:97
+#: front/logo_upload.php:101
 msgid "Unable to create plugin logo directory."
 msgstr ""
 
-#: front/logo_upload.php:111 inc/assets.php:793
+#: front/logo_upload.php:115 inc/assets.php:793
 msgid "Favicon must be an ICO file."
 msgstr ""
 
-#: front/logo_upload.php:120 inc/assets.php:880
+#: front/logo_upload.php:124 inc/assets.php:880
 msgid "The uploaded file is not a valid image."
 msgstr ""
 
-#: front/logo_upload.php:125
+#: front/logo_upload.php:129
 msgid "Unable to process the uploaded logo. Ensure the file is a valid image."
 msgstr ""
 
-#: front/logo_upload.php:134
+#: front/logo_upload.php:138
 msgid ""
 "Uploaded, but failed to replace the GLPI favicon. Check file permissions."
 msgstr ""
 
-#: front/logo_upload.php:135
+#: front/logo_upload.php:139
 msgid ""
 "Uploaded, but failed to replace the native login logo. Check file "
 "permissions."
 msgstr ""
 
-#: front/logo_upload.php:136
+#: front/logo_upload.php:140
 msgid ""
 "Uploaded, but failed to replace the native header logo. Check file "
 "permissions."
 msgstr ""
 
-#: front/logo_upload.php:141
+#: front/logo_upload.php:145
 msgid "Logo uploaded successfully."
 msgstr ""
 
@@ -968,6 +968,76 @@ msgid ""
 "Unable to process the uploaded wallpaper. Ensure the file is a valid image."
 msgstr ""
 
-#: inc/assets.php:897 inc/assets.php:903
+#: inc/assets.php:897 inc/assets.php:904
 msgid "Unable to save the uploaded wallpaper. Check file permissions."
+msgstr ""
+
+#: front/index.php:1493
+msgid "Single sign-on (SSO)"
+msgstr ""
+
+#: front/index.php:1494
+msgid ""
+"For SSO plugins that add a login button to the GLPI login page, such as "
+"samlSSO."
+msgstr ""
+
+#: front/index.php:1498
+msgid "SSO mode"
+msgstr ""
+
+#: front/index.php:1500
+msgid "No (show the login form)"
+msgstr ""
+
+#: front/index.php:1501
+msgid "Yes (only the SSO button)"
+msgstr ""
+
+#: front/index.php:1505
+msgid "Show the local account link"
+msgstr ""
+
+#: front/index.php:1508
+msgid "No (only through the address below)"
+msgstr ""
+
+#: front/index.php:1512
+msgid "Text above the SSO button (optional)"
+msgstr ""
+
+#: front/index.php:1513
+msgid "e.g. Sign in with your corporate account"
+msgstr ""
+
+#: front/index.php:1517
+msgid ""
+"With SSO mode on, the login page hides the user and password fields and "
+"shows the SSO button in their place. The fields are only hidden while an SSO"
+" button is on the page: if the SSO plugin is disabled, the normal form comes"
+" back."
+msgstr ""
+
+#: front/index.php:1519
+msgid "Local account access:"
+msgstr ""
+
+#: front/index.php:1522
+msgid ""
+"Save this address: it always shows the user and password fields. It is also "
+"the bypass address of the samlSSO plugin."
+msgstr ""
+
+#: front/index.php:1523
+msgid ""
+"Hiding the fields is visual only: local accounts can still sign in. To "
+"forbid it, change the authentication settings of GLPI or of the SSO plugin."
+msgstr ""
+
+#: inc/login.css.php:3019
+msgid "Back to single sign-on"
+msgstr ""
+
+#: inc/login.css.php:3028
+msgid "Sign in with a local account"
 msgstr ""

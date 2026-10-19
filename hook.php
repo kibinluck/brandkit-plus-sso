@@ -117,4 +117,7 @@ function plugin_brandkit_display_login()
 {
     brandkit_sync_native_assets();
     brandkit_write_login_css();
+
+    // SSO mode: title above the SSO buttons and the local access link.
+    echo brandkit_render_sso_login_extras();
 }

@@ -1,0 +1,138 @@
+/*
+ * Brandkit Plugin (Community Edition) - AGPL-3.0-or-later
+ * SSO mode for the login page. Loaded only while SSO mode is on and the page
+ * was not opened with ?bypass=1 (see setup.php).
+ *
+ * Every rule is scoped to a login form that actually contains an SSO button
+ * in the plugins area (.col-auto, filled by the display_login hook, e.g. the
+ * samlSSO plugin). If no SSO button is rendered, nothing here applies and
+ * the local login form stays visible: a misconfigured SSO cannot lock
+ * anybody out.
+ */
+
+/* Brandkit's SSO extras only make sense next to an SSO button. */
+body.welcome-anonymous .brandkit-sso-title,
+body.welcome-anonymous .brandkit-local-login {
+    display: none;
+}
+
+/* Hide the local login form (fields, remember me, submit, forgotten password); keep its title. */
+body.welcome-anonymous form:has(#login_name):has(.col-auto :is(button, a.btn)) > .row > .col-md-5 > :not(.card-header) {
+    display: none !important;
+}
+
+/* Put the SSO area where the form was, centered. */
+body.welcome-anonymous form:has(#login_name):has(.col-auto :is(button, a.btn)) > .row {
+    flex-direction: column !important;
+    align-items: center !important;
+}
+
+body.welcome-anonymous form:has(#login_name):has(.col-auto :is(button, a.btn)) > .row > .col-md-5 {
+    width: min(100%, var(--brandkit-login-field-width, 280px)) !important;
+    max-width: 100% !important;
+    flex: none !important;
+    text-align: center;
+}
+
+body.welcome-anonymous form:has(#login_name):has(.col-auto :is(button, a.btn)) > .row > .col-auto {
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+    text-align: center;
+}
+
+/* Brandkit's own extras (printed through the display_login hook). */
+body.welcome-anonymous form:has(#login_name):has(.col-auto :is(button, a.btn)) .brandkit-sso-title {
+    display: block;
+    order: -1;
+    margin: 0 0 0.25rem;
+    font-size: 1.05em;
+    font-weight: 600;
+    color: var(--brandkit-login-text-color, inherit);
+}
+
+body.welcome-anonymous form:has(#login_name):has(.col-auto :is(button, a.btn)) .brandkit-local-login {
+    display: inline-block;
+    order: 99;
+    margin-top: 1.5rem;
+    font-size: 0.85em;
+    opacity: 0.8;
+    text-decoration: underline;
+}
+
+body.welcome-anonymous form:has(#login_name):has(.col-auto :is(button, a.btn)) .brandkit-local-login:hover {
+    opacity: 1;
+}
+
+/* samlSSO plugin markup: drop its "Login with external provider" header and
+   turn its square tiles into full-width buttons in the login button style. */
+body.welcome-anonymous form:has(#login_name):has(.col-auto :is(button, a.btn)) .plugin_glpisaml_login {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+body.welcome-anonymous form:has(#login_name):has(.col-auto :is(button, a.btn)) .plugin_glpisaml_login #saml_header {
+    display: none !important;
+}
+
+body.welcome-anonymous form:has(#login_name):has(.col-auto :is(button, a.btn)) #saml_buttons {
+    display: flex !important;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: min(100%, var(--brandkit-login-field-width, 280px)) !important;
+    max-width: none !important;
+    margin: 1rem 0 0 !important;
+}
+
+body.welcome-anonymous form:has(#login_name):has(.col-auto :is(button, a.btn)) #saml_buttons > [class*="col-"] {
+    flex: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+}
+
+body.welcome-anonymous form:has(#login_name):has(.col-auto :is(button, a.btn)) #saml_buttons button,
+body.welcome-anonymous form:has(#login_name):has(.col-auto :is(button, a.btn)) .col-auto a.btn {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0.85rem 1.25rem !important;
+    background: var(--brandkit-login-button-bg, var(--tblr-primary)) !important;
+    border: 1px solid var(--brandkit-login-button-border, transparent) !important;
+    border-radius: var(--brandkit-login-button-radius, 10px) !important;
+    color: var(--brandkit-login-button-text, #ffffff) !important;
+    font-size: var(--brandkit-login-button-text-size, 15px) !important;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+    transition: transform 0.15s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+body.welcome-anonymous form:has(#login_name):has(.col-auto :is(button, a.btn)) #saml_buttons button:hover,
+body.welcome-anonymous form:has(#login_name):has(.col-auto :is(button, a.btn)) .col-auto a.btn:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.08);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+}
+
+body.welcome-anonymous form:has(#login_name):has(.col-auto :is(button, a.btn)) #saml_buttons button > div {
+    margin: 0 !important;
+}
+
+body.welcome-anonymous form:has(#login_name):has(.col-auto :is(button, a.btn)) #saml_buttons button .flex-column {
+    flex-direction: row !important;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+}
+
+body.welcome-anonymous form:has(#login_name):has(.col-auto :is(button, a.btn)) #saml_buttons button i {
+    font-size: 1.5em !important;
+    line-height: 1;
+}

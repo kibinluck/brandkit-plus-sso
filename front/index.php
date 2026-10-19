@@ -257,6 +257,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['brandkit_action'] ?? '') =
         $loginDefaults['login_wallpaper_overlay_color']
     );
     $hideLoginText = ($_POST['login_hide_login_text'] ?? '0') === '1' ? '1' : '0';
+    $ssoMode = ($_POST['login_sso_mode'] ?? '0') === '1' ? '1' : '0';
+    $ssoLocalLink = ($_POST['login_sso_local_link'] ?? '1') === '1' ? '1' : '0';
+    $ssoTitle = is_string($_POST['login_sso_title'] ?? null) ? trim($_POST['login_sso_title']) : '';
+    $ssoTitle = function_exists('mb_substr') ? mb_substr($ssoTitle, 0, 120) : substr($ssoTitle, 0, 120);
     $loginLogoWidth = brandkit_clamp_int(
         $_POST['login_logo_width'] ?? ($loginConfig['login_logo_width'] ?? $loginDefaults['login_logo_width']),
         80,
@@ -356,6 +360,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['brandkit_action'] ?? '') =
         'login_logo_height' => (string) $loginLogoHeight,
         'login_logo_scale' => (string) $loginLogoScale,
         'login_logo_offset' => (string) $loginLogoOffset,
+        'login_sso_mode' => $ssoMode,
+        'login_sso_local_link' => $ssoLocalLink,
+        'login_sso_title' => $ssoTitle,
     ];
     if (!$isGlpi11) {
         $loginConfig['login_field_spacing'] = (string) $fieldSpacing;
@@ -804,6 +811,7 @@ Html::header(__('Brandkit', 'brandkit'), $_SERVER['PHP_SELF'], 'plugins', 'brand
                     12
                 );
                 $loginHideLoginText = ($loginConfig['login_hide_login_text'] ?? $loginDefaults['login_hide_login_text']) === '1';
+                $loginSso = brandkit_get_sso_settings();
                 $buttonStyleLabels = [
                     'primary' => __('Primary (default)', 'brandkit'),
                     'secondary' => __('Secondary', 'brandkit'),
@@ -1475,6 +1483,44 @@ Html::header(__('Brandkit', 'brandkit'), $_SERVER['PHP_SELF'], 'plugins', 'brand
                                         <div class="brandkit-wallpaper-placeholder"><?php echo htmlescape(__('No wallpaper selected yet.', 'brandkit')); ?></div>
                                     <?php endif; ?>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="brandkit-step2-row">
+                        <div class="brandkit-section brandkit-section-wide" id="brandkit_sso_section">
+                            <h4>
+                                <?php echo htmlescape(__('Single sign-on (SSO)', 'brandkit')); ?>
+                                <?php brandkit_render_info_badge(__('For SSO plugins that add a login button to the GLPI login page, such as samlSSO.', 'brandkit')); ?>
+                            </h4>
+                            <div class="brandkit-form-grid">
+                                <div>
+                                    <label for="brandkit_login_sso_mode"><?php echo htmlescape(__('SSO mode', 'brandkit')); ?></label>
+                                    <select id="brandkit_login_sso_mode" name="login_sso_mode">
+                                        <option value="0" <?php echo !$loginSso['enabled'] ? 'selected' : ''; ?>><?php echo htmlescape(__('No (show the login form)', 'brandkit')); ?></option>
+                                        <option value="1" <?php echo $loginSso['enabled'] ? 'selected' : ''; ?>><?php echo htmlescape(__('Yes (only the SSO button)', 'brandkit')); ?></option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="brandkit_login_sso_local_link"><?php echo htmlescape(__('Show the local account link', 'brandkit')); ?></label>
+                                    <select id="brandkit_login_sso_local_link" name="login_sso_local_link">
+                                        <option value="1" <?php echo $loginSso['local_link'] ? 'selected' : ''; ?>><?php echo htmlescape(__('Yes', 'brandkit')); ?></option>
+                                        <option value="0" <?php echo !$loginSso['local_link'] ? 'selected' : ''; ?>><?php echo htmlescape(__('No (only through the address below)', 'brandkit')); ?></option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="brandkit_login_sso_title"><?php echo htmlescape(__('Text above the SSO button (optional)', 'brandkit')); ?></label>
+                                    <input type="text" id="brandkit_login_sso_title" name="login_sso_title" maxlength="120" value="<?php echo htmlescape($loginSso['title']); ?>" placeholder="<?php echo htmlescape(__('e.g. Sign in with your corporate account', 'brandkit')); ?>">
+                                </div>
+                            </div>
+                            <div class="brandkit-sso-help">
+                                <p><?php echo htmlescape(__('With SSO mode on, the login page hides the user and password fields and shows the SSO button in their place. The fields are only hidden while an SSO button is on the page: if the SSO plugin is disabled, the normal form comes back.', 'brandkit')); ?></p>
+                                <p>
+                                    <strong><?php echo htmlescape(__('Local account access:', 'brandkit')); ?></strong>
+                                    <code><?php echo htmlescape(brandkit_get_sso_bypass_url(true)); ?></code>
+                                </p>
+                                <p><?php echo htmlescape(__('Save this address: it always shows the user and password fields. It is also the bypass address of the samlSSO plugin.', 'brandkit')); ?></p>
+                                <p><?php echo htmlescape(__('Hiding the fields is visual only: local accounts can still sign in. To forbid it, change the authentication settings of GLPI or of the SSO plugin.', 'brandkit')); ?></p>
                             </div>
                         </div>
                     </div>

@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.3.0
+
+### Added
+- **SSO mode** (Login Page step, "Single sign-on (SSO)" section). When an SSO
+  plugin adds a button to the login page (e.g. samlSSO), the user and password
+  fields are hidden and the SSO button takes their place, in the login button
+  style, with an optional text above it.
+  - Local accounts stay reachable at `/?bypass=1&noAUTO=1` (the same bypass
+    address as samlSSO). This is decided server side: with that parameter the
+    SSO stylesheet is simply not sent.
+  - Optional discreet "Sign in with a local account" link under the SSO button.
+  - Safety net: the fields are only hidden while an SSO button is actually on
+    the page; if the SSO plugin is disabled or fails, the normal form comes back.
+  - Hiding the fields is visual only; it does not disable local authentication.
+
 ## 0.2.1
 
 ### Fixed

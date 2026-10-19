@@ -37,7 +37,7 @@ if (!defined('GLPI_ROOT')) {
     die("Sorry. You can't access this file directly");
 }
 
-define('PLUGIN_BRANDKIT_VERSION', '0.2.1');
+define('PLUGIN_BRANDKIT_VERSION', '0.3.0');
 define('PLUGIN_BRANDKIT_MIN_GLPI', '10.0.0');
 define('PLUGIN_BRANDKIT_MAX_GLPI', '11.0.99');
 
@@ -70,14 +70,35 @@ function plugin_init_brandkit()
             trigger_error('Brandkit: unable to generate the login stylesheet: ' . $e->getMessage(), E_USER_WARNING);
         }
     }
+    $anonymousHeaderTags = [];
     if ($loginCssUrl !== null) {
-        $PLUGIN_HOOKS['add_header_tag_anonymous_page'][PLUGIN_BRANDKIT_KEY] = [[
+        $anonymousHeaderTags[] = [
             'tag' => 'link',
             'properties' => [
                 'rel' => 'stylesheet',
                 'href' => $loginCssUrl,
             ],
-        ]];
+        ];
+    }
+    // SSO mode hides the local login form, unless ?bypass=1 asks for it.
+    // Decided here, server side, so the local form can always be reached.
+    if (!Session::getLoginUserID() && !brandkit_is_sso_bypass_requested()) {
+        try {
+            if (brandkit_get_sso_settings()['enabled']) {
+                $anonymousHeaderTags[] = [
+                    'tag' => 'link',
+                    'properties' => [
+                        'rel' => 'stylesheet',
+                        'href' => brandkit_get_public_asset_url('css/brandkit-sso.css') . '?v=' . PLUGIN_BRANDKIT_VERSION,
+                    ],
+                ];
+            }
+        } catch (Throwable $e) {
+            trigger_error('Brandkit: unable to read the SSO settings: ' . $e->getMessage(), E_USER_WARNING);
+        }
+    }
+    if ($anonymousHeaderTags !== []) {
+        $PLUGIN_HOOKS['add_header_tag_anonymous_page'][PLUGIN_BRANDKIT_KEY] = $anonymousHeaderTags;
     }
     if (!$isGlpi11) {
         $PLUGIN_HOOKS['add_javascript_anonymous_page'][PLUGIN_BRANDKIT_KEY] = brandkit_get_public_hook_path('js/brandkit-login.js');

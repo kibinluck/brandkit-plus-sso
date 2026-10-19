@@ -39,6 +39,9 @@ Originals are backed up and put back when a logo is removed or the plugin is uni
 - After enabling, a **“Brandkit”** submenu appears under **Plugins** (only for profiles allowed to update the GLPI setup).
 - **GLPI logos**: upload the menu logos (light/dark, expanded/collapsed), the login logo and the favicon.
 - **Login Page**: choose the layout, colors, fields, button and wallpaper.
+- **SSO mode** (Login Page step): with an SSO plugin such as samlSSO, hide the user/password
+  fields and show only the SSO button. Local accounts can still sign in at
+  `https://your-glpi/?bypass=1&noAUTO=1`.
 
 ---
 
