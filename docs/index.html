@@ -1,0 +1,550 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Brandkit Plus SSO: plugin de identidade visual para o GLPI com login SSO para o plugin samlSSO. Fork do Brandkit, da Marcati.">
+<meta property="og:title" content="Brandkit Plus SSO">
+<meta property="og:description" content="Easily customize GLPI with your own brand, now with SSO login support for the samlSSO plugin. A fork of Brandkit by Marcati.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://kibinluck.github.io/brandkit-plus-sso/">
+<meta name="color-scheme" content="light dark">
+<title>Brandkit Plus SSO</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: one bold moment (hero + live login mock), then a quiet two-column
+   reading layout: section label on the left, text on the right. */
+:root {
+  --paper: #f2f6f5;
+  --surface: #ffffff;
+  --ink: #10201d;
+  --muted: #4b5f5b;
+  --line: #d3dfdb;
+  --accent: #0b7d6e;
+  --accent-ink: #ffffff;
+  --tint: #e0f0ec;
+  --wall-a: #0b7d6e;
+  --wall-b: #1d3f6e;
+  --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+  --step-0: 1rem;
+  --step-1: 1.2rem;
+  --step-2: 1.6rem;
+  --step-3: clamp(2.4rem, 6vw, 4.2rem);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0c1513; --surface: #13211e; --ink: #e2eeeb; --muted: #9bb1ac;
+    --line: #25403a; --accent: #3ccdb4; --accent-ink: #062019; --tint: #12302a;
+    --wall-a: #0a5a50; --wall-b: #182f52;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0c1513; --surface: #13211e; --ink: #e2eeeb; --muted: #9bb1ac;
+  --line: #25403a; --accent: #3ccdb4; --accent-ink: #062019; --tint: #12302a;
+  --wall-a: #0a5a50; --wall-b: #182f52;
+  color-scheme: dark;
+}
+
+/* Language switch: Portuguese by default, English on demand. */
+:root:not([lang="en"]) [data-l="en"],
+:root[lang="en"] [data-l="pt"] { display: none !important; }
+
+* { box-sizing: border-box; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--step-0);
+  line-height: 1.6;
+}
+a { color: var(--accent); text-underline-offset: 3px; }
+a:focus-visible, button:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
+code, .mono { font-family: var(--font-mono); font-size: 0.88em; }
+code { background: var(--tint); padding: 0.1em 0.4em; border-radius: 5px; overflow-wrap: anywhere; }
+
+.wrap {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+
+/* Top bar */
+.topbar { padding-block: 18px; }
+.topbar .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.brand { font-family: var(--font-display); font-weight: 800; letter-spacing: -0.01em; font-size: 1.05rem; }
+.brand span { color: var(--accent); }
+.lang { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; padding: 3px; background: var(--surface); }
+.lang button {
+  font: 600 0.8rem/1 var(--font-body); letter-spacing: 0.06em;
+  border: 0; background: transparent; color: var(--muted);
+  padding: 7px 12px; border-radius: 999px; cursor: pointer;
+}
+.lang button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+
+/* Hero */
+.hero { padding-block: 32px 72px; }
+.hero .wrap { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr); gap: 56px; align-items: center; }
+.eyebrow {
+  font: 600 0.78rem/1.4 var(--font-mono); text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--muted); margin: 0 0 18px;
+}
+h1 {
+  font-family: var(--font-display); font-weight: 800; font-size: var(--step-3);
+  line-height: 0.98; letter-spacing: -0.03em; margin: 0 0 22px; text-wrap: balance;
+}
+h1 em { font-style: normal; color: var(--accent); }
+.lead { font-size: var(--step-1); color: var(--muted); max-width: 34em; margin: 0 0 30px; }
+.actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  font: 700 0.98rem/1 var(--font-body); text-decoration: none;
+  padding: 14px 20px; border-radius: 10px; border: 1px solid var(--line); color: var(--ink); background: var(--surface);
+  transition: transform .15s ease, border-color .15s ease;
+}
+.btn:hover { transform: translateY(-1px); border-color: var(--accent); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.btn svg { width: 18px; height: 18px; flex: none; }
+
+/* Live login mock */
+.mock { min-width: 0; }
+.switch { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
+.switch button {
+  font: 600 0.85rem/1 var(--font-body); cursor: pointer;
+  padding: 9px 14px; border-radius: 8px; border: 1px solid var(--line);
+  background: var(--surface); color: var(--muted);
+}
+.switch button[aria-pressed="true"] { border-color: var(--accent); color: var(--ink); box-shadow: inset 0 0 0 1px var(--accent); }
+.browser { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--surface); box-shadow: 0 24px 60px -30px rgba(10, 40, 35, 0.45); }
+.urlbar { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-bottom: 1px solid var(--line); }
+.dots { display: flex; gap: 6px; flex: none; }
+.dots i { width: 10px; height: 10px; border-radius: 50%; background: var(--line); }
+.url {
+  flex: 1; min-width: 0; font-family: var(--font-mono); font-size: 0.78rem; color: var(--muted);
+  background: var(--paper); border-radius: 6px; padding: 6px 10px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.url b { color: var(--accent); font-weight: 600; }
+.screen {
+  position: relative; padding: 40px 20px; display: grid; place-items: center; min-height: 380px;
+  background:
+    radial-gradient(120% 90% at 0% 0%, var(--wall-a) 0%, transparent 60%),
+    radial-gradient(120% 90% at 100% 100%, var(--wall-b) 0%, transparent 65%),
+    var(--wall-b);
+}
+.card {
+  width: min(100%, 300px); background: var(--surface); border-radius: 14px; padding: 26px 22px 20px;
+  display: grid; gap: 12px; text-align: center; box-shadow: 0 18px 40px -18px rgba(0, 0, 0, 0.55);
+}
+.card .logo {
+  justify-self: center; display: inline-flex; align-items: center; gap: 8px;
+  font: 800 1rem/1 var(--font-display); color: var(--ink);
+}
+.card .logo i { width: 22px; height: 22px; border-radius: 6px; background: var(--accent); display: inline-block; }
+.card h3 { margin: 4px 0 2px; font: 700 1rem/1.3 var(--font-body); }
+.field {
+  text-align: left; font-size: 0.82rem; color: var(--muted); border: 1px solid var(--line);
+  border-radius: 8px; padding: 10px 12px; background: var(--paper);
+}
+.go {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  background: var(--accent); color: var(--accent-ink); border-radius: 10px; padding: 12px;
+  font-weight: 700; font-size: 0.92rem;
+}
+.go svg { width: 18px; height: 18px; }
+.swap {
+  font: inherit; font-size: 0.8rem; color: var(--muted); background: none; border: 0; cursor: pointer;
+  text-decoration: underline; text-underline-offset: 3px; padding: 4px;
+}
+.mock[data-mode="sso"] .local-only,
+.mock[data-mode="local"] .sso-only { display: none; }
+.caption { font-size: 0.86rem; color: var(--muted); margin: 12px 2px 0; }
+
+/* Reading sections */
+.section { border-top: 1px solid var(--line); padding-block: 56px; }
+.section .wrap { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 32px; }
+.label {
+  font: 600 0.78rem/1.4 var(--font-mono); text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted);
+  padding-top: 8px;
+}
+h2 {
+  font-family: var(--font-display); font-weight: 800; font-size: var(--step-2); line-height: 1.15;
+  letter-spacing: -0.02em; margin: 0 0 18px; text-wrap: balance; max-width: 26em;
+}
+.prose { max-width: 65ch; }
+.prose p { margin: 0 0 14px; }
+.groups { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; margin-top: 8px; }
+.groups h3 { font: 700 1.02rem/1.3 var(--font-body); margin: 0 0 10px; padding-bottom: 10px; border-bottom: 2px solid var(--accent); }
+.groups ul { margin: 0; padding-left: 1.1em; display: grid; gap: 8px; color: var(--muted); }
+.groups li::marker { color: var(--accent); }
+.groups li strong { color: var(--ink); }
+
+ol.steps { list-style: none; counter-reset: s; margin: 0; padding: 0; display: grid; gap: 22px; max-width: 70ch; }
+ol.steps > li { counter-increment: s; display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 14px; }
+ol.steps > li::before {
+  content: counter(s); font: 800 1.1rem/40px var(--font-display); text-align: center;
+  width: 40px; height: 40px; border-radius: 50%; background: var(--tint); color: var(--accent);
+}
+ol.steps p { margin: 8px 0 0; }
+.cmd {
+  display: flex; align-items: center; gap: 10px; margin-top: 10px; min-width: 0;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 8px 8px 8px 14px;
+}
+.cmd pre { margin: 0; flex: 1; min-width: 0; overflow-x: auto; font: 0.84rem/1.5 var(--font-mono); }
+.cmd button {
+  flex: none; font: 600 0.8rem/1 var(--font-body); cursor: pointer;
+  border: 1px solid var(--line); background: var(--paper); color: var(--ink); border-radius: 7px; padding: 8px 12px;
+}
+.note {
+  margin-top: 26px; max-width: 70ch; background: var(--tint); border-radius: 12px; padding: 16px 18px;
+}
+.note p { margin: 0; }
+.specs { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; padding: 0; list-style: none; }
+.specs li { font-size: 0.84rem; border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px; color: var(--muted); background: var(--surface); }
+
+.thanks blockquote {
+  margin: 0 0 18px; font-family: var(--font-display); font-weight: 600; font-size: var(--step-2);
+  line-height: 1.25; letter-spacing: -0.015em; max-width: 30em; text-wrap: balance;
+}
+.links { display: flex; flex-wrap: wrap; gap: 10px 22px; margin-top: 8px; font-weight: 700; }
+
+footer { border-top: 1px solid var(--line); padding-block: 32px 48px; color: var(--muted); font-size: 0.9rem; }
+footer .wrap { display: grid; gap: 6px; }
+footer p { margin: 0; }
+
+@media (max-width: 880px) {
+  .hero .wrap { grid-template-columns: minmax(0, 1fr); gap: 40px; }
+  .section .wrap { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+  .groups { grid-template-columns: minmax(0, 1fr); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .btn { transition: none; }
+  .btn:hover { transform: none; }
+}
+</style>
+<style>
+body { margin: 0; }
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap">
+    <div class="brand">Brandkit <span>Plus SSO</span></div>
+    <div class="lang" role="group" aria-label="Idioma / Language">
+      <button type="button" id="lang-pt" data-set-lang="pt" aria-pressed="true">PT</button>
+      <button type="button" id="lang-en" data-set-lang="en" aria-pressed="false">EN</button>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div>
+      <p class="eyebrow">
+        <span data-l="pt">Plugin para GLPI 10 e 11 · software livre</span>
+        <span data-l="en">Plugin for GLPI 10 and 11 · free software</span>
+      </p>
+      <h1>
+        <span data-l="pt">A sua marca no GLPI, com o <em>SSO</em> em primeiro plano.</span>
+        <span data-l="en">Your brand on GLPI, with <em>SSO</em> up front.</span>
+      </h1>
+      <p class="lead">
+        <span data-l="pt">Brandkit Plus SSO é um fork do Brandkit, da Marcati, feito para quem entra no GLPI pelo login único do plugin samlSSO. O código é aberto e está disponível para qualquer equipe com a mesma necessidade.</span>
+        <span data-l="en">Brandkit Plus SSO is a fork of Brandkit by Marcati, built for teams that sign in to GLPI through the single sign-on of the samlSSO plugin. The code is open and available to any team with the same need.</span>
+      </p>
+      <div class="actions">
+        <a class="btn primary" href="https://github.com/kibinluck/brandkit-plus-sso" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8 7-5 5 5 5"/><path d="m16 7 5 5-5 5"/></svg>
+          <span data-l="pt">Ver o código no GitHub</span><span data-l="en">View the code on GitHub</span>
+        </a>
+        <a class="btn" href="https://github.com/kibinluck/brandkit-plus-sso/releases" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></svg>
+          <span data-l="pt">Baixar uma versão</span><span data-l="en">Download a release</span>
+        </a>
+        <a class="btn" href="https://github.com/juniormarcati/glpi-brandkit" target="_blank" rel="noopener">
+          <span data-l="pt">Projeto original</span><span data-l="en">Original project</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="mock" id="mock" data-mode="sso">
+      <div class="switch" role="group" aria-label="Login preview">
+        <button type="button" id="mode-sso" data-set-mode="sso" aria-pressed="true">
+          <span data-l="pt">Modo SSO</span><span data-l="en">SSO mode</span>
+        </button>
+        <button type="button" id="mode-local" data-set-mode="local" aria-pressed="false">
+          <span data-l="pt">Acesso local</span><span data-l="en">Local access</span>
+        </button>
+      </div>
+      <div class="browser">
+        <div class="urlbar">
+          <div class="dots" aria-hidden="true"><i></i><i></i><i></i></div>
+          <div class="url">
+            <span class="sso-only">glpi.suaempresa.com.br/</span>
+            <span class="local-only">glpi.suaempresa.com.br/<b>?bypass=1&amp;noAUTO=1</b></span>
+          </div>
+        </div>
+        <div class="screen">
+          <div class="card">
+            <span class="logo"><i aria-hidden="true"></i><span data-l="pt">Sua marca</span><span data-l="en">Your brand</span></span>
+            <h3 class="sso-only"><span data-l="pt">Entre com a sua conta corporativa</span><span data-l="en">Sign in with your work account</span></h3>
+            <h3 class="local-only"><span data-l="pt">Acesso com conta local</span><span data-l="en">Local account sign-in</span></h3>
+            <div class="field local-only"><span data-l="pt">Usuário</span><span data-l="en">Username</span></div>
+            <div class="field local-only"><span data-l="pt">Senha</span><span data-l="en">Password</span></div>
+            <div class="go">
+              <svg class="sso-only" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 5 6v5c0 4.5 3 8.3 7 10 4-1.7 7-5.5 7-10V6l-7-3z"/><path d="m9 12 2 2 4-4"/></svg>
+              <span class="sso-only"><span data-l="pt">Entrar com SSO</span><span data-l="en">Sign in with SSO</span></span>
+              <span class="local-only"><span data-l="pt">Entrar</span><span data-l="en">Sign in</span></span>
+            </div>
+            <button type="button" class="swap sso-only" data-set-mode="local"><span data-l="pt">Usar uma conta local</span><span data-l="en">Use a local account</span></button>
+            <button type="button" class="swap local-only" data-set-mode="sso"><span data-l="pt">Voltar para o login único</span><span data-l="en">Back to single sign-on</span></button>
+          </div>
+        </div>
+      </div>
+      <p class="caption">
+        <span data-l="pt">Prévia ilustrativa. Na tela real, o botão é o do samlSSO, com o texto, o ícone e as cores que você escolher.</span>
+        <span data-l="en">Illustrative preview. On the real page the button is samlSSO's own, with the text, icon and colors you choose.</span>
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="proposito">
+  <div class="wrap">
+    <div class="label"><span data-l="pt">Propósito</span><span data-l="en">Purpose</span></div>
+    <div>
+      <h2><span data-l="pt">Por que este fork existe</span><span data-l="en">Why this fork exists</span></h2>
+      <div class="prose" data-l="pt">
+        <p>Nossos usuários entram no GLPI pelo SSO corporativo, com o plugin samlSSO. Mesmo assim, a tela de login continuava mostrando usuário e senha em destaque, e o botão de SSO ficava pequeno, abaixo do formulário, com o nome do provedor cortado em 12 caracteres. Quem só precisava clicar em um botão acabava digitando a senha no lugar errado.</p>
+        <p>O Brandkit já resolvia a identidade visual: logos, cores, layouts e papel de parede da tela de login. Faltava o encaixe com o SSO. Este fork acrescenta um modo SSO que esconde os campos locais e coloca o botão no centro, sem tirar o acesso dos administradores: as contas locais continuam entrando por um endereço próprio.</p>
+        <p>No caminho, corrigimos problemas de layout que apareceram em produção e revisamos a segurança do plugin. Publicamos o resultado para que outras equipes não precisem começar do zero.</p>
+      </div>
+      <div class="prose" data-l="en">
+        <p>Our users sign in to GLPI through corporate SSO, using the samlSSO plugin. Even so, the login page kept the username and password fields front and center, while the SSO button sat small under the form, with the provider name cut to 12 characters. People who only needed to click a button ended up typing their password in the wrong place.</p>
+        <p>Brandkit already handled the visual identity: logos, colors, layouts and the login wallpaper. What it lacked was a fit with SSO. This fork adds an SSO mode that hides the local fields and puts the button in the middle, without locking administrators out: local accounts still sign in at their own address.</p>
+        <p>Along the way we fixed layout issues found in production and reviewed the plugin's security. We are publishing the result so other teams don't have to start from scratch.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="mudancas">
+  <div class="wrap">
+    <div class="label"><span data-l="pt">O que muda</span><span data-l="en">What changes</span></div>
+    <div>
+      <h2><span data-l="pt">Tudo do Brandkit, mais o que o SSO pedia</span><span data-l="en">Everything in Brandkit, plus what SSO needed</span></h2>
+      <div class="groups">
+        <div>
+          <h3><span data-l="pt">Modo SSO</span><span data-l="en">SSO mode</span></h3>
+          <ul data-l="pt">
+            <li>Esconde usuário e senha e coloca o botão SSO no lugar, com o estilo do botão de login.</li>
+            <li><strong>Só age quando há um botão SSO na página.</strong> Se o samlSSO for desativado, o formulário normal volta sozinho.</li>
+            <li>Acesso local em <code>?bypass=1&amp;noAUTO=1</code>, o mesmo endereço de bypass do samlSSO. Nessa página, o botão SSO some.</li>
+            <li>Texto, ícone e cores do botão configuráveis.</li>
+          </ul>
+          <ul data-l="en">
+            <li>Hides username and password and puts the SSO button in their place, styled like the login button.</li>
+            <li><strong>Only acts when an SSO button is on the page.</strong> If samlSSO is disabled, the normal form comes back on its own.</li>
+            <li>Local access at <code>?bypass=1&amp;noAUTO=1</code>, the same bypass address samlSSO uses. That page hides the SSO button.</li>
+            <li>Configurable button text, icon and colors.</li>
+          </ul>
+        </div>
+        <div>
+          <h3><span data-l="pt">Correções</span><span data-l="en">Fixes</span></h3>
+          <ul data-l="pt">
+            <li>Layout das telas de autenticação em dois fatores (<a href="https://github.com/juniormarcati/glpi-brandkit/issues/4" target="_blank" rel="noopener">issue #4</a> do original).</li>
+            <li>Rodapé de copyright, botões das mensagens de erro e botão FAQ alinhados à área de login.</li>
+            <li>Tela de login ajustada para celular.</li>
+          </ul>
+          <ul data-l="en">
+            <li>Two-factor authentication page layout (<a href="https://github.com/juniormarcati/glpi-brandkit/issues/4" target="_blank" rel="noopener">issue #4</a> on the original).</li>
+            <li>Copyright footer, error message buttons and FAQ button aligned with the login area.</li>
+            <li>Login page fixed for phones.</li>
+          </ul>
+        </div>
+        <div>
+          <h3><span data-l="pt">Segurança e manutenção</span><span data-l="en">Security and upkeep</span></h3>
+          <ul data-l="pt">
+            <li>Imagens enviadas são validadas e reprocessadas; arquivos disfarçados de imagem são recusados.</li>
+            <li>Backup e restauração dos logos originais do GLPI.</li>
+            <li>Instalação pelo marketplace do GLPI 11.</li>
+            <li>Tradução pt_BR completa.</li>
+          </ul>
+          <ul data-l="en">
+            <li>Uploaded images are validated and re-encoded; files disguised as images are rejected.</li>
+            <li>GLPI's original logos are backed up and restored.</li>
+            <li>Installs from the GLPI 11 marketplace folder.</li>
+            <li>Full pt_BR translation.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="instalacao">
+  <div class="wrap">
+    <div class="label"><span data-l="pt">Instalação</span><span data-l="en">Install</span></div>
+    <div>
+      <h2><span data-l="pt">Três passos até o primeiro login</span><span data-l="en">Three steps to the first sign-in</span></h2>
+      <ol class="steps">
+        <li>
+          <div>
+            <strong><span data-l="pt">Coloque o plugin na pasta de plugins do GLPI</span><span data-l="en">Put the plugin in GLPI's plugin folder</span></strong>
+            <p>
+              <span data-l="pt">Baixe o zip em <a href="https://github.com/kibinluck/brandkit-plus-sso/releases" target="_blank" rel="noopener">Releases</a> ou clone o repositório. A pasta precisa se chamar <code>brandkit</code>, dentro de <code>plugins/</code> (ou <code>marketplace/</code> no GLPI 11).</span>
+              <span data-l="en">Download the zip from <a href="https://github.com/kibinluck/brandkit-plus-sso/releases" target="_blank" rel="noopener">Releases</a> or clone the repository. The folder must be named <code>brandkit</code>, inside <code>plugins/</code> (or <code>marketplace/</code> on GLPI 11).</span>
+            </p>
+            <div class="cmd">
+              <pre id="clone-cmd">git clone https://github.com/kibinluck/brandkit-plus-sso.git brandkit</pre>
+              <button type="button" id="copy-clone"><span data-l="pt">Copiar</span><span data-l="en">Copy</span></button>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong><span data-l="pt">Instale e habilite</span><span data-l="en">Install and enable</span></strong>
+            <p>
+              <span data-l="pt">No GLPI: <strong>Configurar › Plugins</strong>, depois <strong>Instalar</strong> e <strong>Habilitar</strong>.</span>
+              <span data-l="en">In GLPI: <strong>Setup › Plugins</strong>, then <strong>Install</strong> and <strong>Enable</strong>.</span>
+            </p>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong><span data-l="pt">Ligue o modo SSO</span><span data-l="en">Turn on SSO mode</span></strong>
+            <p>
+              <span data-l="pt">Em <strong>Plugins › Brandkit Plus SSO › Página de login</strong>, ative o modo SSO, ajuste o botão e guarde o endereço de acesso local.</span>
+              <span data-l="en">In <strong>Plugins › Brandkit Plus SSO › Login Page</strong>, turn on SSO mode, adjust the button and keep the local access address somewhere safe.</span>
+            </p>
+          </div>
+        </li>
+      </ol>
+      <div class="note">
+        <p data-l="pt"><strong>Já usa o Brandkit original?</strong> A chave do plugin é a mesma (<code>brandkit</code>). Basta substituir a pasta: as configurações e as imagens continuam lá.</p>
+        <p data-l="en"><strong>Already using the original Brandkit?</strong> The plugin key is the same (<code>brandkit</code>). Replace the folder and your settings and images stay in place.</p>
+      </div>
+      <ul class="specs">
+        <li>GLPI 10.0 · 11.0</li>
+        <li>PHP 7.4+ <span data-l="pt">(8.2+ no GLPI 11)</span><span data-l="en">(8.2+ on GLPI 11)</span></li>
+        <li><span data-l="pt">extensão</span><span data-l="en">extension</span> gd</li>
+        <li><span data-l="pt">GLPI 12: ainda não suportado</span><span data-l="en">GLPI 12: not supported yet</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="section thanks" id="agradecimentos">
+  <div class="wrap">
+    <div class="label"><span data-l="pt">Agradecimentos</span><span data-l="en">Thanks</span></div>
+    <div>
+      <blockquote>
+        <span data-l="pt">Este projeto só existe porque a Marcati publicou o Brandkit como software livre. Obrigado.</span>
+        <span data-l="en">This project exists only because Marcati published Brandkit as free software. Thank you.</span>
+      </blockquote>
+      <div class="prose" data-l="pt">
+        <p>Toda a base de personalização, dos logos aos layouts da tela de login, é trabalho do autor original. O nosso fork acrescenta o encaixe com o SSO e as correções descritas acima, e mantém os créditos e a licença do projeto.</p>
+        <p>Agradecemos também aos mantenedores do samlSSO, que trouxeram o login SAML para o GLPI.</p>
+      </div>
+      <div class="prose" data-l="en">
+        <p>All of the customization groundwork, from logos to login page layouts, is the original author's work. Our fork adds the SSO fit and the fixes described above, and keeps the project's credits and license.</p>
+        <p>Thanks also to the samlSSO maintainers, who brought SAML sign-in to GLPI.</p>
+      </div>
+      <div class="links">
+        <a href="https://github.com/juniormarcati/glpi-brandkit" target="_blank" rel="noopener">Brandkit (Marcati)</a>
+        <a href="https://github.com/DonutsNL/samlsso" target="_blank" rel="noopener">samlSSO</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="codigo">
+  <div class="wrap">
+    <div class="label"><span data-l="pt">Código aberto</span><span data-l="en">Open source</span></div>
+    <div>
+      <h2><span data-l="pt">Use, adapte e contribua</span><span data-l="en">Use it, adapt it, contribute</span></h2>
+      <div class="prose" data-l="pt">
+        <p>O código está no GitHub sob a mesma licença do projeto original (GNU GPL/AGPL v3). Você pode usar, modificar e redistribuir, desde que mantenha os créditos e a licença e publique o código das suas alterações.</p>
+        <p>Encontrou um problema ou tem uma melhoria? Abra uma issue ou envie um pull request.</p>
+      </div>
+      <div class="prose" data-l="en">
+        <p>The code is on GitHub under the same license as the original project (GNU GPL/AGPL v3). You may use, modify and redistribute it, as long as you keep the credits and the license and publish the source of your changes.</p>
+        <p>Found a problem or have an improvement? Open an issue or send a pull request.</p>
+      </div>
+      <div class="links">
+        <a href="https://github.com/kibinluck/brandkit-plus-sso" target="_blank" rel="noopener"><span data-l="pt">Repositório</span><span data-l="en">Repository</span></a>
+        <a href="https://github.com/kibinluck/brandkit-plus-sso/issues" target="_blank" rel="noopener">Issues</a>
+        <a href="https://github.com/kibinluck/brandkit-plus-sso/blob/main/CHANGELOG.md" target="_blank" rel="noopener">Changelog</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p data-l="pt">Desenvolvido com o Claude (Anthropic), sob a orientação e supervisão de Bruno Braz.</p>
+    <p data-l="en">Developed with Claude (Anthropic), under the guidance and supervision of Bruno Braz.</p>
+    <p data-l="pt">Brandkit © Marcati. Brandkit Plus SSO é um fork independente e não é mantido pelo autor original.</p>
+    <p data-l="en">Brandkit © Marcati. Brandkit Plus SSO is an independent fork and is not maintained by the original author.</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var root = document.documentElement;
+
+  function setLang(lang) {
+    root.setAttribute('lang', lang === 'en' ? 'en' : 'pt-BR');
+    document.querySelectorAll('[data-set-lang]').forEach(function (b) {
+      b.setAttribute('aria-pressed', String(b.getAttribute('data-set-lang') === lang));
+    });
+    try { localStorage.setItem('bk-lang', lang); } catch (e) {}
+  }
+
+  var saved = null;
+  try { saved = localStorage.getItem('bk-lang'); } catch (e) {}
+  var nav = (navigator.language || 'pt').toLowerCase();
+  setLang(saved || (nav.indexOf('pt') === 0 ? 'pt' : 'en'));
+  document.querySelectorAll('[data-set-lang]').forEach(function (b) {
+    b.addEventListener('click', function () { setLang(b.getAttribute('data-set-lang')); });
+  });
+
+  var mock = document.getElementById('mock');
+  function setMode(mode) {
+    mock.setAttribute('data-mode', mode);
+    document.querySelectorAll('.switch [data-set-mode]').forEach(function (b) {
+      b.setAttribute('aria-pressed', String(b.getAttribute('data-set-mode') === mode));
+    });
+  }
+  document.querySelectorAll('[data-set-mode]').forEach(function (b) {
+    b.addEventListener('click', function () { setMode(b.getAttribute('data-set-mode')); });
+  });
+
+  var copyBtn = document.getElementById('copy-clone');
+  var cmd = document.getElementById('clone-cmd');
+  copyBtn.addEventListener('click', function () {
+    var label = copyBtn.innerHTML;
+    function done() {
+      copyBtn.innerHTML = '<span data-l="pt">Copiado</span><span data-l="en">Copied</span>';
+      setTimeout(function () { copyBtn.innerHTML = label; }, 1600);
+    }
+    function selectText() {
+      var r = document.createRange(); r.selectNodeContents(cmd);
+      var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+    }
+    try {
+      navigator.clipboard.writeText(cmd.textContent).then(done, selectText);
+    } catch (e) { selectText(); }
+  });
+})();
+</script>
+</body>
+</html>
