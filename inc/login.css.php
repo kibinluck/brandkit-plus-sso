@@ -2738,9 +2738,60 @@ function brandkit_build_login_css(array $settings): string
     $css .= "  margin-right: auto !important;\n";
     $css .= "  text-align: center !important;\n";
     $css .= "}\n";
+    $css .= brandkit_build_login_footer_css();
     $css .= brandkit_build_secondary_pages_css();
 
     return $css;
+}
+
+/**
+ * GLPI's "Copyright ... Teclib' and contributors" footer of the login page:
+ * kept under the login area and pushed to the bottom of the screen.
+ *
+ * Two cases, because samlSSO 1.3.x prints one "</div>" too many in the login
+ * page: that closes GLPI's containers early and moves the footer out of
+ * .container-tight into .flex-fill, where it showed up in the middle of the
+ * screen instead of under the login area.
+ *
+ * Only layout in normal flow (auto margins), no fixed positioning:
+ * .container-tight is transformed, which would anchor a fixed footer to it.
+ */
+function brandkit_build_login_footer_css(): string
+{
+    $page = 'body.welcome-anonymous:has(#login_name)';
+    $footer = '.text-center.text-muted.mt-3';
+
+    return <<<CSS
+/* Brandkit: GLPI copyright footer under the login area, at the bottom */
+{$page} .flex-fill > {$footer} {
+  width: min(100%, var(--brandkit-login-field-width));
+  margin-left: auto;
+  margin-right: auto;
+}
+@media screen and (min-width: 768px) {
+  {$page} .flex-fill > {$footer} {
+    margin-left: var(--brandkit-login-container-left);
+    margin-right: var(--brandkit-login-container-right);
+    transform: translateX(var(--brandkit-login-container-translate));
+  }
+}
+@media screen and (min-width: 768px) and (min-height: 600px) {
+  {$page} .flex-fill:has(> {$footer}) > .container-tight,
+  {$page} .flex-fill > {$footer} {
+    margin-top: auto !important;
+  }
+  {$page} .container-tight:has(> {$footer} > .copyright) {
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100vh - 2rem - var(--brandkit-login-logo-offset, 0px));
+  }
+  {$page} .container-tight:has(> {$footer} > .copyright) > .text-center:first-child,
+  {$page} .container-tight > {$footer} {
+    margin-top: auto !important;
+  }
+}
+
+CSS;
 }
 
 /**

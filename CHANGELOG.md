@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.3.1
+
+### Fixed
+- The GLPI copyright footer of the login page showed up in the middle of the
+  screen when the samlSSO plugin was enabled. samlSSO 1.3.x prints one
+  `</div>` too many in the login page, which moves the footer out of the login
+  container. The footer is now kept under the login area in both cases and, on
+  screens at least 768x600, pushed to the bottom of the screen.
+
 ## 0.3.0
 
 ### Added
