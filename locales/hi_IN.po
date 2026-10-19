@@ -1,536 +1,972 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: brandkit\n"
+"Project-Id-Version: Brandkit 0.2.0\n"
 "Language: hi_IN\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: front/index.php:831
 msgid "Dynamic cut for a bolder call-to-action."
 msgstr "अधिक बोल्ड कॉल-टू-एक्शन के लिए डायनामिक कट।"
 
+#: front/index.php:862
 msgid "Email"
 msgstr "ईमेल"
 
+#: front/index.php:1190
 msgid "Field background"
 msgstr "फ़ील्ड पृष्ठभूमि"
 
+#: front/index.php:1194
 msgid "Field border"
 msgstr "मैदान की सीमा"
 
+#: front/index.php:1198
 msgid "Field border width (px)"
 msgstr "फ़ील्ड सीमा चौड़ाई (पीएक्स)"
 
+#: front/index.php:1255
 msgid "Field focus glow"
 msgstr "फ़ील्ड फोकस चमक"
 
+#: front/index.php:1281
 msgid "Field icons"
 msgstr "फ़ील्ड चिह्न"
 
+#: front/index.php:1259
 msgid "Field radius (px)"
 msgstr "फ़ील्ड त्रिज्या (पीएक्स)"
 
+#: front/index.php:1177
 msgid "Fields"
 msgstr "खेत"
 
+#: front/index.php:1247
 msgid "Field spacing (px)"
 msgstr "फ़ील्ड रिक्ति (पीएक्स)"
 
+#: front/index.php:1180
 msgid "Field style"
 msgstr "फ़ील्ड शैली"
 
+#: front/index.php:1205
 msgid "Field text"
 msgstr "फ़ील्ड पाठ"
 
+#: front/index.php:1225
 msgid "Field text size (px)"
 msgstr "फ़ील्ड टेक्स्ट का आकार (px)"
 
+#: front/index.php:852
 msgid "Fill with color"
 msgstr "रंग भरें"
 
+#: front/index.php:896
 msgid "Fixed"
 msgstr "तय"
 
+#: front/index.php:830
 msgid "Friendly, fully rounded shape."
 msgstr "मैत्रीपूर्ण, पूरी तरह गोल आकार।"
 
+#: front/index.php:836
 msgid "Glass blur"
 msgstr "कांच का धुंधलापन"
 
+#: front/index.php:986
 msgid "Hide login text"
 msgstr "लॉगिन टेक्स्ट छिपाएँ"
 
+#: front/index.php:1138
 msgid "Hover effect"
 msgstr "होवर प्रभाव"
 
+#: front/index.php:1151
 msgid "Hover fill custom color"
 msgstr "होवर कस्टम रंग भरें"
 
+#: front/index.php:1155
 msgid "Hover text color"
 msgstr "पाठ का रंग होवर करें"
 
+#: front/index.php:1323
 msgid "Icon color"
 msgstr "चिह्न का रंग"
 
+#: front/index.php:1327
 msgid "Icon position"
 msgstr "चिह्न स्थिति"
 
+#: front/index.php:861
 msgid "ID card"
 msgstr "आईडी कार्ड"
 
+#: front/index.php:809
 msgid "Info"
 msgstr "जानकारी"
 
+#: front/index.php:967
 msgid "Inside panel"
 msgstr "अंदर का पैनल"
 
+#: front/index.php:867
 msgid "Key"
 msgstr "चाबी"
 
+#: front/index.php:918
 msgid "Layout"
 msgstr "लेआउट"
 
+#: front/index.php:915
 msgid "Layout & logo"
 msgstr "लेआउट और लोगो"
 
+#: front/index.php:872 front/index.php:892
 msgid "Left"
 msgstr "बाएं"
 
+#: front/index.php:811
 msgid "Light"
 msgstr "रोशनी"
 
+#: front/index.php:866
 msgid "Lock"
 msgstr "ताला"
 
+#: front/index.php:1285
 msgid "Login icon"
 msgstr "लॉगिन आइकन"
 
+#: front/index.php:957
 msgid "Login logo size (px)"
 msgstr "लॉगिन लोगो का आकार (px)"
 
+#: front/index.php:579
 msgid "Login page configuration"
 msgstr "लॉगिन पेज कॉन्फ़िगरेशन"
 
+#: front/index.php:971
 msgid "Logo offset from top (px)"
 msgstr "शीर्ष से लोगो ऑफसेट (px)"
 
+#: front/index.php:964
 msgid "Logo position"
 msgstr "लोगो की स्थिति"
 
+#: front/index.php:840
 msgid "Neon glow"
 msgstr "नियॉन चमक"
 
+#: front/index.php:938
 msgid "No (disable)"
 msgstr "नहीं (अक्षम करें)"
 
+#: front/index.php:859 front/index.php:865
 msgid "None"
 msgstr "कोई नहीं"
 
+#: front/index.php:930
 msgid "No (show panel)"
 msgstr "नहीं (पैनल दिखाएँ)"
 
+#: front/index.php:886
 msgid "Original size"
 msgstr "मूल आकार"
 
+#: front/index.php:838
 msgid "Outline"
 msgstr "रूपरेखा"
 
+#: front/index.php:815
 msgid "Outline danger"
 msgstr "खतरे की रूपरेखा तैयार करें"
 
+#: front/index.php:818
 msgid "Outline dark"
 msgstr "रूपरेखा अंधकारमय"
 
+#: front/index.php:817
 msgid "Outline info"
 msgstr "रूपरेखा जानकारी"
 
+#: front/index.php:848
 msgid "Outline only"
 msgstr "केवल रूपरेखा"
 
+#: front/index.php:812
 msgid "Outline primary"
 msgstr "रूपरेखा प्राथमिक"
 
+#: front/index.php:813
 msgid "Outline secondary"
 msgstr "रूपरेखा गौण"
 
+#: front/index.php:814
 msgid "Outline success"
 msgstr "सफलता की रूपरेखा"
 
+#: front/index.php:816
 msgid "Outline warning"
 msgstr "रूपरेखा चेतावनी"
 
+#: front/index.php:1437
 msgid "Overlay color"
 msgstr "ओवरले रंग"
 
+#: front/index.php:1441
+#, php-format
 msgid "Overlay opacity (%)"
 msgstr "ओवरले अपारदर्शिता (%)"
 
+#: front/index.php:1209
 msgid "Page text size (px)"
 msgstr "पेज टेक्स्ट का आकार (px)"
 
+#: front/index.php:1032
 msgid "Panel blur (px)"
 msgstr "पैनल धुंधला (पीएक्स)"
 
+#: front/index.php:1028
 msgid "Panel color"
 msgstr "पैनल का रंग"
 
+#: front/index.php:950
 msgid "Panel height (px)"
 msgstr "पैनल की ऊंचाई (पीएक्स)"
 
+#: front/index.php:935
 msgid "Panel hover effect"
 msgstr "पैनल होवर प्रभाव"
 
+#: front/index.php:1021
+#, php-format
 msgid "Panel opacity (%)"
 msgstr "पैनल अपारदर्शिता (%)"
 
+#: front/index.php:1018
 msgid "Panel & split styling"
 msgstr "पैनल और स्प्लिट स्टाइलिंग"
 
+#: front/index.php:942
 msgid "Panel width (px)"
 msgstr "पैनल की चौड़ाई (पीएक्स)"
 
+#: front/index.php:1304
 msgid "Password icon"
 msgstr "पासवर्ड आइकन"
 
+#: front/index.php:856
 msgid "Pick a custom color"
 msgstr "एक कस्टम रंग चुनें"
 
+#: front/index.php:580
 msgid "Pick a layout and visual treatments for the GLPI login page."
 msgstr "GLPI लॉगिन पेज के लिए एक लेआउट और विज़ुअल उपचार चुनें।"
 
+#: front/index.php:823
 msgid "Pill"
 msgstr "गोली"
 
+#: front/index.php:1417
 msgid "Position"
 msgstr "पद"
 
+#: front/index.php:843
 msgid "Preset palette"
 msgstr "प्रीसेट पैलेट"
 
+#: front/index.php:851
 msgid "Press on hover"
 msgstr "होवर पर दबाएँ"
 
+#: front/index.php:804
 msgid "Primary (default)"
 msgstr "प्राथमिक (डिफ़ॉल्ट)"
 
+#: front/index.php:1366 front/index.php:1367 front/index.php:1368
 msgid "Recommended: 1920x1080 or larger."
 msgstr "अनुशंसित: 1920x1080 या इससे बड़ा."
 
+#: front/index.php:871 front/index.php:893
 msgid "Right"
 msgstr "सही"
 
+#: front/index.php:822
 msgid "Rounded"
 msgstr "गोल"
 
+#: front/index.php:1480
 msgid "Save login page"
 msgstr "लॉगिन पेज सहेजें"
 
+#: front/index.php:897
 msgid "Scroll"
 msgstr "स्क्रॉल"
 
+#: front/index.php:805
 msgid "Secondary"
 msgstr "माध्यमिक"
 
+#: front/index.php:828
 msgid "Sharp edges with a confident shadow."
 msgstr "आत्मविश्वासपूर्ण छाया के साथ तेज किनारें।"
 
+#: front/index.php:868
 msgid "Shield"
 msgstr "कवच"
 
+#: front/index.php:1407
 msgid "Size"
 msgstr "आकार"
 
+#: front/index.php:825
 msgid "Soft depth"
 msgstr "नरम गहराई"
 
+#: front/index.php:837
 msgid "Soft shadow"
 msgstr "कोमल छाया"
 
+#: front/index.php:835
 msgid "Solid"
 msgstr "ठोस"
 
+#: front/index.php:1059
 msgid "Split blur (px)"
 msgstr "स्प्लिट ब्लर (पीएक्स)"
 
+#: front/index.php:1055
 msgid "Split color"
 msgstr "विभाजित रंग"
 
+#: front/index.php:902
 msgid "Split left"
 msgstr "बाएँ विभाजित"
 
+#: front/index.php:1048
+#, php-format
 msgid "Split opacity (%)"
 msgstr "विभाजित अपारदर्शिता (%)"
 
+#: front/index.php:904
 msgid "Split right"
 msgstr "दाएँ विभाजित करें"
 
+#: front/index.php:1041
+#, php-format
 msgid "Split width (%)"
 msgstr "विभाजित चौड़ाई (%)"
 
+#: front/index.php:821
 msgid "Square"
 msgstr "वर्ग"
 
+#: front/index.php:885
 msgid "Stretch"
 msgstr "खींचना"
 
+#: front/index.php:806
 msgid "Success"
 msgstr "सफलता"
 
+#: front/index.php:982
 msgid "Text color"
 msgstr "पाठ का रंग"
 
+#: front/index.php:1217
 msgid "Title text size (px)"
 msgstr "शीर्षक पाठ का आकार (px)"
 
+#: front/index.php:890
 msgid "Top"
 msgstr "शीर्ष"
 
+#: front/index.php:928
 msgid "Transparent panel"
 msgstr "पारदर्शी पैनल"
 
+#: front/index.php:839
 msgid "Underline"
 msgstr "रेखांकन"
 
+#: front/index.php:1455
 msgid "Upload wallpaper"
 msgstr "वॉलपेपर अपलोड करें"
 
+#: front/index.php:855
 msgid "Use button color"
 msgstr "बटन रंग का प्रयोग करें"
 
+#: front/index.php:860
 msgid "User"
 msgstr "उपयोगकर्ता"
 
+#: front/index.php:1363
 msgid "Wallpaper"
 msgstr "वॉलपेपर"
 
+#: front/index.php:808
 msgid "Warning"
 msgstr "चेतावनी"
 
+#: front/index.php:989
 msgid "Yes"
 msgstr "हाँ"
 
+#: front/index.php:937
 msgid "Yes (enable)"
 msgstr "हाँ (सक्षम करें)"
 
+#: front/index.php:931
 msgid "Yes (hide panel)"
 msgstr "हाँ (पैनल छिपाएँ)"
 
+#: front/index.php:521
 msgid ""
 "Light mode logos: used when the system is in light mode, ensuring good "
 "visibility on white or light backgrounds."
 msgstr ""
-"लाइट मोड लोगो: इसका उपयोग तब किया जाता है जब सिस्टम लाइट मोड में होता है, जिससे "
-"सफेद या हल्के पृष्ठभूमि पर अच्छी दृश्यता सुनिश्चित होती है।"
+"लाइट मोड लोगो: इसका उपयोग तब किया जाता है जब सिस्टम लाइट मोड में होता है, "
+"जिससे सफेद या हल्के पृष्ठभूमि पर अच्छी दृश्यता सुनिश्चित होती है।"
 
+#: front/index.php:526
 msgid ""
-"Dark mode logos: used when the system is in dark mode, ensuring contrast and "
-"readability on black or dark backgrounds."
+"Dark mode logos: used when the system is in dark mode, ensuring contrast and"
+" readability on black or dark backgrounds."
 msgstr ""
-"डार्क मोड लोगो: इसका उपयोग तब किया जाता है जब सिस्टम डार्क मोड में होता है, जिससे "
-"काले या गहरे रंग की पृष्ठभूमि पर कंट्रास्ट और पठनीयता सुनिश्चित होती है।"
+"डार्क मोड लोगो: इसका उपयोग तब किया जाता है जब सिस्टम डार्क मोड में होता है, "
+"जिससे काले या गहरे रंग की पृष्ठभूमि पर कंट्रास्ट और पठनीयता सुनिश्चित होती "
+"है।"
 
+#: front/index.php:532
 msgid ""
 "The favicon is the small icon that appears in the browser tab (and also in "
 "bookmarks)."
-msgstr "फ़ेविकॉन एक छोटा आइकन है जो ब्राउज़र टैब में (और बुकमार्क में भी) दिखाई देता है।"
+msgstr ""
+"फ़ेविकॉन एक छोटा आइकन है जो ब्राउज़र टैब में (और बुकमार्क में भी) दिखाई देता"
+" है।"
 
+#: front/index.php:512 front/index.php:514
 msgid ""
 "Expanded menu logo: the logo displayed when the sidebar menu is open, with "
 "more space available."
 msgstr ""
-"विस्तारित मेनू लोगो: अधिक स्थान उपलब्ध होने पर साइडबार मेनू खुला होने पर प्रदर्शित लोगो।"
+"विस्तारित मेनू लोगो: अधिक स्थान उपलब्ध होने पर साइडबार मेनू खुला होने पर "
+"प्रदर्शित लोगो।"
 
+#: front/index.php:513 front/index.php:515
 msgid ""
 "Collapsed menu logo: the logo displayed when the sidebar menu is collapsed, "
 "so it needs to be a more compact version."
 msgstr ""
-"संक्षिप्त मेनू लोगो: साइडबार मेनू के संक्षिप्त होने पर प्रदर्शित होने वाला लोगो, इसलिए इसे "
-"अधिक कॉम्पैक्ट संस्करण की आवश्यकता है।"
+"संक्षिप्त मेनू लोगो: साइडबार मेनू के संक्षिप्त होने पर प्रदर्शित होने वाला "
+"लोगो, इसलिए इसे अधिक कॉम्पैक्ट संस्करण की आवश्यकता है।"
 
+#: front/index.php:516
 msgid ""
 "Login page logo: the logo displayed on the login screen before the user "
 "enters the system."
 msgstr ""
-"लॉगिन पेज लोगो: उपयोगकर्ता के सिस्टम में प्रवेश करने से पहले लॉगिन स्क्रीन पर प्रदर्शित "
-"लोगो।"
+"लॉगिन पेज लोगो: उपयोगकर्ता के सिस्टम में प्रवेश करने से पहले लॉगिन स्क्रीन "
+"पर प्रदर्शित लोगो।"
 
+#: front/index.php:548
+#, php-format
 msgid "Logo size (%)"
 msgstr "लोगो का आकार (%)"
 
+#: inc/admin_views.php:111
 msgid "Favicon active"
 msgstr "फ़ेविकॉन सक्रिय"
 
+#: front/index.php:1089
 msgid "Button"
 msgstr "बटन"
 
+#: front/index.php:1375
 msgid "Wallpaper source"
 msgstr "वॉलपेपर स्रोत"
 
+#: front/index.php:1382
 msgid "Preset wallpaper"
 msgstr "प्रीसेट वॉलपेपर"
 
+#: front/index.php:1427
 msgid "Attachment"
 msgstr "लगाव"
 
+#: front/index.php:1092
 msgid "Button shape"
 msgstr "बटन का आकार"
 
+#: front/index.php:1103
 msgid "Button fill style"
 msgstr "बटन भरने की शैली"
 
+#: front/index.php:1113
 msgid "Button text size (px)"
 msgstr "बटन टेक्स्ट का आकार (px)"
 
+#: front/index.php:1120
 msgid "Color mode"
 msgstr "रंग मोड"
 
+#: front/index.php:479
 msgid "GLPI logo configuration"
 msgstr "GLPI लोगो कॉन्फ़िगरेशन"
 
+#: front/index.php:480
 msgid ""
 "Upload logos that will replace the default GLPI assets using CSS variables."
 msgstr ""
-"ऐसे लोगो अपलोड करें जो CSS वेरिएबल्स का उपयोग करके डिफ़ॉल्ट GLPI संपत्तियों को बदल देंगे।"
+"ऐसे लोगो अपलोड करें जो CSS वेरिएबल्स का उपयोग करके डिफ़ॉल्ट GLPI संपत्तियों "
+"को बदल देंगे।"
 
+#: front/index.php:551
+#, php-format
 msgid "Expanded menu logo size (%)"
 msgstr "विस्तारित मेनू लोगो आकार (%)"
 
+#: front/index.php:558
+#, php-format
 msgid "Collapsed menu logo size (%)"
 msgstr "संक्षिप्त मेनू लोगो आकार (%)"
 
+#: front/index.php:75
 msgid "Favicon (browser tab)"
 msgstr "फ़ेविकॉन (ब्राउज़र टैब)"
 
+#: front/index.php:1232
 msgid "Field height (px)"
 msgstr "फ़ील्ड ऊंचाई (पीएक्स)"
 
+#: front/index.php:1377
 msgid "Preset wallpapers"
 msgstr "प्रीसेट वॉलपेपर"
 
+#: front/index.php:1378
 msgid "Custom upload"
 msgstr "कस्टम अपलोड"
 
+#: front/index.php:903
 msgid "Classic centered"
 msgstr "क्लासिक केन्द्रित"
 
+#: front/index.php:966
 msgid "Above panel"
 msgstr "ऊपर पैनल"
 
+#: front/index.php:988
 msgid "No"
 msgstr "नहीं"
 
+#: front/index.php:847
 msgid "Default fill"
 msgstr "डिफ़ॉल्ट भरण"
 
+#: front/index.php:1132
 msgid "Custom color"
 msgstr "कस्टम रंग"
 
+#: front/index.php:978
 msgid "Accent color"
 msgstr "उच्चारण रंग"
 
+#: front/index.php:409
 msgid "Turn GLPI into a showcase for your brand in just a few clicks."
 msgstr "कुछ ही क्लिक में GLPI को अपने ब्रांड के शोकेस में बदलें।"
 
+#: front/index.php:433
 msgid "About"
 msgstr "के बारे में"
 
+#: front/index.php:436 front/index.php:455
 msgid "GLPI logos"
 msgstr "GLPI लोगो"
 
+#: front/index.php:439 front/index.php:456
 msgid "Login Page"
 msgstr "लोग इन वाला पन्ना"
 
+#: front/index.php:442
 msgid "Premium"
 msgstr "Premium"
 
+#: front/index.php:450
 msgid "Brandkit by Marcati"
 msgstr "Brandkit द्वारा Marcati"
 
+#: front/index.php:451
 msgid "The visual evolution of your GLPI starts here."
 msgstr "आपके GLPI का दृश्य विकास यहां से शुरू होता है।"
 
+#: front/index.php:452
 msgid ""
 "Brandkit delivers logos, login screens, and colors aligned with your "
 "identity. No CSS, no effort, just professional results."
 msgstr ""
-"Brandkit आपकी पहचान के अनुरूप लोगो, लॉगिन स्क्रीन और रंग प्रदान करता है। कोई CSS "
-"नहीं, कोई प्रयास नहीं, केवल पेशेवर परिणाम।"
+"Brandkit आपकी पहचान के अनुरूप लोगो, लॉगिन स्क्रीन और रंग प्रदान करता है। कोई"
+" CSS नहीं, कोई प्रयास नहीं, केवल पेशेवर परिणाम।"
 
+#: front/index.php:453
 msgid "Discover Marcati at"
 msgstr "Marcati को यहां खोजें"
 
+#: front/index.php:457
 msgid "Meet Marcati"
 msgstr "मिलें Marcati"
 
+#: front/index.php:463
 msgid "Consistent logos"
 msgstr "सुसंगत लोगो"
 
+#: front/index.php:464
 msgid "Ready uploads for header, favicon, and login."
 msgstr "हेडर, फ़ेविकॉन और लॉगिन के लिए तैयार अपलोड।"
 
+#: front/index.php:468
 msgid "Login with presence"
 msgstr "उपस्थिति के साथ लॉगिन करें"
 
+#: front/index.php:469
 msgid ""
 "Pick layouts, colors, and effects for an authentication screen that sells "
 "your brand."
-msgstr "आपके ब्रांड को बेचने वाली प्रमाणीकरण स्क्रीन के लिए लेआउट, रंग और प्रभाव चुनें।"
+msgstr ""
+"आपके ब्रांड को बेचने वाली प्रमाणीकरण स्क्रीन के लिए लेआउट, रंग और प्रभाव "
+"चुनें।"
 
+#: front/index.php:473
 msgid "Fast delivery"
 msgstr "तेजी से वितरण"
 
+#: front/index.php:474
 msgid "Settings saved directly in GLPI to activate branding without rework."
 msgstr ""
-"बिना दोबारा काम किए ब्रांडिंग को सक्रिय करने के लिए सेटिंग्स सीधे GLPI में सहेजी गईं।"
+"बिना दोबारा काम किए ब्रांडिंग को सक्रिय करने के लिए सेटिंग्स सीधे GLPI में "
+"सहेजी गईं।"
 
+#: front/index.php:844
 msgid "Custom hex color"
 msgstr "कस्टम हेक्स रंग"
 
+#: front/index.php:566
 msgid "Save logo sizes"
 msgstr "लोगो आकार सहेजें"
 
+#: front/index.php:1481
 msgid "Restore defaults"
 msgstr "Restore defaults"
 
+#: front/index.php:70
 msgid "Expanded menu logo"
 msgstr "विस्तारित मेनू लोगो"
 
+#: front/index.php:71
 msgid "Collapsed menu logo"
 msgstr "संकुचित मेनू लोगो"
 
+#: front/index.php:74
 msgid "Login logo"
 msgstr "लॉगिन लोगो"
 
+#: inc/admin_views.php:148
 msgid "No custom logo uploaded yet."
 msgstr "अभी तक कोई कस्टम लोगो अपलोड नहीं हुआ है।"
 
+#: inc/admin_views.php:117
 msgid "No favicon yet"
 msgstr "अभी तक कोई फेविकॉन नहीं है"
 
+#: front/index.php:1239
 msgid "Field width (px)"
 msgstr "फ़ील्ड चौड़ाई (px)"
 
+#: front/index.php:520
 msgid "Light mode logos"
 msgstr "लाइट मोड लोगो"
 
+#: front/index.php:525
 msgid "Dark mode logos"
 msgstr "डार्क मोड लोगो"
 
+#: front/index.php:531
 msgid "Favicon"
 msgstr "फेविकॉन"
 
+#: inc/admin_views.php:93
 msgid "Upload logo"
 msgstr "लोगो अपलोड करें"
 
+#: inc/admin_views.php:100
 msgid "Remove logo"
 msgstr "लोगो हटाएँ"
 
+#: inc/admin_views.php:148
 msgid "No custom favicon uploaded yet."
 msgstr "अभी तक कोई कस्टम फेविकॉन अपलोड नहीं किया गया है।"
 
+#: front/index.php:72
 msgid "Expanded menu logo (dark mode)"
 msgstr "विस्तारित मेनू लोगो (डार्क मोड)"
 
+#: front/index.php:73
 msgid "Collapsed menu logo (dark mode)"
 msgstr "संक्षिप्त मेनू लोगो (डार्क मोड)"
 
+#: front/index.php:115 front/index.php:366
+msgid "Login page settings saved."
+msgstr ""
+
+#: front/index.php:117 front/index.php:368
+msgid "Settings saved, but the login CSS file could not be written."
+msgstr ""
+
+#: front/index.php:389
+msgid "Logo sizes updated."
+msgstr ""
+
+#: front/index.php:394 front/index.php:404 inc/config.class.php:53
+#: inc/config.class.php:68
+msgid "Brandkit"
+msgstr ""
+
+#: front/index.php:807
+msgid "Danger"
+msgstr ""
+
+#: front/index.php:810
+msgid "Dark"
+msgstr ""
+
+#: front/index.php:824
+msgid "Cut corner"
+msgstr ""
+
+#: front/index.php:829
+msgid "Balanced corners for modern brands."
+msgstr ""
+
+#: front/index.php:832
+msgid "Cushioned look with soft depth."
+msgstr ""
+
+#: front/index.php:883
+msgid "Cover"
+msgstr ""
+
+#: front/index.php:884
+msgid "Contain"
+msgstr ""
+
+#: front/index.php:889
+msgid "Center"
+msgstr ""
+
+#: front/index.php:891
+msgid "Bottom"
+msgstr ""
+
+#: front/index.php:1000
+msgid "Sign in to your account"
+msgstr ""
+
+#: front/index.php:1002 front/index.php:1073 front/index.php:1270
+#: front/index.php:1345
+msgid "Login"
+msgstr ""
+
+#: front/index.php:1006 front/index.php:1077 front/index.php:1273
+#: front/index.php:1353
+msgid "Password"
+msgstr ""
+
+#: front/index.php:1009 front/index.php:1080 front/index.php:1166
+msgid "Sign in"
+msgstr ""
+
+#: front/index.php:1385
+msgid "No preset wallpapers available."
+msgstr ""
+
+#: front/index.php:1457
+msgid "Remove uploaded wallpaper"
+msgstr ""
+
+#: front/index.php:1471
+msgid "No wallpaper selected yet."
+msgstr ""
+
+#: front/index.php:1489
+msgid "Premium features"
+msgstr ""
+
+#: front/index.php:1490
+msgid "Unlock advanced Brandkit upgrades."
+msgstr ""
+
+#: front/index.php:1491
+msgid ""
+"This area is available in the paid version. Get more control and deeper "
+"customization for your GLPI experience."
+msgstr ""
+
+#: front/index.php:1493
+msgid "Download and upload configuration presets."
+msgstr ""
+
+#: front/index.php:1494
+msgid "Theme customization with one-click presets."
+msgstr ""
+
+#: front/index.php:1495
+msgid "Menu color variations and layout tuning for GLPI."
+msgstr ""
+
+#: front/index.php:1496
+msgid "Extra custom colors beyond the default GLPI palette."
+msgstr ""
+
+#: front/index.php:1499
+msgid "See plans"
+msgstr ""
+
+#: front/index.php:1505
+msgid "Premium access"
+msgstr ""
+
+#: front/index.php:1506
+msgid "Request access to unlock these features for your team."
+msgstr ""
+
+#: front/logo_upload.php:53
+msgid "Upload failed. The file may be too large for the server limits."
+msgstr ""
+
+#: front/logo_upload.php:61
+msgid "Invalid logo target selected."
+msgstr ""
+
+#: front/logo_upload.php:68
+msgid "Unable to restore the original favicon. Check file permissions."
+msgstr ""
+
+#: front/logo_upload.php:69
+msgid "Unable to restore the original login logo. Check file permissions."
+msgstr ""
+
+#: front/logo_upload.php:70
+msgid "Original login logo not found in plugin pics."
+msgstr ""
+
+#: front/logo_upload.php:71
+msgid "Unable to restore the original header logo. Check file permissions."
+msgstr ""
+
+#: front/logo_upload.php:72
+msgid "Original header logo not found in plugin pics."
+msgstr ""
+
+#: front/logo_upload.php:77
+msgid "Logo cleared. GLPI will use the default asset."
+msgstr ""
+
+#: front/logo_upload.php:97
+msgid "Unable to create plugin logo directory."
+msgstr ""
+
+#: front/logo_upload.php:111 inc/assets.php:793
+msgid "Favicon must be an ICO file."
+msgstr ""
+
+#: front/logo_upload.php:120 inc/assets.php:880
+msgid "The uploaded file is not a valid image."
+msgstr ""
+
+#: front/logo_upload.php:125
+msgid "Unable to process the uploaded logo. Ensure the file is a valid image."
+msgstr ""
+
+#: front/logo_upload.php:134
+msgid ""
+"Uploaded, but failed to replace the GLPI favicon. Check file permissions."
+msgstr ""
+
+#: front/logo_upload.php:135
+msgid ""
+"Uploaded, but failed to replace the native login logo. Check file "
+"permissions."
+msgstr ""
+
+#: front/logo_upload.php:136
+msgid ""
+"Uploaded, but failed to replace the native header logo. Check file "
+"permissions."
+msgstr ""
+
+#: front/logo_upload.php:141
+msgid "Logo uploaded successfully."
+msgstr ""
+
+#: inc/assets.php:770
+msgid "Upload failed. The file is larger than the allowed size."
+msgstr ""
+
+#: inc/assets.php:772
+msgid "Upload failed because the file was only partially uploaded."
+msgstr ""
+
+#: inc/assets.php:774
+msgid "Please choose an image file to upload."
+msgstr ""
+
+#: inc/assets.php:776
+msgid ""
+"Upload failed because the temporary upload folder is missing on the server."
+msgstr ""
+
+#: inc/assets.php:778
+msgid "Upload failed because the server could not write the temporary file."
+msgstr ""
+
+#: inc/assets.php:780
+msgid "Upload was blocked by a PHP extension on the server."
+msgstr ""
+
+#: inc/assets.php:782
+#, php-format
+msgid "Upload failed due to an unexpected error (code %d)."
+msgstr ""
+
+#: inc/assets.php:787
+msgid "The upload could not be validated."
+msgstr ""
+
+#: inc/assets.php:794
+msgid "Allowed formats: PNG, JPG, JPEG, WEBP."
+msgstr ""
+
+#: inc/assets.php:800
+#, php-format
+msgid "Upload failed. The file is larger than the allowed size (%s)."
+msgstr ""
+
+#: inc/assets.php:874
+msgid "Unable to create wallpaper directory."
+msgstr ""
+
+#: inc/assets.php:881
+msgid ""
+"Unable to process the uploaded wallpaper. The image is too large to be "
+"processed."
+msgstr ""
+
+#: inc/assets.php:887
+msgid ""
+"Unable to process the uploaded wallpaper. Ensure the file is a valid image."
+msgstr ""
+
+#: inc/assets.php:897 inc/assets.php:903
+msgid "Unable to save the uploaded wallpaper. Check file permissions."
+msgstr ""

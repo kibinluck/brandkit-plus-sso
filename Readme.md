@@ -16,25 +16,29 @@ This plugin was developed to make GLPI visual identity easy for beginners or any
 ---
 
 ## 📦 Installation
-1. Clone this repository:
+1. Clone this repository straight into GLPI's plugin folder, as `brandkit`:
 ```bash
-git clone https://github.com/juniormarcati/glpi-brandkit/glpi-brandkit.git
+cd /path/to/glpi/plugins
+git clone https://github.com/juniormarcati/glpi-brandkit.git brandkit
 ```
 
-2. Copy the project to:
-`glpi/plugins/`
+2. The folder name **must** be `brandkit` (it is the plugin key).
 
-3. Ensure the final folder name is `brandkit`.
-
-4. In GLPI, go to:
+3. In GLPI, go to:
 **Setup > Plugins > Install > Enable**
+
+**Requirements:** GLPI 10.0 or 11.0, PHP 7.4+ (8.2+ for GLPI 11), the PHP `gd` extension (already required by GLPI).
+The web server user needs write access to GLPI's `pics/` folder (`public/pics/` on GLPI 11): Brandkit
+replaces GLPI's own logo and favicon files there and publishes the login wallpaper next to them.
+Originals are backed up and put back when a logo is removed or the plugin is uninstalled.
 
 ---
 
 ## ⚙️ Configuration
 
-- After enabling, a **“Brandkit”** submenu appears under **Plugins**.
-- Fill in the required fields; they form the document header.
+- After enabling, a **“Brandkit”** submenu appears under **Plugins** (only for profiles allowed to update the GLPI setup).
+- **GLPI logos**: upload the menu logos (light/dark, expanded/collapsed), the login logo and the favicon.
+- **Login Page**: choose the layout, colors, fields, button and wallpaper.
 
 ---
 

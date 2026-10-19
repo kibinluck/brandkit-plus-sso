@@ -37,126 +37,65 @@ if (!defined('GLPI_ROOT')) {
     die("Sorry. You can't access this file directly");
 }
 
-define('PLUGIN_BRANDKIT_VERSION', '0.1.7');
+define('PLUGIN_BRANDKIT_VERSION', '0.2.0');
 define('PLUGIN_BRANDKIT_MIN_GLPI', '10.0.0');
 define('PLUGIN_BRANDKIT_MAX_GLPI', '11.0.99');
 
-include_once __DIR__ . '/hook.php';
-include_once __DIR__ . '/inc/config.class.php';
+require_once __DIR__ . '/inc/paths.php';
+require_once __DIR__ . '/hook.php';
 
-if (!function_exists('brandkit_is_glpi11')) {
-    function brandkit_is_glpi11(): bool
-    {
-        if (defined('GLPI_VERSION')) {
-            return version_compare(GLPI_VERSION, '11.0.0', '>=');
-        }
-
-        if (defined('GLPI_ROOT')) {
-            $root = rtrim(GLPI_ROOT, DIRECTORY_SEPARATOR);
-            $publicPics = $root . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'pics';
-            $legacyPics = $root . DIRECTORY_SEPARATOR . 'pics';
-            if (is_dir($legacyPics) && !is_dir($publicPics)) {
-                return false;
-            }
-            if (is_dir($publicPics) && !is_dir($legacyPics)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-}
-
-function brandkit_relative_path(string $from, string $to): string
-{
-    $from = rtrim(str_replace('\\', '/', $from), '/');
-    $to = rtrim(str_replace('\\', '/', $to), '/');
-
-    $fromParts = $from === '' ? [] : explode('/', $from);
-    $toParts = $to === '' ? [] : explode('/', $to);
-
-    while (!empty($fromParts) && !empty($toParts) && $fromParts[0] === $toParts[0]) {
-        array_shift($fromParts);
-        array_shift($toParts);
-    }
-
-    $rel = str_repeat('../', count($fromParts)) . implode('/', $toParts);
-    return $rel === '' ? '.' : $rel;
-}
-
+/**
+ * Init the hooks of the plugin - Needed
+ */
 function plugin_init_brandkit()
 {
-    global $PLUGIN_HOOKS, $CFG_GLPI;
-    $PLUGIN_HOOKS['csrf_compliant']['brandkit'] = true;
+    global $PLUGIN_HOOKS;
 
-    $PLUGIN_HOOKS['display_login']['brandkit'] = 'plugin_brandkit_display_login';
+    $PLUGIN_HOOKS['csrf_compliant'][PLUGIN_BRANDKIT_KEY] = true;
 
-    $PLUGIN_HOOKS['add_javascript']['brandkit'] = 'js/brandkit-error.js';
+    $isGlpi11 = brandkit_is_glpi11();
 
-    $pluginDocDir = null;
-    if (defined('GLPI_VAR_DIR')) {
-        $base = rtrim(GLPI_VAR_DIR, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . '_plugins';
-        if (is_dir($base)) {
-            $pluginDocDir = rtrim($base, DIRECTORY_SEPARATOR);
-        }
-    }
-    if (!$pluginDocDir && defined('GLPI_PLUGIN_DOC_DIR')) {
-        $pluginDocDir = rtrim(GLPI_PLUGIN_DOC_DIR, DIRECTORY_SEPARATOR);
-    }
-    $docScssPath = $pluginDocDir ? $pluginDocDir . '/brandkit/brandkit-login.scss' : null;
-    $docCssUrl = null;
-    if ($pluginDocDir && defined('GLPI_ROOT')) {
-        $glpiRoot = realpath(GLPI_ROOT);
-        $pluginDocReal = realpath($pluginDocDir);
-        if ($glpiRoot && $pluginDocReal) {
-            $glpiRootPrefix = $glpiRoot . DIRECTORY_SEPARATOR;
-            if (strncmp($pluginDocReal, $glpiRootPrefix, strlen($glpiRootPrefix)) === 0) {
-                $relative = ltrim(substr($pluginDocReal, strlen($glpiRoot)), DIRECTORY_SEPARATOR);
-            } else {
-                $relative = brandkit_relative_path($glpiRoot, $pluginDocReal);
+    // Login page (anonymous): generated stylesheet + self-healing of the
+    // native logo files, see plugin_brandkit_display_login().
+    $PLUGIN_HOOKS['display_login'][PLUGIN_BRANDKIT_KEY] = 'plugin_brandkit_display_login';
+    $loginCssUrl = brandkit_get_login_css_url();
+    if ($loginCssUrl === null) {
+        // First run (or storage wiped): generate it now so the very first
+        // login page is styled. Never let this break GLPI's bootstrap.
+        try {
+            if (brandkit_write_login_css()) {
+                $loginCssUrl = brandkit_get_login_css_url();
             }
-            $scssFile = ltrim($relative . '/brandkit/brandkit-login', '/');
-            $docCssUrl = $CFG_GLPI['root_doc'] . '/front/css.php?file=' . $scssFile;
-            $docCssVersion = is_file($docScssPath) ? (string) filemtime($docScssPath) : PLUGIN_BRANDKIT_VERSION;
-            $docCssUrl .= '&bk=' . $docCssVersion;
+        } catch (Throwable $e) {
+            trigger_error('Brandkit: unable to generate the login stylesheet: ' . $e->getMessage(), E_USER_WARNING);
         }
     }
-
-    $loginHeaderTags = [];
-    if ($docCssUrl) {
-        $loginHeaderTags[] = [
+    if ($loginCssUrl !== null) {
+        $PLUGIN_HOOKS['add_header_tag_anonymous_page'][PLUGIN_BRANDKIT_KEY] = [[
             'tag' => 'link',
             'properties' => [
                 'rel' => 'stylesheet',
-                'href' => $docCssUrl,
+                'href' => $loginCssUrl,
             ],
-        ];
-    }
-    $isGlpi11 = brandkit_is_glpi11();
-    if (!empty($loginHeaderTags)) {
-        $PLUGIN_HOOKS['add_header_tag_anonymous_page']['brandkit'] = $loginHeaderTags;
+        ]];
     }
     if (!$isGlpi11) {
-        $PLUGIN_HOOKS['add_javascript_anonymous_page']['brandkit'] = 'js/brandkit-login.js';
+        $PLUGIN_HOOKS['add_javascript_anonymous_page'][PLUGIN_BRANDKIT_KEY] = brandkit_get_public_hook_path('js/brandkit-login.js');
     }
+
+    // Error pages reuse the login look (see public/js/brandkit-error.js).
+    // Static files live in public/: GLPI 11 serves nothing else.
+    $PLUGIN_HOOKS['add_javascript'][PLUGIN_BRANDKIT_KEY] = brandkit_get_public_hook_path('js/brandkit-error.js');
 
     if (!Session::getLoginUserID()) {
-        return true;
+        return;
     }
 
-    $domain = 'brandkit';
+    $PLUGIN_HOOKS['add_css'][PLUGIN_BRANDKIT_KEY][] = 'front/brandkit.css.php';
 
-    if (method_exists('Plugin', 'loadLang')) {
-        Plugin::loadLang($domain);
-    }
-
-    $PLUGIN_HOOKS['add_css']['brandkit'][] = 'front/brandkit.css.php';
-
-
-    if (
-        !isset($_SESSION['brandkit_menu_version'])
-        || $_SESSION['brandkit_menu_version'] !== PLUGIN_BRANDKIT_VERSION
-    ) {
+    // GLPI caches the menu in session; drop it once after an upgrade so the
+    // Brandkit entry shows up without logging out.
+    if (($_SESSION['brandkit_menu_version'] ?? null) !== PLUGIN_BRANDKIT_VERSION) {
         unset($_SESSION['glpimenu']);
         $_SESSION['brandkit_menu_version'] = PLUGIN_BRANDKIT_VERSION;
     }
@@ -164,98 +103,36 @@ function plugin_init_brandkit()
     Plugin::registerClass('PluginBrandkitConfig');
 
     if (Session::haveRight('config', UPDATE)) {
-        $PLUGIN_HOOKS['menu_toadd']['brandkit'] = ['plugins' => 'PluginBrandkitConfig'];
-        $PLUGIN_HOOKS['config_page']['brandkit'] = 'front/index.php';
+        $PLUGIN_HOOKS['menu_toadd'][PLUGIN_BRANDKIT_KEY] = ['plugins' => 'PluginBrandkitConfig'];
+        $PLUGIN_HOOKS['config_page'][PLUGIN_BRANDKIT_KEY] = 'front/index.php';
         if (!$isGlpi11) {
-            $PLUGIN_HOOKS['menu_entry']['brandkit'] = 'front/index.php';
-            $PLUGIN_HOOKS['submenu_entry']['brandkit']['search'] = 'front/index.php';
+            $PLUGIN_HOOKS['menu_entry'][PLUGIN_BRANDKIT_KEY] = 'front/index.php';
+            $PLUGIN_HOOKS['submenu_entry'][PLUGIN_BRANDKIT_KEY]['search'] = 'front/index.php';
         }
     }
-
-    return true;
 }
 
+/**
+ * Get the name and the version of the plugin - Needed
+ */
 function plugin_version_brandkit()
 {
-    global $CFG_GLPI, $TRANSLATE;
-
-    $lang = '';
-    if (class_exists('Session') && method_exists('Session', 'getLanguage')) {
-        $lang = Session::getLanguage() ?? '';
-    }
-    if (!$lang && isset($CFG_GLPI['language'])) {
-        $lang = $CFG_GLPI['language'];
-    }
-
-    if (
-        method_exists('Plugin', 'loadLang')
-        && isset($TRANSLATE)
-        && is_object($TRANSLATE)
-    ) {
-        Plugin::loadLang('brandkit', $lang);
-    }
-
     return [
-        'name' => __('Brandkit', 'brandkit'),
+        'name' => 'Brandkit',
         'version' => PLUGIN_BRANDKIT_VERSION,
         'author' => '<a href="https://github.com/juniormarcati">Marcati</a>',
         'license' => 'AGPLv3+',
-        'homepage' => 'https://github.com/juniormarcati/brandkit',
-        'readme' => 'https://github.com/juniormarcati/brandkit/blob/master/Readme.md',
-        'issues' => 'https://github.com/juniormarcati/brandkit/issues',
+        'homepage' => 'https://github.com/juniormarcati/glpi-brandkit',
+        'readme' => 'https://github.com/juniormarcati/glpi-brandkit/blob/main/Readme.md',
+        'issues' => 'https://github.com/juniormarcati/glpi-brandkit/issues',
         'requirements' => [
             'glpi' => [
-                  'min' => PLUGIN_BRANDKIT_MIN_GLPI,
-                  'max' => PLUGIN_BRANDKIT_MAX_GLPI,
+                'min' => PLUGIN_BRANDKIT_MIN_GLPI,
+                'max' => PLUGIN_BRANDKIT_MAX_GLPI,
             ],
             'php' => [
-                'min' => '7.4'
-            ]
-        ]
+                'min' => '7.4',
+            ],
+        ],
     ];
-}
-
-function plugin_check_prerequisites_brandkit()
-{
-    if (
-          version_compare(GLPI_VERSION, PLUGIN_BRANDKIT_MIN_GLPI, 'lt') ||
-          version_compare(GLPI_VERSION, PLUGIN_BRANDKIT_MAX_GLPI, 'gt')
-    ) {
-        echo sprintf(
-            __('Plugin Brandkit requires GLPI version %s to %s.', 'brandkit'),
-            PLUGIN_BRANDKIT_MIN_GLPI,
-            PLUGIN_BRANDKIT_MAX_GLPI
-        );
-        return false;
-    }
-
-      if (version_compare(PHP_VERSION, '7.4', 'lt')) {
-          echo __('Plugin Brandkit requires PHP version 7.4 or higher.', 'brandkit');
-        return false;
-    }
-
-    $required_extensions = ['json', 'curl'];
-    foreach ($required_extensions as $ext) {
-        if (!extension_loaded($ext)) {
-              echo sprintf(__('Plugin Brandkit requires PHP extension: %s', 'brandkit'), $ext);
-            return false;
-        }
-    }
-
-    return true;
-}
-
-function plugin_check_config_brandkit()
-{
-    return true;
-}
-
-function plugin_install_brandkit()
-{
-    return plugin_brandkit_install();
-}
-
-function plugin_uninstall_brandkit()
-{
-    return plugin_brandkit_uninstall();
 }

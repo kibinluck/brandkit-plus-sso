@@ -34,350 +34,109 @@
  */
 
 include_once '../../../inc/includes.php';
-include_once __DIR__ . '/../inc/login.css.php';
+require_once __DIR__ . '/../inc/login.css.php';
 
+/**
+ * Upload or remove a logo / favicon (POST, CSRF checked by GLPI core).
+ */
 Session::checkRight('config', UPDATE);
 
+$redirectUrl = brandkit_get_plugin_web_dir() . '/front/index.php?step=1';
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    Http::displayErrorAndDie(__('Method Not Allowed', 'brandkit'), 405);
+    Html::redirect($redirectUrl);
+    exit;
 }
 
-function brandkit_get_wallpaper_upload_error_message(int $errorCode): string
-{
-    switch ($errorCode) {
-        case UPLOAD_ERR_INI_SIZE:
-        case UPLOAD_ERR_FORM_SIZE:
-            return __('Wallpaper upload failed. The file is larger than the allowed size.', 'brandkit');
-        case UPLOAD_ERR_PARTIAL:
-            return __('Wallpaper upload failed because the file was only partially uploaded.', 'brandkit');
-        case UPLOAD_ERR_NO_FILE:
-            return __('Please choose an image file to upload.', 'brandkit');
-        case UPLOAD_ERR_NO_TMP_DIR:
-            return __('Wallpaper upload failed because the temporary upload folder is missing on the server.', 'brandkit');
-        case UPLOAD_ERR_CANT_WRITE:
-            return __('Wallpaper upload failed because the server could not write the temporary file.', 'brandkit');
-        case UPLOAD_ERR_EXTENSION:
-            return __('Wallpaper upload was blocked by a PHP extension on the server.', 'brandkit');
-        default:
-            return sprintf(__('Wallpaper upload failed due to an unexpected error (code %d).', 'brandkit'), $errorCode);
-    }
-}
-
-function brandkit_delete_uploaded_wallpaper_variants(string $baseName = 'wallpaperLogin'): void
-{
-    $extensions = ['png', 'jpg', 'jpeg', 'webp'];
-    $paths = [];
-    $picsDir = brandkit_get_pics_dir();
-    if ($picsDir) {
-        $publicDir = $picsDir . '/brandkit-wallpapers';
-        foreach ($extensions as $ext) {
-            $paths[] = $publicDir . '/' . $baseName . '.' . $ext;
-        }
-    }
-
-    $pluginDir = brandkit_get_plugin_storage_dir();
-    if ($pluginDir) {
-        $legacyDir = rtrim($pluginDir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . 'wallpaper';
-        foreach ($extensions as $ext) {
-            $paths[] = $legacyDir . DIRECTORY_SEPARATOR . $baseName . '.' . $ext;
-        }
-    }
-
-    foreach (array_unique($paths) as $path) {
-        if (is_file($path)) {
-            @unlink($path);
-        }
-    }
-}
-
-$action = $_POST['brandkit_action'] ?? 'upload_logo';
-$refreshToken = (string) round(microtime(true) * 1000);
-$logoRedirectUrl = Plugin::getWebDir('brandkit') . '/front/index.php?step=1&refresh=' . rawurlencode($refreshToken);
-$wallpaperRedirectUrl = Plugin::getWebDir('brandkit') . '/front/index.php?step=3&refresh=' . rawurlencode($refreshToken);
-$redirectUrl = in_array($action, ['upload_logo', 'clear_logo'], true) ? $logoRedirectUrl : $wallpaperRedirectUrl;
-
+// PHP drops the whole body when it exceeds post_max_size.
 if (empty($_POST) && empty($_FILES)) {
     Session::addMessageAfterRedirect(__('Upload failed. The file may be too large for the server limits.', 'brandkit'), false, ERROR);
     Html::redirect($redirectUrl);
     exit;
 }
 
-// CSRF validation disabled to match osfree upload behavior.
-
-$logoFiles = [
-    'logo-GLPI-100-white.png' => __('Expanded menu logo (light)', 'brandkit'),
-    'logo-G-100-white.png' => __('Collapsed menu logo (light)', 'brandkit'),
-    'logo-GLPI-100-black.png' => __('Expanded menu logo (dark)', 'brandkit'),
-    'logo-G-100-black.png' => __('Collapsed menu logo (dark)', 'brandkit'),
-    'logo-GLPI-250-black.png' => __('Login logo (light)', 'brandkit'),
-    'logo-GLPI-250-white.png' => __('Login logo (dark)', 'brandkit'),
-    'favicon.ico' => __('Favicon (browser tab)', 'brandkit'),
-];
-
-$allowedExtensions = ['png', 'jpg', 'jpeg', 'webp'];
-
-$pluginDocDir = brandkit_get_plugin_storage_dir();
-$logosDir = $pluginDocDir ? $pluginDocDir . '/logos' : null;
-if (!$logosDir) {
-    Session::addMessageAfterRedirect(__('Plugin storage directory is not available.', 'brandkit'), false, ERROR);
+$action = (string) ($_POST['brandkit_action'] ?? 'upload_logo');
+$targetFile = (string) ($_POST['logo_target'] ?? '');
+if (!in_array($action, ['upload_logo', 'clear_logo'], true) || !brandkit_is_logo_target($targetFile)) {
+    Session::addMessageAfterRedirect(__('Invalid logo target selected.', 'brandkit'), false, ERROR);
     Html::redirect($redirectUrl);
     exit;
 }
 
-if (!is_dir($logosDir) && !@mkdir($logosDir, 0755, true)) {
+if ($action === 'clear_logo') {
+    $messages = [
+        'favicon_restore_failed' => __('Unable to restore the original favicon. Check file permissions.', 'brandkit'),
+        'login_restore_failed' => __('Unable to restore the original login logo. Check file permissions.', 'brandkit'),
+        'login_original_missing' => __('Original login logo not found in plugin pics.', 'brandkit'),
+        'header_restore_failed' => __('Unable to restore the original header logo. Check file permissions.', 'brandkit'),
+        'header_original_missing' => __('Original header logo not found in plugin pics.', 'brandkit'),
+    ];
+    foreach (brandkit_restore_original_logo_assets($targetFile) as $error) {
+        Session::addMessageAfterRedirect($messages[$error] ?? $error, false, WARNING);
+    }
+    Session::addMessageAfterRedirect(__('Logo cleared. GLPI will use the default asset.', 'brandkit'), false, INFO);
+    Html::redirect($redirectUrl);
+    exit;
+}
+
+$isFavicon = $targetFile === 'favicon.ico';
+$upload = $_FILES['brandkit_logo'] ?? null;
+$uploadError = brandkit_check_upload(
+    is_array($upload) ? $upload : null,
+    $isFavicon ? ['ico'] : ['png', 'jpg', 'jpeg', 'webp'],
+    $isFavicon ? BRANDKIT_MAX_FAVICON_BYTES : BRANDKIT_MAX_LOGO_BYTES
+);
+if ($uploadError !== null) {
+    Session::addMessageAfterRedirect($uploadError, false, ERROR);
+    Html::redirect($redirectUrl);
+    exit;
+}
+
+$destination = brandkit_get_stored_logo_path($targetFile, false);
+if ($destination === null) {
     Session::addMessageAfterRedirect(__('Unable to create plugin logo directory.', 'brandkit'), false, ERROR);
     Html::redirect($redirectUrl);
     exit;
 }
 
-$wallpaperBaseName = 'wallpaperLogin';
-$picsDir = brandkit_get_pics_dir();
-$wallpaperDir = $picsDir ? $picsDir . '/brandkit-wallpapers' : null;
-$wallpaperPath = $wallpaperDir ? $wallpaperDir . '/' . $wallpaperBaseName . '.png' : null;
+// Save GLPI's own file before the new upload replaces the stored copy:
+// compared with the previous upload, the native file is recognised as ours.
+brandkit_backup_native_asset($targetFile);
 
-if ($action === 'clear_wallpaper') {
-    brandkit_delete_uploaded_wallpaper_variants($wallpaperBaseName);
-    Config::setConfigurationValues('plugin:brandkit', [
-        'login_wallpaper' => '',
-        'login_wallpaper_source' => 'custom',
-    ]);
-    brandkit_write_login_css($pluginDocDir);
-    Session::addMessageAfterRedirect(__('Login wallpaper cleared.', 'brandkit'), false, INFO);
-    Html::redirect($wallpaperRedirectUrl);
-    exit;
-}
-
-if ($action === 'upload_wallpaper') {
-    $wallpaperFile = $_FILES['brandkit_wallpaper'] ?? ($_FILES['login_wallpaper'] ?? null);
-    if (!$wallpaperFile || ($wallpaperFile['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK) {
-        $error = (int) ($wallpaperFile['error'] ?? UPLOAD_ERR_NO_FILE);
-        Session::addMessageAfterRedirect(brandkit_get_wallpaper_upload_error_message($error), false, ERROR);
-        Html::redirect($wallpaperRedirectUrl);
-        exit;
-    }
-
-    $extension = strtolower(pathinfo($wallpaperFile['name'], PATHINFO_EXTENSION));
-    if (!in_array($extension, $allowedExtensions, true)) {
-        Session::addMessageAfterRedirect(__('Allowed formats: PNG, JPG, JPEG, WEBP.', 'brandkit'), false, ERROR);
-        Html::redirect($wallpaperRedirectUrl);
-        exit;
-    }
-
-    $tmpName = $wallpaperFile['tmp_name'];
-    if (!is_uploaded_file($tmpName)) {
-        Session::addMessageAfterRedirect(__('The upload could not be validated.', 'brandkit'), false, ERROR);
-        Html::redirect($wallpaperRedirectUrl);
-        exit;
-    }
-
-    if (!$wallpaperPath) {
-        Session::addMessageAfterRedirect(__('Wallpaper upload failed. Public pics path is unavailable.', 'brandkit'), false, ERROR);
-        Html::redirect($wallpaperRedirectUrl);
-        exit;
-    }
-
-    if ($wallpaperDir && !is_dir($wallpaperDir) && !@mkdir($wallpaperDir, 0755, true)) {
-        Session::addMessageAfterRedirect(__('Unable to create wallpaper directory.', 'brandkit'), false, ERROR);
-        Html::redirect($wallpaperRedirectUrl);
-        exit;
-    }
-
-    if (is_file($wallpaperPath)) {
-        @unlink($wallpaperPath);
-    }
-
-    $storedFilename = $wallpaperBaseName . '.png';
-    $destination = $wallpaperPath;
-    if ($extension === 'png') {
-        if (!@move_uploaded_file($tmpName, $destination)) {
-            Session::addMessageAfterRedirect(__('Unable to save the uploaded wallpaper. Check file permissions.', 'brandkit'), false, ERROR);
-            Html::redirect($wallpaperRedirectUrl);
-            exit;
-        }
-    } else {
-        if (brandkit_convert_image_to_png($tmpName, $destination)) {
-            $storedFilename = $wallpaperBaseName . '.png';
-        } elseif ($extension === 'webp') {
-            $storedFilename = $wallpaperBaseName . '.webp';
-            $destination = $wallpaperDir ? $wallpaperDir . '/' . $storedFilename : null;
-            if (!$destination || !@move_uploaded_file($tmpName, $destination)) {
-                Session::addMessageAfterRedirect(__('Unable to process the uploaded wallpaper. Ensure the file is a valid image.', 'brandkit'), false, ERROR);
-                Html::redirect($wallpaperRedirectUrl);
-                exit;
-            }
-        } else {
-            Session::addMessageAfterRedirect(__('Unable to process the uploaded wallpaper. Ensure the file is a valid image.', 'brandkit'), false, ERROR);
-            Html::redirect($wallpaperRedirectUrl);
-            exit;
-        }
-    }
-
-    if (!Document::isImage($destination)) {
-        @unlink($destination);
-        Session::addMessageAfterRedirect(__('The uploaded file is not a valid image.', 'brandkit'), false, ERROR);
-        Html::redirect($wallpaperRedirectUrl);
-        exit;
-    }
-
-    Config::setConfigurationValues('plugin:brandkit', [
-        'login_wallpaper' => $storedFilename,
-        'login_wallpaper_source' => 'custom',
-    ]);
-    brandkit_write_login_css($pluginDocDir);
-    Session::addMessageAfterRedirect(__('Login wallpaper uploaded successfully.', 'brandkit'), false, INFO);
-    Html::redirect($wallpaperRedirectUrl);
-    exit;
-}
-
-$targetFile = $_POST['logo_target'] ?? '';
-if (!isset($logoFiles[$targetFile])) {
-    Session::addMessageAfterRedirect(__('Invalid logo target selected.', 'brandkit'), false, ERROR);
-    Html::redirect($logoRedirectUrl);
-    exit;
-}
-
-if ($action === 'clear_logo') {
-    $destination = $logosDir . '/' . $targetFile;
-    if (is_file($destination)) {
-        @unlink($destination);
-    }
-    $restoreErrors = brandkit_restore_original_logo_assets($targetFile, $logosDir);
-    foreach ($restoreErrors as $error) {
-        switch ($error) {
-            case 'favicon_restore_failed':
-                Session::addMessageAfterRedirect(__('Unable to restore the original favicon. Check file permissions.', 'brandkit'), false, WARNING);
-                break;
-            case 'login_restore_failed':
-                Session::addMessageAfterRedirect(__('Unable to restore the original login logo. Check file permissions.', 'brandkit'), false, WARNING);
-                break;
-            case 'login_original_missing':
-                Session::addMessageAfterRedirect(__('Original login logo not found in plugin pics.', 'brandkit'), false, WARNING);
-                break;
-            case 'header_restore_failed':
-                Session::addMessageAfterRedirect(__('Unable to restore the original header logo. Check file permissions.', 'brandkit'), false, WARNING);
-                break;
-            case 'header_original_missing':
-                Session::addMessageAfterRedirect(__('Original header logo not found in plugin pics.', 'brandkit'), false, WARNING);
-                break;
-        }
-    }
-    Session::addMessageAfterRedirect(__('Logo cleared. GLPI will use the default asset.', 'brandkit'), false, INFO);
-    Html::redirect($logoRedirectUrl);
-    exit;
-}
-
-if (!isset($_FILES['brandkit_logo']) || $_FILES['brandkit_logo']['error'] !== UPLOAD_ERR_OK) {
-    $error = $_FILES['brandkit_logo']['error'] ?? UPLOAD_ERR_NO_FILE;
-    if (in_array($error, [UPLOAD_ERR_INI_SIZE, UPLOAD_ERR_FORM_SIZE], true)) {
-        Session::addMessageAfterRedirect(__('Upload failed. The file is larger than the allowed size.', 'brandkit'), false, ERROR);
-    } elseif ($error === UPLOAD_ERR_NO_FILE) {
-        Session::addMessageAfterRedirect(__('Please choose an image file to upload.', 'brandkit'), false, ERROR);
-    } else {
-        Session::addMessageAfterRedirect(__('Upload failed due to an unexpected error.', 'brandkit'), false, ERROR);
-    }
-    Html::redirect($logoRedirectUrl);
-    exit;
-}
-
-$extension = strtolower(pathinfo($_FILES['brandkit_logo']['name'], PATHINFO_EXTENSION));
-if ($targetFile === 'favicon.ico') {
-    if ($extension !== 'ico') {
+$tmpName = $upload['tmp_name'];
+if ($isFavicon) {
+    // GD cannot decode .ico: validate the header and store the file as is.
+    $saved = brandkit_is_ico_file($tmpName) && @move_uploaded_file($tmpName, $destination);
+    if (!$saved) {
         Session::addMessageAfterRedirect(__('Favicon must be an ICO file.', 'brandkit'), false, ERROR);
-        Html::redirect($logoRedirectUrl);
-        exit;
-    }
-    $allowedFaviconMimes = [
-        'image/x-icon',
-        'image/vnd.microsoft.icon',
-        'image/ico',
-        'image/icon',
-    ];
-    if (function_exists('finfo_open')) {
-        $finfo = finfo_open(FILEINFO_MIME_TYPE);
-        if ($finfo) {
-            $detectedMime = finfo_file($finfo, $_FILES['brandkit_logo']['tmp_name']);
-            finfo_close($finfo);
-            if ($detectedMime && !in_array($detectedMime, $allowedFaviconMimes, true)) {
-                Session::addMessageAfterRedirect(__('Favicon must be an ICO file.', 'brandkit'), false, ERROR);
-                Html::redirect($logoRedirectUrl);
-                exit;
-            }
-        }
-    }
-} else {
-    if (!in_array($extension, $allowedExtensions, true)) {
-        Session::addMessageAfterRedirect(__('Allowed formats: PNG, JPG, JPEG, WEBP.', 'brandkit'), false, ERROR);
-        Html::redirect($logoRedirectUrl);
-        exit;
-    }
-}
-
-$tmpName = $_FILES['brandkit_logo']['tmp_name'];
-if (!is_uploaded_file($tmpName)) {
-    Session::addMessageAfterRedirect(__('The upload could not be validated.', 'brandkit'), false, ERROR);
-    Html::redirect($logoRedirectUrl);
-    exit;
-}
-
-$destination = $logosDir . '/' . $targetFile;
-if ($targetFile === 'favicon.ico') {
-    if (!@move_uploaded_file($tmpName, $destination)) {
-        Session::addMessageAfterRedirect(__('Unable to save the uploaded logo. Check file permissions.', 'brandkit'), false, ERROR);
-        Html::redirect($logoRedirectUrl);
+        Html::redirect($redirectUrl);
         exit;
     }
 } else {
-    if ($extension === 'png') {
-        if (!@move_uploaded_file($tmpName, $destination)) {
-            Session::addMessageAfterRedirect(__('Unable to save the uploaded logo. Check file permissions.', 'brandkit'), false, ERROR);
-            Html::redirect($logoRedirectUrl);
-            exit;
-        }
-    } else {
-        if (!brandkit_convert_image_to_png($tmpName, $destination)) {
-            Session::addMessageAfterRedirect(__('Unable to process the uploaded logo. Ensure the file is a valid image.', 'brandkit'), false, ERROR);
-            Html::redirect($logoRedirectUrl);
-            exit;
-        }
-    }
-}
-
-if ($targetFile !== 'favicon.ico') {
-    if (!Document::isImage($destination)) {
-        @unlink($destination);
+    // Always decode and re-encode as PNG (GLPI's file names are .png):
+    // drops metadata and anything smuggled after the image data, and caps
+    // the size to something sensible for a logo.
+    if (brandkit_get_image_info($tmpName) === null) {
         Session::addMessageAfterRedirect(__('The uploaded file is not a valid image.', 'brandkit'), false, ERROR);
-        Html::redirect($logoRedirectUrl);
+        Html::redirect($redirectUrl);
+        exit;
+    }
+    if (!brandkit_reencode_image($tmpName, $destination, 'image/png', 1200, 1200)) {
+        Session::addMessageAfterRedirect(__('Unable to process the uploaded logo. Ensure the file is a valid image.', 'brandkit'), false, ERROR);
+        Html::redirect($redirectUrl);
         exit;
     }
 }
 
-// Replace the native GLPI login logo files when login logos are uploaded.
-$nativeLoginLogo = brandkit_get_native_login_logo_path($targetFile);
-if ($nativeLoginLogo) {
-    if (!@copy($destination, $nativeLoginLogo)) {
-        Session::addMessageAfterRedirect(__('Uploaded, but failed to replace the native login logo. Check file permissions.', 'brandkit'), false, WARNING);
-    }
-}
-
-$nativeHeaderLogo = brandkit_get_native_header_logo_path($targetFile);
-if ($nativeHeaderLogo) {
-    if (!@copy($destination, $nativeHeaderLogo)) {
-        Session::addMessageAfterRedirect(__('Uploaded, but failed to replace the native header logo. Check file permissions.', 'brandkit'), false, WARNING);
-    }
-}
-
-if ($targetFile === 'favicon.ico') {
-    $nativeFavicon = brandkit_get_native_favicon_path();
-    $backupFavicon = $logosDir . '/favicon.ico.bak';
-    if ($nativeFavicon) {
-        if (is_file($nativeFavicon) && !is_file($backupFavicon)) {
-            @copy($nativeFavicon, $backupFavicon);
-        }
-        if (!@copy($destination, $nativeFavicon)) {
-            Session::addMessageAfterRedirect(__('Uploaded, but failed to replace the GLPI favicon. Check file permissions.', 'brandkit'), false, WARNING);
-        }
-    }
+if (!brandkit_install_native_asset($targetFile)) {
+    $kind = brandkit_get_logo_target_kinds()[$targetFile];
+    $warnings = [
+        'favicon' => __('Uploaded, but failed to replace the GLPI favicon. Check file permissions.', 'brandkit'),
+        'login' => __('Uploaded, but failed to replace the native login logo. Check file permissions.', 'brandkit'),
+        'header' => __('Uploaded, but failed to replace the native header logo. Check file permissions.', 'brandkit'),
+    ];
+    Session::addMessageAfterRedirect($warnings[$kind], false, WARNING);
 }
 
 Session::addMessageAfterRedirect(__('Logo uploaded successfully.', 'brandkit'), false, INFO);
-Html::redirect($logoRedirectUrl);
+Html::redirect($redirectUrl);

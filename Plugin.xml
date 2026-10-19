@@ -17,16 +17,16 @@
          <fr_FR><![CDATA[Facilite la personnalisation de l'identité visuelle de GLPI avec des modifications des logos et de la page de connexion, sans avoir à toucher au CSS.]]></fr_FR>
       </long>
    </description>
-   <homepage>https://github.com/juniormarcati/brandkit</homepage>
-   <download>https://github.com/juniormarcati/brandkit/releases</download>
-   <issues>https://github.com/juniormarcati/brandkit/issues</issues>
-   <readme>https://github.com/juniormarcati/brandkit/blob/master/Readme.md</readme>
+   <homepage>https://github.com/juniormarcati/glpi-brandkit</homepage>
+   <download>https://github.com/juniormarcati/glpi-brandkit/releases</download>
+   <issues>https://github.com/juniormarcati/glpi-brandkit/issues</issues>
+   <readme>https://github.com/juniormarcati/glpi-brandkit/blob/main/Readme.md</readme>
    <authors>
       <author>Marcati</author>
    </authors>
    <versions>
       <version>
-         <num>0.1.7</num>
+         <num>0.2.0</num>
          <compatibility>10.0</compatibility>
          <compatibility>10.1</compatibility>
          <compatibility>11.0</compatibility>

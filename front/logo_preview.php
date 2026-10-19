@@ -34,82 +34,24 @@
  */
 
 include_once '../../../inc/includes.php';
-include_once __DIR__ . '/../inc/login.css.php';
+require_once __DIR__ . '/../inc/login.css.php';
 
-if (!Session::getLoginUserID() || !Session::haveRight('config', UPDATE)) {
-    http_response_code(403);
-    header('Content-Type: text/plain; charset=UTF-8');
-    echo 'Forbidden';
-    exit;
-}
-
-$allowedFiles = [
-    'logo-GLPI-100-white.png',
-    'logo-G-100-white.png',
-    'logo-GLPI-100-black.png',
-    'logo-G-100-black.png',
-    'logo-GLPI-250-black.png',
-    'logo-GLPI-250-white.png',
-    'favicon.ico',
-];
+/**
+ * Admin-only preview of an uploaded (not yet published) logo or favicon.
+ */
+Session::checkRight('config', UPDATE);
 
 $name = $_GET['name'] ?? '';
-if (!is_string($name) || $name === '' || !in_array($name, $allowedFiles, true)) {
-    Http::displayErrorAndDie(__('File not found', 'brandkit'), 404);
-}
-
-$pluginDocDir = brandkit_get_plugin_storage_dir_existing();
-if (!$pluginDocDir) {
-    $pluginDocDir = brandkit_get_plugin_storage_dir();
-}
-$logosDir = $pluginDocDir ? $pluginDocDir . DIRECTORY_SEPARATOR . 'logos' : null;
-if (!$logosDir || !is_dir($logosDir)) {
-    if (defined('GLPI_VAR_DIR')) {
-        $fallback = rtrim(GLPI_VAR_DIR, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . '_plugins' . DIRECTORY_SEPARATOR . 'brandkit' . DIRECTORY_SEPARATOR . 'logos';
-        if (is_dir($fallback)) {
-            $logosDir = $fallback;
-        }
-    }
-}
-if (!$logosDir || !is_dir($logosDir)) {
+$path = is_string($name) ? brandkit_get_stored_logo_path($name) : null;
+if ($path === null) {
     http_response_code(404);
     header('Content-Type: text/plain; charset=UTF-8');
     echo 'File not found';
     exit;
 }
 
-$path = $logosDir . DIRECTORY_SEPARATOR . $name;
-$realLogosDir = realpath($logosDir);
-$realPath = realpath($path);
-if (!$realLogosDir || !$realPath || strpos($realPath, $realLogosDir) !== 0 || !is_file($realPath)) {
-    http_response_code(404);
-    header('Content-Type: text/plain; charset=UTF-8');
-    echo 'File not found';
-    exit;
-}
-
-$mime = null;
-if (function_exists('mime_content_type')) {
-    $mime = @mime_content_type($realPath);
-}
-if (!$mime || $mime === 'application/octet-stream') {
-    $ext = strtolower(pathinfo($realPath, PATHINFO_EXTENSION));
-    if ($ext === 'png') {
-        $mime = 'image/png';
-    } elseif ($ext === 'jpg' || $ext === 'jpeg') {
-        $mime = 'image/jpeg';
-    } elseif ($ext === 'webp') {
-        $mime = 'image/webp';
-    } elseif ($ext === 'ico') {
-        $mime = 'image/x-icon';
-    } else {
-        $mime = 'application/octet-stream';
-    }
-}
-
-header('Content-Type: ' . $mime);
-header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
-header('Pragma: no-cache');
-header('Expires: 0');
-readfile($realPath);
-exit;
+header('Content-Type: ' . brandkit_guess_mime_from_filename($path));
+header('Content-Length: ' . (string) filesize($path));
+header('X-Content-Type-Options: nosniff');
+header('Cache-Control: private, no-cache, max-age=0');
+readfile($path);

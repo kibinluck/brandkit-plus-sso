@@ -22,7 +22,9 @@
  * along with Brandkit Plugin. If not, see <https://www.gnu.org/licenses/>.
  * ------------------------------------------------------------------------
  *
- * Shared path helpers for Brandkit Plugin.
+ * Environment and path helpers shared by every Brandkit entry point.
+ * This is the single place that knows where GLPI keeps its files, so the
+ * rest of the plugin never has to guess paths on its own.
  *
  * @package   Brandkit Plugin
  * @author    Marcati
@@ -33,118 +35,300 @@
  * ------------------------------------------------------------------------
  */
 
-if (!function_exists('brandkit_is_glpi11')) {
-    function brandkit_is_glpi11(): bool
-    {
-        if (defined('GLPI_VERSION')) {
-            return version_compare(GLPI_VERSION, '11.0.0', '>=');
-        }
-
-        if (defined('GLPI_ROOT')) {
-            $root = rtrim(GLPI_ROOT, DIRECTORY_SEPARATOR);
-            $publicPics = $root . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'pics';
-            $legacyPics = $root . DIRECTORY_SEPARATOR . 'pics';
-            if (is_dir($legacyPics) && !is_dir($publicPics)) {
-                return false;
-            }
-            if (is_dir($publicPics) && !is_dir($legacyPics)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
+if (!defined('GLPI_ROOT')) {
+    die("Sorry. You can't access this file directly");
 }
 
-if (!function_exists('brandkit_get_glpi_root_doc')) {
-    function brandkit_get_glpi_root_doc(): string
-    {
-        $root = '';
-        if (isset($GLOBALS['CFG_GLPI']) && is_array($GLOBALS['CFG_GLPI'])) {
-            $cfg = $GLOBALS['CFG_GLPI'];
-            if (isset($cfg['root_doc']) && is_string($cfg['root_doc'])) {
-                $root = rtrim($cfg['root_doc'], '/');
-            }
-        }
-        if ($root === '' && class_exists('Plugin')) {
-            $pluginWeb = Plugin::getWebDir('brandkit', false);
-            if (is_string($pluginWeb) && $pluginWeb !== '') {
-                $normalized = rtrim($pluginWeb, '/');
-                $root = preg_replace('~/?plugins/brandkit$~', '', $normalized) ?? '';
-            }
-        }
-        if ($root !== '' && $root[0] !== '/') {
-            $root = '/' . $root;
-        }
-
-        return $root;
-    }
+if (!defined('PLUGIN_BRANDKIT_KEY')) {
+    define('PLUGIN_BRANDKIT_KEY', 'brandkit');
 }
 
-if (!function_exists('brandkit_get_front_web_base')) {
-    function brandkit_get_front_web_base(): string
-    {
-        $root = brandkit_get_glpi_root_doc();
-        return ($root === '' ? '' : $root) . '/front';
+/**
+ * Whether the running GLPI is 11.x or later.
+ */
+function brandkit_is_glpi11(): bool
+{
+    if (defined('GLPI_VERSION')) {
+        return version_compare(GLPI_VERSION, '11.0.0', '>=');
     }
+
+    $root = rtrim(GLPI_ROOT, '/\\');
+    $publicPics = $root . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'pics';
+    $legacyPics = $root . DIRECTORY_SEPARATOR . 'pics';
+
+    return is_dir($publicPics) && !is_dir($legacyPics);
 }
 
-if (!function_exists('brandkit_get_pics_web_base')) {
-    function brandkit_get_pics_web_base(): string
-    {
-        $root = brandkit_get_glpi_root_doc();
-        return ($root === '' ? '' : $root) . '/pics';
+/**
+ * GLPI base URL path (e.g. "" or "/glpi"), always without trailing slash.
+ */
+function brandkit_get_glpi_root_doc(): string
+{
+    $root = '';
+    $cfg = $GLOBALS['CFG_GLPI'] ?? null;
+    if (is_array($cfg) && isset($cfg['root_doc']) && is_string($cfg['root_doc'])) {
+        $root = rtrim($cfg['root_doc'], '/');
     }
+    if ($root !== '' && $root[0] !== '/') {
+        $root = '/' . $root;
+    }
+
+    return $root;
 }
 
-if (!function_exists('brandkit_get_pics_dir')) {
-    function brandkit_get_pics_dir(): ?string
-    {
-        if (defined('GLPI_PICS_DIR')) {
-            return rtrim(GLPI_PICS_DIR, DIRECTORY_SEPARATOR);
+/**
+ * Web path of the plugin directory.
+ *
+ * GLPI 11 serves every plugin from /plugins/<key> and deprecates
+ * Plugin::getWebDir(); GLPI 10 may also serve it from /marketplace/<key>.
+ *
+ * @param bool $full Prefix with GLPI root_doc (what links and redirects need).
+ */
+function brandkit_get_plugin_web_dir(bool $full = true): string
+{
+    $relative = '/plugins/' . PLUGIN_BRANDKIT_KEY;
+    if (!brandkit_is_glpi11() && class_exists('Plugin') && method_exists('Plugin', 'getWebDir')) {
+        $dir = Plugin::getWebDir(PLUGIN_BRANDKIT_KEY, false);
+        if (is_string($dir) && $dir !== '') {
+            $relative = '/' . ltrim(str_replace('\\', '/', $dir), '/');
         }
+    }
 
-        if (!defined('GLPI_ROOT')) {
-            return null;
+    return $full ? brandkit_get_glpi_root_doc() . $relative : $relative;
+}
+
+function brandkit_get_front_web_base(): string
+{
+    return brandkit_get_glpi_root_doc() . '/front';
+}
+
+function brandkit_get_pics_web_base(): string
+{
+    return brandkit_get_glpi_root_doc() . '/pics';
+}
+
+/**
+ * Filesystem directory holding GLPI's public pictures (pics/ on GLPI 10,
+ * public/pics/ on GLPI 11).
+ */
+function brandkit_get_pics_dir(): ?string
+{
+    if (defined('GLPI_PICS_DIR')) {
+        return rtrim(GLPI_PICS_DIR, '/\\');
+    }
+
+    $root = rtrim(GLPI_ROOT, '/\\');
+    $publicPics = $root . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'pics';
+    $legacyPics = $root . DIRECTORY_SEPARATOR . 'pics';
+    $candidates = brandkit_is_glpi11() ? [$publicPics, $legacyPics] : [$legacyPics, $publicPics];
+
+    foreach ($candidates as $candidate) {
+        if (is_dir($candidate)) {
+            return $candidate;
         }
+    }
 
-        $root = rtrim(GLPI_ROOT, DIRECTORY_SEPARATOR);
-        $publicPics = $root . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'pics';
-        $legacyPics = $root . DIRECTORY_SEPARATOR . 'pics';
-        $candidates = brandkit_is_glpi11()
-            ? [$publicPics, $legacyPics]
-            : [$legacyPics, $publicPics];
+    return null;
+}
 
-        foreach ($candidates as $candidate) {
-            if (is_dir($candidate)) {
-                return $candidate;
-            }
-        }
-
+/**
+ * Directory of GLPI's native logo files (pics/logos), or null when missing.
+ */
+function brandkit_get_pics_logos_dir(): ?string
+{
+    $picsDir = brandkit_get_pics_dir();
+    if ($picsDir === null) {
         return null;
     }
+
+    $logosDir = $picsDir . DIRECTORY_SEPARATOR . 'logos';
+    if (is_dir($logosDir)) {
+        return $logosDir;
+    }
+
+    // Some packagers flatten GLPI_PICS_DIR; keep the original fallback.
+    return defined('GLPI_PICS_DIR') ? $picsDir : null;
 }
 
-if (!function_exists('brandkit_get_pics_logos_dir')) {
-    function brandkit_get_pics_logos_dir(): ?string
-    {
-        if (defined('GLPI_PICS_DIR')) {
-            $picsDir = rtrim(GLPI_PICS_DIR, DIRECTORY_SEPARATOR);
-            $logosDir = $picsDir . DIRECTORY_SEPARATOR . 'logos';
-            if (is_dir($logosDir)) {
-                return $logosDir;
-            }
-            if (is_dir($picsDir)) {
-                return $picsDir;
-            }
-        }
-
-        $picsDir = brandkit_get_pics_dir();
-        if (!$picsDir) {
-            return null;
-        }
-
-        $logosDir = $picsDir . DIRECTORY_SEPARATOR . 'logos';
-        return is_dir($logosDir) ? $logosDir : null;
+/**
+ * Base directory GLPI gives plugins for their files (files/_plugins by default).
+ *
+ * GLPI_PLUGIN_DOC_DIR is authoritative: it is what pluginimage.send.php and
+ * css.php trust. GLPI_VAR_DIR/_plugins is only a fallback for odd setups.
+ */
+function brandkit_get_plugin_doc_base(): ?string
+{
+    if (defined('GLPI_PLUGIN_DOC_DIR')) {
+        return rtrim(GLPI_PLUGIN_DOC_DIR, '/\\');
     }
+    if (defined('GLPI_VAR_DIR')) {
+        return rtrim(GLPI_VAR_DIR, '/\\') . DIRECTORY_SEPARATOR . '_plugins';
+    }
+
+    return null;
+}
+
+/**
+ * Where releases up to 0.1.7 stored files when GLPI_PLUGIN_DOC_DIR was
+ * customized (they always used GLPI_VAR_DIR/_plugins). Null when it is the
+ * same place as the current storage directory or does not exist.
+ */
+function brandkit_get_legacy_storage_dir(): ?string
+{
+    if (!defined('GLPI_VAR_DIR')) {
+        return null;
+    }
+    $legacy = rtrim(GLPI_VAR_DIR, '/\\') . DIRECTORY_SEPARATOR . '_plugins' . DIRECTORY_SEPARATOR . PLUGIN_BRANDKIT_KEY;
+    $base = brandkit_get_plugin_doc_base();
+    $current = $base !== null ? $base . DIRECTORY_SEPARATOR . PLUGIN_BRANDKIT_KEY : null;
+    if (!is_dir($legacy)) {
+        return null;
+    }
+    if ($current !== null && is_dir($current) && realpath($current) === realpath($legacy)) {
+        return null;
+    }
+
+    return $legacy;
+}
+
+/**
+ * Plugin storage directory (files/_plugins/brandkit).
+ *
+ * @param bool $create Create it when missing.
+ */
+function brandkit_get_plugin_storage_dir(bool $create = true): ?string
+{
+    $base = brandkit_get_plugin_doc_base();
+    if ($base === null) {
+        return null;
+    }
+
+    $dir = $base . DIRECTORY_SEPARATOR . PLUGIN_BRANDKIT_KEY;
+    if (is_dir($dir)) {
+        return $dir;
+    }
+    if ($create && (@mkdir($dir, 0755, true) || is_dir($dir))) {
+        return $dir;
+    }
+
+    return null;
+}
+
+function brandkit_get_plugin_storage_dir_existing(): ?string
+{
+    return brandkit_get_plugin_storage_dir(false);
+}
+
+/**
+ * Sub-directory of the plugin storage (e.g. "logos", "originals").
+ */
+function brandkit_get_storage_subdir(string $name, bool $create = true): ?string
+{
+    $base = brandkit_get_plugin_storage_dir($create);
+    if ($base === null) {
+        return null;
+    }
+
+    $dir = $base . DIRECTORY_SEPARATOR . $name;
+    if (is_dir($dir)) {
+        return $dir;
+    }
+    if ($create && (@mkdir($dir, 0755, true) || is_dir($dir))) {
+        return $dir;
+    }
+
+    return null;
+}
+
+/**
+ * Relative path between two directories ("../x/y").
+ */
+function brandkit_relative_path(string $from, string $to): string
+{
+    $from = rtrim(str_replace('\\', '/', $from), '/');
+    $to = rtrim(str_replace('\\', '/', $to), '/');
+
+    $fromParts = $from === '' ? [] : explode('/', $from);
+    $toParts = $to === '' ? [] : explode('/', $to);
+
+    while (!empty($fromParts) && !empty($toParts) && $fromParts[0] === $toParts[0]) {
+        array_shift($fromParts);
+        array_shift($toParts);
+    }
+
+    $rel = str_repeat('../', count($fromParts)) . implode('/', $toParts);
+    return $rel === '' ? '.' : $rel;
+}
+
+/**
+ * Write a file atomically, and only when its content actually changes.
+ *
+ * Keeping the mtime stable matters: it is used as a cache-busting version
+ * in URLs, so rewriting identical content would defeat browser caching.
+ */
+function brandkit_write_file_if_changed(string $path, string $content): bool
+{
+    if (is_file($path) && @file_get_contents($path) === $content) {
+        return true;
+    }
+
+    $tmp = $path . '.' . bin2hex(random_bytes(4)) . '.tmp';
+    if (@file_put_contents($tmp, $content, LOCK_EX) === false) {
+        return false;
+    }
+    if (!@rename($tmp, $path)) {
+        @unlink($tmp);
+        return false;
+    }
+
+    return true;
+}
+
+/**
+ * Recursively delete a directory the plugin created.
+ */
+function brandkit_remove_dir(string $dir): void
+{
+    if (!is_dir($dir) || is_link($dir)) {
+        return;
+    }
+
+    $items = new RecursiveIteratorIterator(
+        new RecursiveDirectoryIterator($dir, FilesystemIterator::SKIP_DOTS),
+        RecursiveIteratorIterator::CHILD_FIRST
+    );
+    foreach ($items as $item) {
+        if ($item->isDir() && !$item->isLink()) {
+            @rmdir($item->getPathname());
+        } else {
+            @unlink($item->getPathname());
+        }
+    }
+    @rmdir($dir);
+}
+
+/**
+ * URL of a static file shipped in the plugin's public/ directory.
+ *
+ * GLPI 11 only serves plugin static files from public/ and expects URLs
+ * without that segment; GLPI 10 lets the web server serve the plugin
+ * directory as is.
+ */
+function brandkit_get_public_asset_url(string $relativePath, bool $full = true): string
+{
+    $relativePath = ltrim($relativePath, '/');
+    $prefix = brandkit_is_glpi11() ? '/' : '/public/';
+
+    return brandkit_get_plugin_web_dir($full) . $prefix . $relativePath;
+}
+
+/**
+ * Path of a public/ file as the add_javascript / add_css hooks expect it
+ * (relative to the plugin directory on GLPI 10, to public/ on GLPI 11).
+ */
+function brandkit_get_public_hook_path(string $relativePath): string
+{
+    $relativePath = ltrim($relativePath, '/');
+
+    return brandkit_is_glpi11() ? $relativePath : 'public/' . $relativePath;
 }
