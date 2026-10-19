@@ -261,6 +261,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['brandkit_action'] ?? '') =
     $ssoLocalLink = ($_POST['login_sso_local_link'] ?? '1') === '1' ? '1' : '0';
     $ssoTitle = is_string($_POST['login_sso_title'] ?? null) ? trim($_POST['login_sso_title']) : '';
     $ssoTitle = function_exists('mb_substr') ? mb_substr($ssoTitle, 0, 120) : substr($ssoTitle, 0, 120);
+    $ssoButtonColors = ($_POST['login_sso_button_colors'] ?? 'login') === 'custom' ? 'custom' : 'login';
+    $ssoButtonBg = brandkit_normalize_hex_color($_POST['login_sso_button_bg'] ?? '', $loginDefaults['login_sso_button_bg']);
+    $ssoButtonText = brandkit_normalize_hex_color($_POST['login_sso_button_text'] ?? '', $loginDefaults['login_sso_button_text']);
     $loginLogoWidth = brandkit_clamp_int(
         $_POST['login_logo_width'] ?? ($loginConfig['login_logo_width'] ?? $loginDefaults['login_logo_width']),
         80,
@@ -363,6 +366,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['brandkit_action'] ?? '') =
         'login_sso_mode' => $ssoMode,
         'login_sso_local_link' => $ssoLocalLink,
         'login_sso_title' => $ssoTitle,
+        'login_sso_button_colors' => $ssoButtonColors,
+        'login_sso_button_bg' => $ssoButtonBg,
+        'login_sso_button_text' => $ssoButtonText,
     ];
     if (!$isGlpi11) {
         $loginConfig['login_field_spacing'] = (string) $fieldSpacing;
@@ -812,6 +818,9 @@ Html::header(__('Brandkit', 'brandkit'), $_SERVER['PHP_SELF'], 'plugins', 'brand
                 );
                 $loginHideLoginText = ($loginConfig['login_hide_login_text'] ?? $loginDefaults['login_hide_login_text']) === '1';
                 $loginSso = brandkit_get_sso_settings();
+                $ssoButtonColors = ($loginConfig['login_sso_button_colors'] ?? 'login') === 'custom' ? 'custom' : 'login';
+                $ssoButtonBg = brandkit_normalize_hex_color($loginConfig['login_sso_button_bg'] ?? '', $loginDefaults['login_sso_button_bg']);
+                $ssoButtonText = brandkit_normalize_hex_color($loginConfig['login_sso_button_text'] ?? '', $loginDefaults['login_sso_button_text']);
                 $buttonStyleLabels = [
                     'primary' => __('Primary (default)', 'brandkit'),
                     'secondary' => __('Secondary', 'brandkit'),
@@ -1511,6 +1520,21 @@ Html::header(__('Brandkit', 'brandkit'), $_SERVER['PHP_SELF'], 'plugins', 'brand
                                 <div>
                                     <label for="brandkit_login_sso_title"><?php echo htmlescape(__('Text above the SSO button (optional)', 'brandkit')); ?></label>
                                     <input type="text" id="brandkit_login_sso_title" name="login_sso_title" maxlength="120" value="<?php echo htmlescape($loginSso['title']); ?>" placeholder="<?php echo htmlescape(__('e.g. Sign in with your corporate account', 'brandkit')); ?>">
+                                </div>
+                                <div>
+                                    <label for="brandkit_login_sso_button_colors"><?php echo htmlescape(__('SSO button colors', 'brandkit')); ?></label>
+                                    <select id="brandkit_login_sso_button_colors" name="login_sso_button_colors">
+                                        <option value="login" <?php echo $ssoButtonColors === 'login' ? 'selected' : ''; ?>><?php echo htmlescape(__('Same as the login button', 'brandkit')); ?></option>
+                                        <option value="custom" <?php echo $ssoButtonColors === 'custom' ? 'selected' : ''; ?>><?php echo htmlescape(__('Custom', 'brandkit')); ?></option>
+                                    </select>
+                                </div>
+                                <div class="brandkit-sso-custom-color">
+                                    <label for="brandkit_login_sso_button_bg"><?php echo htmlescape(__('SSO button color', 'brandkit')); ?></label>
+                                    <input type="color" id="brandkit_login_sso_button_bg" name="login_sso_button_bg" value="<?php echo htmlescape($ssoButtonBg); ?>">
+                                </div>
+                                <div class="brandkit-sso-custom-color">
+                                    <label for="brandkit_login_sso_button_text"><?php echo htmlescape(__('SSO button text color', 'brandkit')); ?></label>
+                                    <input type="color" id="brandkit_login_sso_button_text" name="login_sso_button_text" value="<?php echo htmlescape($ssoButtonText); ?>">
                                 </div>
                             </div>
                             <div class="brandkit-sso-help">

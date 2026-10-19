@@ -1,428 +1,428 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Brandkit 0.3.0\n"
+"Project-Id-Version: Brandkit 0.3.2\n"
 "Language: pl_PL\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: front/index.php:843
+#: front/index.php:852
 msgid "Dynamic cut for a bolder call-to-action."
 msgstr "Dynamiczny krój dla odważniejszego wezwania do działania."
 
-#: front/index.php:874
+#: front/index.php:883
 msgid "Email"
 msgstr "E-mail"
 
-#: front/index.php:1202
+#: front/index.php:1211
 msgid "Field background"
 msgstr "Tło pola"
 
-#: front/index.php:1206
+#: front/index.php:1215
 msgid "Field border"
 msgstr "Granica pola"
 
-#: front/index.php:1210
+#: front/index.php:1219
 msgid "Field border width (px)"
 msgstr "Szerokość granicy pola (px)"
 
-#: front/index.php:1267
+#: front/index.php:1276
 msgid "Field focus glow"
 msgstr "Blask ostrości pola"
 
-#: front/index.php:1293
+#: front/index.php:1302
 msgid "Field icons"
 msgstr "Ikony pól"
 
-#: front/index.php:1271
+#: front/index.php:1280
 msgid "Field radius (px)"
 msgstr "Promień pola (px)"
 
-#: front/index.php:1189
+#: front/index.php:1198
 msgid "Fields"
 msgstr "Pola"
 
-#: front/index.php:1259
+#: front/index.php:1268
 msgid "Field spacing (px)"
 msgstr "Odstępy między polami (px)"
 
-#: front/index.php:1192
+#: front/index.php:1201
 msgid "Field style"
 msgstr "Styl polowy"
 
-#: front/index.php:1217
+#: front/index.php:1226
 msgid "Field text"
 msgstr "Tekst pola"
 
-#: front/index.php:1237
+#: front/index.php:1246
 msgid "Field text size (px)"
 msgstr "Rozmiar tekstu w polu (px)"
 
-#: front/index.php:864
+#: front/index.php:873
 msgid "Fill with color"
 msgstr "Wypełnij kolorem"
 
-#: front/index.php:908
+#: front/index.php:917
 msgid "Fixed"
 msgstr "Naprawił"
 
-#: front/index.php:842
+#: front/index.php:851
 msgid "Friendly, fully rounded shape."
 msgstr "Przyjazny, w pełni zaokrąglony kształt."
 
-#: front/index.php:848
+#: front/index.php:857
 msgid "Glass blur"
 msgstr "Rozmycie szkła"
 
-#: front/index.php:998
+#: front/index.php:1007
 msgid "Hide login text"
 msgstr "Ukryj tekst logowania"
 
-#: front/index.php:1150
+#: front/index.php:1159
 msgid "Hover effect"
 msgstr "Efekt najechania"
 
-#: front/index.php:1163
+#: front/index.php:1172
 msgid "Hover fill custom color"
 msgstr "Najedź kursorem na niestandardowy kolor wypełnienia"
 
-#: front/index.php:1167
+#: front/index.php:1176
 msgid "Hover text color"
 msgstr "Kolor tekstu po najechaniu kursorem"
 
-#: front/index.php:1335
+#: front/index.php:1344
 msgid "Icon color"
 msgstr "Kolor ikony"
 
-#: front/index.php:1339
+#: front/index.php:1348
 msgid "Icon position"
 msgstr "Pozycja ikony"
 
-#: front/index.php:873
+#: front/index.php:882
 msgid "ID card"
 msgstr "Dowód osobisty"
 
-#: front/index.php:821
+#: front/index.php:830
 msgid "Info"
 msgstr "Informacje"
 
-#: front/index.php:979
+#: front/index.php:988
 msgid "Inside panel"
 msgstr "Panel wewnętrzny"
 
-#: front/index.php:879
+#: front/index.php:888
 msgid "Key"
 msgstr "Klawisz"
 
-#: front/index.php:930
+#: front/index.php:939
 msgid "Layout"
 msgstr "Układ"
 
-#: front/index.php:927
+#: front/index.php:936
 msgid "Layout & logo"
 msgstr "Układ i logo"
 
-#: front/index.php:884 front/index.php:904
+#: front/index.php:893 front/index.php:913
 msgid "Left"
 msgstr "Lewy"
 
-#: front/index.php:823
+#: front/index.php:832
 msgid "Light"
 msgstr "Światło"
 
-#: front/index.php:878
+#: front/index.php:887
 msgid "Lock"
 msgstr "Zamek"
 
-#: front/index.php:1297
+#: front/index.php:1306
 msgid "Login icon"
 msgstr "Ikona logowania"
 
-#: front/index.php:969
+#: front/index.php:978
 msgid "Login logo size (px)"
 msgstr "Rozmiar logo logowania (px)"
 
-#: front/index.php:590
+#: front/index.php:596
 msgid "Login page configuration"
 msgstr "Konfiguracja strony logowania"
 
-#: front/index.php:983
+#: front/index.php:992
 msgid "Logo offset from top (px)"
 msgstr "Przesunięcie logo od góry (px)"
 
-#: front/index.php:976
+#: front/index.php:985
 msgid "Logo position"
 msgstr "Pozycja logo"
 
-#: front/index.php:852
+#: front/index.php:861
 msgid "Neon glow"
 msgstr "Neonowy blask"
 
-#: front/index.php:950
+#: front/index.php:959
 msgid "No (disable)"
 msgstr "Nie (wyłącz)"
 
-#: front/index.php:871 front/index.php:877
+#: front/index.php:880 front/index.php:886
 msgid "None"
 msgstr "Nic"
 
-#: front/index.php:942
+#: front/index.php:951
 msgid "No (show panel)"
 msgstr "Nie (pokaż panel)"
 
-#: front/index.php:898
+#: front/index.php:907
 msgid "Original size"
 msgstr "Rozmiar oryginalny"
 
-#: front/index.php:850
+#: front/index.php:859
 msgid "Outline"
 msgstr "Zarys"
 
-#: front/index.php:827
+#: front/index.php:836
 msgid "Outline danger"
 msgstr "Nakreśl niebezpieczeństwo"
 
-#: front/index.php:830
+#: front/index.php:839
 msgid "Outline dark"
 msgstr "Zarys ciemny"
 
-#: front/index.php:829
+#: front/index.php:838
 msgid "Outline info"
 msgstr "Informacje o zarysie"
 
-#: front/index.php:860
+#: front/index.php:869
 msgid "Outline only"
 msgstr "Tylko zarys"
 
-#: front/index.php:824
+#: front/index.php:833
 msgid "Outline primary"
 msgstr "Zarys podstawowy"
 
-#: front/index.php:825
+#: front/index.php:834
 msgid "Outline secondary"
 msgstr "Zarys wtórny"
 
-#: front/index.php:826
+#: front/index.php:835
 msgid "Outline success"
 msgstr "Zarys sukcesu"
 
-#: front/index.php:828
+#: front/index.php:837
 msgid "Outline warning"
 msgstr "Ostrzeżenie o zarysie"
 
-#: front/index.php:1449
+#: front/index.php:1458
 msgid "Overlay color"
 msgstr "Kolor nakładki"
 
-#: front/index.php:1453
+#: front/index.php:1462
 #, php-format
 msgid "Overlay opacity (%)"
 msgstr "Krycie nakładki (%)"
 
-#: front/index.php:1221
+#: front/index.php:1230
 msgid "Page text size (px)"
 msgstr "Rozmiar tekstu strony (px)"
 
-#: front/index.php:1044
+#: front/index.php:1053
 msgid "Panel blur (px)"
 msgstr "Rozmycie panelu (px)"
 
-#: front/index.php:1040
+#: front/index.php:1049
 msgid "Panel color"
 msgstr "Kolor panelu"
 
-#: front/index.php:962
+#: front/index.php:971
 msgid "Panel height (px)"
 msgstr "Wysokość panelu (px)"
 
-#: front/index.php:947
+#: front/index.php:956
 msgid "Panel hover effect"
 msgstr "Efekt najechania panelem"
 
-#: front/index.php:1033
+#: front/index.php:1042
 #, php-format
 msgid "Panel opacity (%)"
 msgstr "Nieprzezroczystość panelu (%)"
 
-#: front/index.php:1030
+#: front/index.php:1039
 msgid "Panel & split styling"
 msgstr "Stylizacja panelowa i dzielona"
 
-#: front/index.php:954
+#: front/index.php:963
 msgid "Panel width (px)"
 msgstr "Szerokość panelu (px)"
 
-#: front/index.php:1316
+#: front/index.php:1325
 msgid "Password icon"
 msgstr "Ikona hasła"
 
-#: front/index.php:868
+#: front/index.php:877
 msgid "Pick a custom color"
 msgstr "Wybierz niestandardowy kolor"
 
-#: front/index.php:591
+#: front/index.php:597
 msgid "Pick a layout and visual treatments for the GLPI login page."
 msgstr "Wybierz układ i rozwiązania wizualne dla strony logowania GLPI."
 
-#: front/index.php:835
+#: front/index.php:844
 msgid "Pill"
 msgstr "Pigułka"
 
-#: front/index.php:1429
+#: front/index.php:1438
 msgid "Position"
 msgstr "Pozycja"
 
-#: front/index.php:855
+#: front/index.php:864
 msgid "Preset palette"
 msgstr "Wstępnie ustawiona paleta"
 
-#: front/index.php:863
+#: front/index.php:872
 msgid "Press on hover"
 msgstr "Naciśnij po najechaniu kursorem"
 
-#: front/index.php:816
+#: front/index.php:825
 msgid "Primary (default)"
 msgstr "Podstawowy (domyślny)"
 
-#: front/index.php:1378 front/index.php:1379 front/index.php:1380
+#: front/index.php:1387 front/index.php:1388 front/index.php:1389
 msgid "Recommended: 1920x1080 or larger."
 msgstr "Zalecane: 1920x1080 lub większe."
 
-#: front/index.php:883 front/index.php:905
+#: front/index.php:892 front/index.php:914
 msgid "Right"
 msgstr "Prawidłowy"
 
-#: front/index.php:834
+#: front/index.php:843
 msgid "Rounded"
 msgstr "Bułczasty"
 
-#: front/index.php:1530
+#: front/index.php:1554
 msgid "Save login page"
 msgstr "Zapisz stronę logowania"
 
-#: front/index.php:909
+#: front/index.php:918
 msgid "Scroll"
 msgstr "Zwój"
 
-#: front/index.php:817
+#: front/index.php:826
 msgid "Secondary"
 msgstr "Wtórny"
 
-#: front/index.php:840
+#: front/index.php:849
 msgid "Sharp edges with a confident shadow."
 msgstr "Ostre krawędzie z pewnym cieniem."
 
-#: front/index.php:880
+#: front/index.php:889
 msgid "Shield"
 msgstr "Tarcza"
 
-#: front/index.php:1419
+#: front/index.php:1428
 msgid "Size"
 msgstr "Rozmiar"
 
-#: front/index.php:837
+#: front/index.php:846
 msgid "Soft depth"
 msgstr "Miękka głębia"
 
-#: front/index.php:849
+#: front/index.php:858
 msgid "Soft shadow"
 msgstr "Miękki cień"
 
-#: front/index.php:847
+#: front/index.php:856
 msgid "Solid"
 msgstr "Solidny"
 
-#: front/index.php:1071
+#: front/index.php:1080
 msgid "Split blur (px)"
 msgstr "Podział rozmycia (px)"
 
-#: front/index.php:1067
+#: front/index.php:1076
 msgid "Split color"
 msgstr "Podzielony kolor"
 
-#: front/index.php:914
+#: front/index.php:923
 msgid "Split left"
 msgstr "Podziel w lewo"
 
-#: front/index.php:1060
+#: front/index.php:1069
 #, php-format
 msgid "Split opacity (%)"
 msgstr "Podziel krycie (%)"
 
-#: front/index.php:916
+#: front/index.php:925
 msgid "Split right"
 msgstr "Podziel w prawo"
 
-#: front/index.php:1053
+#: front/index.php:1062
 #, php-format
 msgid "Split width (%)"
 msgstr "Szerokość podziału (%)"
 
-#: front/index.php:833
+#: front/index.php:842
 msgid "Square"
 msgstr "Kwadrat"
 
-#: front/index.php:897
+#: front/index.php:906
 msgid "Stretch"
 msgstr "Rozciągać się"
 
-#: front/index.php:818
+#: front/index.php:827
 msgid "Success"
 msgstr "Sukces"
 
-#: front/index.php:994
+#: front/index.php:1003
 msgid "Text color"
 msgstr "Kolor tekstu"
 
-#: front/index.php:1229
+#: front/index.php:1238
 msgid "Title text size (px)"
 msgstr "Rozmiar tekstu tytułu (px)"
 
-#: front/index.php:902
+#: front/index.php:911
 msgid "Top"
 msgstr "Szczyt"
 
-#: front/index.php:940
+#: front/index.php:949
 msgid "Transparent panel"
 msgstr "Przezroczysty panel"
 
-#: front/index.php:851
+#: front/index.php:860
 msgid "Underline"
 msgstr "Podkreślać"
 
-#: front/index.php:1467
+#: front/index.php:1476
 msgid "Upload wallpaper"
 msgstr "Prześlij tapetę"
 
-#: front/index.php:867
+#: front/index.php:876
 msgid "Use button color"
 msgstr "Użyj koloru przycisku"
 
-#: front/index.php:872
+#: front/index.php:881
 msgid "User"
 msgstr "Użytkownik"
 
-#: front/index.php:1375
+#: front/index.php:1384
 msgid "Wallpaper"
 msgstr "Tapeta"
 
-#: front/index.php:820
+#: front/index.php:829
 msgid "Warning"
 msgstr "Ostrzeżenie"
 
-#: front/index.php:1001 front/index.php:1507
+#: front/index.php:1010 front/index.php:1516
 msgid "Yes"
 msgstr "Tak"
 
-#: front/index.php:949
+#: front/index.php:958
 msgid "Yes (enable)"
 msgstr "Tak (włącz)"
 
-#: front/index.php:943
+#: front/index.php:952
 msgid "Yes (hide panel)"
 msgstr "Tak (ukryj panel)"
 
-#: front/index.php:532
+#: front/index.php:538
 msgid ""
 "Light mode logos: used when the system is in light mode, ensuring good "
 "visibility on white or light backgrounds."
@@ -430,7 +430,7 @@ msgstr ""
 "Logo trybu jasnego: używane, gdy system jest w trybie jasnym, zapewniające "
 "dobrą widoczność na białym lub jasnym tle."
 
-#: front/index.php:537
+#: front/index.php:543
 msgid ""
 "Dark mode logos: used when the system is in dark mode, ensuring contrast and"
 " readability on black or dark backgrounds."
@@ -438,7 +438,7 @@ msgstr ""
 "Logo trybu ciemnego: używane, gdy system jest w trybie ciemnym, zapewniając "
 "kontrast i czytelność na czarnym lub ciemnym tle."
 
-#: front/index.php:543
+#: front/index.php:549
 msgid ""
 "The favicon is the small icon that appears in the browser tab (and also in "
 "bookmarks)."
@@ -446,7 +446,7 @@ msgstr ""
 "Favikona to mała ikona pojawiająca się na karcie przeglądarki (a także w "
 "zakładkach)."
 
-#: front/index.php:523 front/index.php:525
+#: front/index.php:529 front/index.php:531
 msgid ""
 "Expanded menu logo: the logo displayed when the sidebar menu is open, with "
 "more space available."
@@ -454,7 +454,7 @@ msgstr ""
 "Logo rozwiniętego menu: logo wyświetlane, gdy menu na pasku bocznym jest "
 "otwarte i jest dostępne więcej miejsca."
 
-#: front/index.php:524 front/index.php:526
+#: front/index.php:530 front/index.php:532
 msgid ""
 "Collapsed menu logo: the logo displayed when the sidebar menu is collapsed, "
 "so it needs to be a more compact version."
@@ -462,7 +462,7 @@ msgstr ""
 "Logo zwiniętego menu: logo wyświetlane, gdy menu na pasku bocznym jest "
 "zwinięte, więc musi to być bardziej zwarta wersja."
 
-#: front/index.php:527
+#: front/index.php:533
 msgid ""
 "Login page logo: the logo displayed on the login screen before the user "
 "enters the system."
@@ -470,7 +470,7 @@ msgstr ""
 "Logo strony logowania: logo wyświetlane na ekranie logowania przed wejściem "
 "użytkownika do systemu."
 
-#: front/index.php:559
+#: front/index.php:565
 #, php-format
 msgid "Logo size (%)"
 msgstr "Rozmiar logo (%)"
@@ -479,55 +479,55 @@ msgstr "Rozmiar logo (%)"
 msgid "Favicon active"
 msgstr "Favikona aktywna"
 
-#: front/index.php:1101
+#: front/index.php:1110
 msgid "Button"
 msgstr "Przycisk"
 
-#: front/index.php:1387
+#: front/index.php:1396
 msgid "Wallpaper source"
 msgstr "Źródło tapety"
 
-#: front/index.php:1394
+#: front/index.php:1403
 msgid "Preset wallpaper"
 msgstr "Wstępnie ustawiona tapeta"
 
-#: front/index.php:1439
+#: front/index.php:1448
 msgid "Attachment"
 msgstr "Załącznik"
 
-#: front/index.php:1104
+#: front/index.php:1113
 msgid "Button shape"
 msgstr "Kształt guzika"
 
-#: front/index.php:1115
+#: front/index.php:1124
 msgid "Button fill style"
 msgstr "Styl wypełnienia przycisków"
 
-#: front/index.php:1125
+#: front/index.php:1134
 msgid "Button text size (px)"
 msgstr "Rozmiar tekstu przycisku (px)"
 
-#: front/index.php:1132
+#: front/index.php:1141
 msgid "Color mode"
 msgstr "Tryb koloru"
 
-#: front/index.php:490
+#: front/index.php:496
 msgid "GLPI logo configuration"
 msgstr "Konfiguracja logo GLPI"
 
-#: front/index.php:491
+#: front/index.php:497
 msgid ""
 "Upload logos that will replace the default GLPI assets using CSS variables."
 msgstr ""
 "Prześlij logo, które zastąpią domyślne zasoby GLPI przy użyciu zmiennych "
 "CSS."
 
-#: front/index.php:562
+#: front/index.php:568
 #, php-format
 msgid "Expanded menu logo size (%)"
 msgstr "Rozmiar logo rozwiniętego menu (%)"
 
-#: front/index.php:569
+#: front/index.php:575
 #, php-format
 msgid "Collapsed menu logo size (%)"
 msgstr "Rozmiar logo zwiniętego menu (%)"
@@ -536,71 +536,71 @@ msgstr "Rozmiar logo zwiniętego menu (%)"
 msgid "Favicon (browser tab)"
 msgstr "Favicon (zakładka przeglądarki)"
 
-#: front/index.php:1244
+#: front/index.php:1253
 msgid "Field height (px)"
 msgstr "Wysokość pola (px)"
 
-#: front/index.php:1389
+#: front/index.php:1398
 msgid "Preset wallpapers"
 msgstr "Gotowe tapety"
 
-#: front/index.php:1390
+#: front/index.php:1399
 msgid "Custom upload"
 msgstr "Przesyłanie niestandardowe"
 
-#: front/index.php:915
+#: front/index.php:924
 msgid "Classic centered"
 msgstr "Klasycznie wyśrodkowany"
 
-#: front/index.php:978
+#: front/index.php:987
 msgid "Above panel"
 msgstr "Powyżej panelu"
 
-#: front/index.php:1000
+#: front/index.php:1009
 msgid "No"
 msgstr "NIE"
 
-#: front/index.php:859
+#: front/index.php:868
 msgid "Default fill"
 msgstr "Domyślne wypełnienie"
 
-#: front/index.php:1144
+#: front/index.php:1153
 msgid "Custom color"
 msgstr "Kolor niestandardowy"
 
-#: front/index.php:990
+#: front/index.php:999
 msgid "Accent color"
 msgstr "Kolor akcentujący"
 
-#: front/index.php:420
+#: front/index.php:426
 msgid "Turn GLPI into a showcase for your brand in just a few clicks."
 msgstr "Zamień GLPI w wizytówkę swojej marki za pomocą kilku kliknięć."
 
-#: front/index.php:444
+#: front/index.php:450
 msgid "About"
 msgstr "O"
 
-#: front/index.php:447 front/index.php:466
+#: front/index.php:453 front/index.php:472
 msgid "GLPI logos"
 msgstr "logo GLPI"
 
-#: front/index.php:450 front/index.php:467
+#: front/index.php:456 front/index.php:473
 msgid "Login Page"
 msgstr "Strona logowania"
 
-#: front/index.php:453
+#: front/index.php:459
 msgid "Premium"
 msgstr "Premium"
 
-#: front/index.php:461
+#: front/index.php:467
 msgid "Brandkit by Marcati"
 msgstr "Brandkit autorstwa Marcati"
 
-#: front/index.php:462
+#: front/index.php:468
 msgid "The visual evolution of your GLPI starts here."
 msgstr "Tutaj zaczyna się wizualna ewolucja Twojego GLPI."
 
-#: front/index.php:463
+#: front/index.php:469
 msgid ""
 "Brandkit delivers logos, login screens, and colors aligned with your "
 "identity. No CSS, no effort, just professional results."
@@ -608,27 +608,27 @@ msgstr ""
 "Brandkit dostarcza logo, ekrany logowania i kolory dopasowane do Twojej "
 "tożsamości. Bez CSS, bez wysiłku, po prostu profesjonalne rezultaty."
 
-#: front/index.php:464
+#: front/index.php:470
 msgid "Discover Marcati at"
 msgstr "Odkryj Marcati na"
 
-#: front/index.php:468
+#: front/index.php:474
 msgid "Meet Marcati"
 msgstr "Poznaj Marcati"
 
-#: front/index.php:474
+#: front/index.php:480
 msgid "Consistent logos"
 msgstr "Spójne logo"
 
-#: front/index.php:475
+#: front/index.php:481
 msgid "Ready uploads for header, favicon, and login."
 msgstr "Gotowe pliki do przesłania nagłówka, favikony i loginu."
 
-#: front/index.php:479
+#: front/index.php:485
 msgid "Login with presence"
 msgstr "Zaloguj się obecnością"
 
-#: front/index.php:480
+#: front/index.php:486
 msgid ""
 "Pick layouts, colors, and effects for an authentication screen that sells "
 "your brand."
@@ -636,25 +636,25 @@ msgstr ""
 "Wybierz układy, kolory i efekty ekranu uwierzytelniania, który sprzedaje "
 "Twoją markę."
 
-#: front/index.php:484
+#: front/index.php:490
 msgid "Fast delivery"
 msgstr "Szybka dostawa"
 
-#: front/index.php:485
+#: front/index.php:491
 msgid "Settings saved directly in GLPI to activate branding without rework."
 msgstr ""
 "Ustawienia zapisane bezpośrednio w GLPI, aby aktywować branding bez "
 "przeróbek."
 
-#: front/index.php:856
+#: front/index.php:865
 msgid "Custom hex color"
 msgstr "Niestandardowy kolor szesnastkowy"
 
-#: front/index.php:577
+#: front/index.php:583
 msgid "Save logo sizes"
 msgstr "Zapisz rozmiary logo"
 
-#: front/index.php:1531
+#: front/index.php:1555
 msgid "Restore defaults"
 msgstr "Restore defaults"
 
@@ -678,19 +678,19 @@ msgstr "Nie przesłano jeszcze niestandardowego logo."
 msgid "No favicon yet"
 msgstr "Brak favicon"
 
-#: front/index.php:1251
+#: front/index.php:1260
 msgid "Field width (px)"
 msgstr "Szerokość pola (px)"
 
-#: front/index.php:531
+#: front/index.php:537
 msgid "Light mode logos"
 msgstr "Logo trybu jasnego"
 
-#: front/index.php:536
+#: front/index.php:542
 msgid "Dark mode logos"
 msgstr "Logo trybu ciemnego"
 
-#: front/index.php:542
+#: front/index.php:548
 msgid "Favicon"
 msgstr "Favicon"
 
@@ -714,128 +714,128 @@ msgstr "Logo rozwiniętego menu (tryb ciemny)"
 msgid "Collapsed menu logo (dark mode)"
 msgstr "Logo zwiniętego menu (tryb ciemny)"
 
-#: front/index.php:119 front/index.php:377
+#: front/index.php:119 front/index.php:383
 msgid "Login page settings saved."
 msgstr ""
 
-#: front/index.php:121 front/index.php:379
+#: front/index.php:121 front/index.php:385
 msgid "Settings saved, but the login CSS file could not be written."
 msgstr ""
 
-#: front/index.php:400
+#: front/index.php:406
 msgid "Logo sizes updated."
 msgstr ""
 
-#: front/index.php:405 front/index.php:415 inc/config.class.php:53
+#: front/index.php:411 front/index.php:421 inc/config.class.php:53
 #: inc/config.class.php:68
 msgid "Brandkit"
 msgstr ""
 
-#: front/index.php:819
+#: front/index.php:828
 msgid "Danger"
 msgstr ""
 
-#: front/index.php:822
+#: front/index.php:831
 msgid "Dark"
 msgstr ""
 
-#: front/index.php:836
+#: front/index.php:845
 msgid "Cut corner"
 msgstr ""
 
-#: front/index.php:841
+#: front/index.php:850
 msgid "Balanced corners for modern brands."
 msgstr ""
 
-#: front/index.php:844
+#: front/index.php:853
 msgid "Cushioned look with soft depth."
 msgstr ""
 
-#: front/index.php:895
+#: front/index.php:904
 msgid "Cover"
 msgstr ""
 
-#: front/index.php:896
+#: front/index.php:905
 msgid "Contain"
 msgstr ""
 
-#: front/index.php:901
+#: front/index.php:910
 msgid "Center"
 msgstr ""
 
-#: front/index.php:903
+#: front/index.php:912
 msgid "Bottom"
 msgstr ""
 
-#: front/index.php:1012
+#: front/index.php:1021
 msgid "Sign in to your account"
 msgstr ""
 
-#: front/index.php:1014 front/index.php:1085 front/index.php:1282
-#: front/index.php:1357
+#: front/index.php:1023 front/index.php:1094 front/index.php:1291
+#: front/index.php:1366
 msgid "Login"
 msgstr ""
 
-#: front/index.php:1018 front/index.php:1089 front/index.php:1285
-#: front/index.php:1365
+#: front/index.php:1027 front/index.php:1098 front/index.php:1294
+#: front/index.php:1374
 msgid "Password"
 msgstr ""
 
-#: front/index.php:1021 front/index.php:1092 front/index.php:1178
+#: front/index.php:1030 front/index.php:1101 front/index.php:1187
 msgid "Sign in"
 msgstr ""
 
-#: front/index.php:1397
+#: front/index.php:1406
 msgid "No preset wallpapers available."
 msgstr ""
 
-#: front/index.php:1469
+#: front/index.php:1478
 msgid "Remove uploaded wallpaper"
 msgstr ""
 
-#: front/index.php:1483
+#: front/index.php:1492
 msgid "No wallpaper selected yet."
 msgstr ""
 
-#: front/index.php:1539
+#: front/index.php:1563
 msgid "Premium features"
 msgstr ""
 
-#: front/index.php:1540
+#: front/index.php:1564
 msgid "Unlock advanced Brandkit upgrades."
 msgstr ""
 
-#: front/index.php:1541
+#: front/index.php:1565
 msgid ""
 "This area is available in the paid version. Get more control and deeper "
 "customization for your GLPI experience."
 msgstr ""
 
-#: front/index.php:1543
+#: front/index.php:1567
 msgid "Download and upload configuration presets."
 msgstr ""
 
-#: front/index.php:1544
+#: front/index.php:1568
 msgid "Theme customization with one-click presets."
 msgstr ""
 
-#: front/index.php:1545
+#: front/index.php:1569
 msgid "Menu color variations and layout tuning for GLPI."
 msgstr ""
 
-#: front/index.php:1546
+#: front/index.php:1570
 msgid "Extra custom colors beyond the default GLPI palette."
 msgstr ""
 
-#: front/index.php:1549
+#: front/index.php:1573
 msgid "See plans"
 msgstr ""
 
-#: front/index.php:1555
+#: front/index.php:1579
 msgid "Premium access"
 msgstr ""
 
-#: front/index.php:1556
+#: front/index.php:1580
 msgid "Request access to unlock these features for your team."
 msgstr ""
 
@@ -970,45 +970,45 @@ msgstr ""
 msgid "Unable to save the uploaded wallpaper. Check file permissions."
 msgstr ""
 
-#: front/index.php:1493
+#: front/index.php:1502
 msgid "Single sign-on (SSO)"
 msgstr ""
 
-#: front/index.php:1494
+#: front/index.php:1503
 msgid ""
 "For SSO plugins that add a login button to the GLPI login page, such as "
 "samlSSO."
 msgstr ""
 
-#: front/index.php:1498
+#: front/index.php:1507
 msgid "SSO mode"
 msgstr ""
 
-#: front/index.php:1500
+#: front/index.php:1509
 msgid "No (show the login form)"
 msgstr ""
 
-#: front/index.php:1501
+#: front/index.php:1510
 msgid "Yes (only the SSO button)"
 msgstr ""
 
-#: front/index.php:1505
+#: front/index.php:1514
 msgid "Show the local account link"
 msgstr ""
 
-#: front/index.php:1508
+#: front/index.php:1517
 msgid "No (only through the address below)"
 msgstr ""
 
-#: front/index.php:1512
+#: front/index.php:1521
 msgid "Text above the SSO button (optional)"
 msgstr ""
 
-#: front/index.php:1513
+#: front/index.php:1522
 msgid "e.g. Sign in with your corporate account"
 msgstr ""
 
-#: front/index.php:1517
+#: front/index.php:1541
 msgid ""
 "With SSO mode on, the login page hides the user and password fields and "
 "shows the SSO button in their place. The fields are only hidden while an SSO"
@@ -1016,26 +1016,46 @@ msgid ""
 " back."
 msgstr ""
 
-#: front/index.php:1519
+#: front/index.php:1543
 msgid "Local account access:"
 msgstr ""
 
-#: front/index.php:1522
+#: front/index.php:1546
 msgid ""
 "Save this address: it always shows the user and password fields. It is also "
 "the bypass address of the samlSSO plugin."
 msgstr ""
 
-#: front/index.php:1523
+#: front/index.php:1547
 msgid ""
 "Hiding the fields is visual only: local accounts can still sign in. To "
 "forbid it, change the authentication settings of GLPI or of the SSO plugin."
 msgstr ""
 
-#: inc/login.css.php:3019
+#: inc/login.css.php:3094
 msgid "Back to single sign-on"
 msgstr ""
 
-#: inc/login.css.php:3028
+#: inc/login.css.php:3103
 msgid "Sign in with a local account"
+msgstr ""
+
+#: front/index.php:1525
+msgid "SSO button colors"
+msgstr ""
+
+#: front/index.php:1527
+msgid "Same as the login button"
+msgstr ""
+
+#: front/index.php:1528
+msgid "Custom"
+msgstr ""
+
+#: front/index.php:1532
+msgid "SSO button color"
+msgstr ""
+
+#: front/index.php:1536
+msgid "SSO button text color"
 msgstr ""

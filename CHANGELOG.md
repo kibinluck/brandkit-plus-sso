@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.3.2
+
+### Added
+- SSO mode: "SSO button colors" option. The SSO button can keep the login
+  button colors (default) or get its own background and text colors.
+
+### Fixed
+- SSO mode: the SSO button text and icon always follow the button text color
+  (other styles on the page could paint them in the page text color).
+
 ## 0.3.1
 
 ### Fixed

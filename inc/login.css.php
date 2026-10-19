@@ -119,6 +119,9 @@ function brandkit_get_login_defaults(): array
         'login_sso_mode' => '0',
         'login_sso_local_link' => '1',
         'login_sso_title' => '',
+        'login_sso_button_colors' => 'login',
+        'login_sso_button_bg' => '#ffffff',
+        'login_sso_button_text' => '#1f2937',
     ];
 
     if (brandkit_is_glpi11()) {
@@ -2739,6 +2742,7 @@ function brandkit_build_login_css(array $settings): string
     $css .= "  text-align: center !important;\n";
     $css .= "}\n";
     $css .= brandkit_build_login_footer_css();
+    $css .= brandkit_build_sso_button_vars_css($settings);
     $css .= brandkit_build_secondary_pages_css();
 
     return $css;
@@ -2792,6 +2796,26 @@ function brandkit_build_login_footer_css(): string
 }
 
 CSS;
+}
+
+/**
+ * Own colors for the SSO button (SSO mode), used by public/css/brandkit-sso.css.
+ * Without them the SSO button takes the login button colors.
+ */
+function brandkit_build_sso_button_vars_css(array $settings): string
+{
+    if (($settings['login_sso_button_colors'] ?? 'login') !== 'custom') {
+        return '';
+    }
+
+    $bg = brandkit_normalize_hex_color($settings['login_sso_button_bg'] ?? '', '#ffffff');
+    $text = brandkit_normalize_hex_color($settings['login_sso_button_text'] ?? '', brandkit_get_contrast_color($bg));
+
+    return ":root {\n"
+        . "  --brandkit-sso-button-bg: {$bg};\n"
+        . "  --brandkit-sso-button-border: {$bg};\n"
+        . "  --brandkit-sso-button-text: {$text};\n"
+        . "}\n";
 }
 
 /**

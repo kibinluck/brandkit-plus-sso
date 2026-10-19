@@ -857,3 +857,17 @@ document.addEventListener('DOMContentLoaded', function () {
         updateValue();
     });
 });
+
+document.addEventListener('DOMContentLoaded', function () {
+    var ssoColors = document.getElementById('brandkit_login_sso_button_colors');
+    if (!ssoColors) {
+        return;
+    }
+    var toggleSsoColors = function () {
+        document.querySelectorAll('.brandkit-sso-custom-color').forEach(function (node) {
+            node.classList.toggle('brandkit-toggle-hidden', ssoColors.value !== 'custom');
+        });
+    };
+    ssoColors.addEventListener('change', toggleSsoColors);
+    toggleSsoColors();
+});

@@ -104,10 +104,10 @@ body.welcome-anonymous form:has(#login_name):has(.col-auto :is(button, a.btn)) .
     width: 100% !important;
     margin: 0 !important;
     padding: 0.85rem 1.25rem !important;
-    background: var(--brandkit-login-button-bg, var(--tblr-primary)) !important;
-    border: 1px solid var(--brandkit-login-button-border, transparent) !important;
+    background: var(--brandkit-sso-button-bg, var(--brandkit-login-button-bg, var(--tblr-primary))) !important;
+    border: 1px solid var(--brandkit-sso-button-border, var(--brandkit-login-button-border, transparent)) !important;
     border-radius: var(--brandkit-login-button-radius, 10px) !important;
-    color: var(--brandkit-login-button-text, #ffffff) !important;
+    color: var(--brandkit-sso-button-text, var(--brandkit-login-button-text, #ffffff)) !important;
     font-size: var(--brandkit-login-button-text-size, 15px) !important;
     font-weight: 600;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
@@ -119,6 +119,12 @@ body.welcome-anonymous form:has(#login_name):has(.col-auto :is(button, a.btn)) .
     transform: translateY(-1px);
     filter: brightness(1.08);
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+}
+
+/* Text and icon always follow the button text color, whatever else styles them. */
+body.welcome-anonymous form:has(#login_name):has(.col-auto :is(button, a.btn)) #saml_buttons button *,
+body.welcome-anonymous form:has(#login_name):has(.col-auto :is(button, a.btn)) .col-auto a.btn * {
+    color: inherit !important;
 }
 
 body.welcome-anonymous form:has(#login_name):has(.col-auto :is(button, a.btn)) #saml_buttons button > div {
