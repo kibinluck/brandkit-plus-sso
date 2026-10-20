@@ -37,7 +37,7 @@ if (!defined('GLPI_ROOT')) {
     die("Sorry. You can't access this file directly");
 }
 
-define('PLUGIN_BRANDKIT_VERSION', '0.4.0');
+define('PLUGIN_BRANDKIT_VERSION', '0.4.1');
 define('PLUGIN_BRANDKIT_MIN_GLPI', '10.0.0');
 // GLPI 12 is not supported yet: GLPI refuses to load the plugin there, which
 // is the safe behaviour until it has been tested.
