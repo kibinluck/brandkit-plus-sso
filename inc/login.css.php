@@ -2934,8 +2934,11 @@ function brandkit_build_sso_button_content_css(array $settings): string
     if ($label !== '') {
         $label = function_exists('mb_substr') ? mb_substr($label, 0, 60) : substr($label, 0, 60);
         $single = $scope . ':has(> [class*="col-"]:only-child) button';
+        // Only the span whose <b> was hidden gets the new text: while it
+        // redirects, samlSSO swaps the button content for a spinning
+        // <span class="spinner-border">, which must stay empty.
         $css .= "{$single} span > b {\n  display: none !important;\n}\n"
-            . "{$single} span::after {\n  content: " . brandkit_css_string($label) . ";\n  font-weight: 600;\n}\n";
+            . "{$single} span:has(> b)::after {\n  content: " . brandkit_css_string($label) . ";\n  font-weight: 600;\n}\n";
     }
 
     $icon = $settings['login_sso_button_icon'] ?? 'provider';

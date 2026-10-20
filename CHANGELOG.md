@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.4.1
+
+### Fixed
+- SSO mode: with "SSO button text" set, the text no longer spins around the
+  samlSSO loading spinner after the SSO button is clicked. The text was
+  added to every `span` of the button, and samlSSO swaps the button content
+  for a spinning `span` while it redirects; it now only goes in place of the
+  provider name it replaces.
+
 ## 0.4.0
 
 ### Changed
