@@ -17,6 +17,32 @@
   - The stylesheet, the menu entry and everything else that needs a logged-in
     user are only loaded with a complete session (user, profile and entity),
     not with the partial "password expired" one.
+- GLPI 11: the logo stylesheet is also declared stateless (from the new
+  `plugin_brandkit_boot()` hook), like GLPI's own `css.php` and `locale.php`:
+  GLPI no longer opens the session for it at all. A page loads it in parallel
+  with its own requests, and with a session handler that does not lock
+  (phpredis by default) a request that reads the session and writes it back
+  later can drop what the page just saved, such as the CSRF token of the form
+  on screen. On GLPI 10 the script drops its session without writing it back.
+- The logo stylesheet sends an `ETag` and answers `304 Not Modified` when
+  nothing changed, instead of being rebuilt and downloaded on every page.
+
+### Security
+- Favicon upload: the file is published as is in place of GLPI's public
+  `favicon.ico`, so it is now checked as a whole icon (directory entries
+  inside the file, each pointing to PNG or BMP image data) instead of only
+  its first 6 bytes. A file that merely starts like an icon, e.g. followed by
+  HTML or a script, is refused.
+- The logo stylesheet sends `X-Content-Type-Options: nosniff`.
+
+### Tests
+- New GitHub Actions workflow: a clean GLPI 11.0.11 (MariaDB 10.6, PHP
+  sessions in Redis without locking) with the plugin active, tested in a real
+  browser: own password change (central and simplified interfaces), expired
+  password, admin changing another user's password and forgotten password,
+  with and without SSO mode; admin pages, uploads, access control, CSRF and
+  CSS/HTML injection through the settings; favicon validation. Not shipped in
+  the release package.
 
 ## 0.4.1
 

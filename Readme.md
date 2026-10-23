@@ -90,6 +90,15 @@ to them. Originals are backed up and put back when a logo is removed or the plug
 **Known issue:** behind **Nginx Proxy Manager**, you may need to disable **Block Common Exploits**
 so the plugin assets load correctly.
 
+## Tests
+
+Every push and pull request runs [the test workflow](.github/workflows/tests.yml) on GitHub
+Actions: a clean GLPI 11.0.11 (MariaDB 10.6, PHP sessions in Redis) with the plugin active, driven by
+a real browser. It covers every way to change a password in GLPI (own password, expired password,
+admin changing another user's password, forgotten password), with and without SSO mode, plus the
+admin pages, uploads and access control. To run it on your machine, see `tests/ci/setup-glpi.sh`
+and the scripts in `tests/`. The `tests/` folder is not part of the release package.
+
 ## Thanks
 
 This project exists only because Marcati published [Brandkit](https://github.com/juniormarcati/glpi-brandkit)
@@ -177,6 +186,15 @@ login. Os originais ficam guardados e voltam quando um logo é removido ou o plu
 
 **Problema conhecido:** atrás do **Nginx Proxy Manager**, pode ser necessário desativar
 **Block Common Exploits** para que os recursos do plugin carreguem corretamente.
+
+### Testes
+
+Cada push e pull request roda [o workflow de testes](.github/workflows/tests.yml) no GitHub Actions:
+um GLPI 11.0.11 limpo (MariaDB 10.6, sessões PHP no Redis) com o plugin ativo, usado por um navegador
+real. Ele cobre todas as formas de trocar a senha no GLPI (a própria senha, senha expirada, admin
+trocando a senha de outro usuário, esqueci minha senha), com e sem o modo SSO, além das páginas de
+administração, uploads e controle de acesso. Para rodar na sua máquina, veja `tests/ci/setup-glpi.sh`
+e os scripts em `tests/`. A pasta `tests/` não faz parte do pacote de release.
 
 ### Agradecimentos
 

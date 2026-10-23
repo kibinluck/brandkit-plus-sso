@@ -1,0 +1,127 @@
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: Lint and unit tests (PHP ${{ matrix.php }})
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.2', '8.3', '8.4']
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: gd, mbstring
+          coverage: none
+
+      - name: PHP syntax
+        run: |
+          status=0
+          while IFS= read -r -d '' file; do
+            out=$(php -l "$file" 2>&1) || { echo "$out"; status=1; }
+          done < <(find . -name '*.php' -not -path './.git/*' -print0)
+          exit $status
+
+      - name: Favicon validation
+        run: php tests/unit/ico_test.php
+
+  e2e:
+    name: GLPI ${{ matrix.glpi }} / PHP ${{ matrix.php }} (sessions in Redis)
+    runs-on: ubuntu-24.04
+    needs: lint
+    strategy:
+      fail-fast: false
+      matrix:
+        glpi: ['11.0.11']
+        php: ['8.3']
+    services:
+      mariadb:
+        image: mariadb:10.6
+        env:
+          MARIADB_ROOT_PASSWORD: root
+          MARIADB_DATABASE: glpi
+          MARIADB_USER: glpi
+          MARIADB_PASSWORD: glpi
+        ports: ['3306:3306']
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=5s --health-timeout=5s --health-retries=20
+      redis:
+        image: redis:7
+        ports: ['6379:6379']
+        options: >-
+          --health-cmd="redis-cli ping"
+          --health-interval=5s --health-timeout=5s --health-retries=20
+    env:
+      GLPI_VERSION: ${{ matrix.glpi }}
+      GLPI_DIR: ${{ github.workspace }}/glpi
+      GLPI_PORT: '8080'
+      GLPI_URL: http://127.0.0.1:8080
+      DB_HOST: 127.0.0.1
+      DB_PORT: '3306'
+      DB_USER: glpi
+      DB_PASSWORD: glpi
+      DB_NAME: glpi
+      PHP_SESSION_REDIS: tcp://127.0.0.1:6379
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: plugin
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: bcmath, bz2, curl, dom, exif, fileinfo, gd, intl, ldap, mbstring, mysqli, openssl, redis, simplexml, sodium, xml, zip, zlib
+          ini-values: memory_limit=512M
+          coverage: none
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Test dependencies
+        run: |
+          pip install playwright==1.48.0 requests==2.32.3
+          python -m playwright install --with-deps chromium
+
+      - name: Install GLPI and the plugin
+        run: plugin/tests/ci/setup-glpi.sh
+
+      - name: Favicon validation (against GLPI's own favicon)
+        run: php plugin/tests/unit/ico_test.php "$GLPI_DIR"
+
+      - name: Admin pages, uploads and access control
+        working-directory: plugin/tests/e2e
+        run: python test_admin_security.py
+
+      - name: Password changes (all GLPI flows)
+        working-directory: plugin/tests/e2e
+        run: python test_passwords.py 3
+
+      - name: Password changes with SSO mode on
+        working-directory: plugin/tests/e2e
+        run: python test_passwords.py 1 --sso
+
+      - name: GLPI logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: glpi-logs-${{ matrix.glpi }}-php${{ matrix.php }}
+          path: glpi/files/_log/
+          if-no-files-found: ignore

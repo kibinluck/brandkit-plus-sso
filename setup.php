@@ -52,6 +52,58 @@ require_once __DIR__ . '/inc/paths.php';
 require_once __DIR__ . '/hook.php';
 
 /**
+ * GLPI 11 boot hook: runs before GLPI starts the session, which is the only
+ * moment a plugin can declare a resource stateless. Ignored by GLPI 10.
+ */
+function plugin_brandkit_boot()
+{
+    brandkit_register_public_stylesheet();
+}
+
+/**
+ * The logo stylesheet (front/brandkit.css.php) holds nothing private: the
+ * same logos are on the login page. On GLPI 11 it is declared:
+ *
+ * - stateless: GLPI does not even open the session for it, so it can never
+ *   destroy, lock or overwrite the session of the page that loads it. Pages
+ *   load it in parallel with their own requests; a session handler without
+ *   locking (Redis by default) could otherwise write back a stale copy and
+ *   drop the CSRF token of the form on screen.
+ * - public (no_check firewall strategy): with a partial session, e.g. the
+ *   one GLPI opens to let a user change an expired password, the default
+ *   "authenticated" strategy judged the session expired and destroyed it,
+ *   so the "Update password" form always failed (CSRF / access denied).
+ *
+ * GLPI 10 reads $SECURITY_STRATEGY in the script itself.
+ */
+function brandkit_register_public_stylesheet(): void
+{
+    static $done = false;
+    if ($done) {
+        return;
+    }
+    $done = true;
+
+    $pattern = '#^/front/brandkit\.css\.php$#';
+    if (
+        class_exists(\Glpi\Http\SessionManager::class)
+        && method_exists(\Glpi\Http\SessionManager::class, 'registerPluginStatelessPath')
+    ) {
+        \Glpi\Http\SessionManager::registerPluginStatelessPath(PLUGIN_BRANDKIT_KEY, $pattern);
+    }
+    if (
+        class_exists(\Glpi\Http\Firewall::class)
+        && method_exists(\Glpi\Http\Firewall::class, 'addPluginStrategyForLegacyScripts')
+    ) {
+        \Glpi\Http\Firewall::addPluginStrategyForLegacyScripts(
+            PLUGIN_BRANDKIT_KEY,
+            $pattern,
+            \Glpi\Http\Firewall::STRATEGY_NO_CHECK
+        );
+    }
+}
+
+/**
  * Init the hooks of the plugin - Needed
  */
 function plugin_init_brandkit()
@@ -62,22 +114,9 @@ function plugin_init_brandkit()
 
     $isGlpi11 = brandkit_is_glpi11();
 
-    // GLPI 11 applies the "authenticated" firewall strategy to every legacy
-    // plugin script by default. The logo stylesheet holds nothing private
-    // (the same logos are on the login page) and must never be the request
-    // that destroys a partial session, e.g. the one GLPI opens to let a user
-    // change an expired password. GLPI 10 already serves plugin scripts
-    // without checks.
-    if (
-        class_exists(\Glpi\Http\Firewall::class)
-        && method_exists(\Glpi\Http\Firewall::class, 'addPluginStrategyForLegacyScripts')
-    ) {
-        \Glpi\Http\Firewall::addPluginStrategyForLegacyScripts(
-            PLUGIN_BRANDKIT_KEY,
-            '#^/front/brandkit\.css\.php$#',
-            \Glpi\Http\Firewall::STRATEGY_NO_CHECK
-        );
-    }
+    // Normally already done by plugin_brandkit_boot(); kept here so the
+    // firewall strategy is registered even if the boot hook was skipped.
+    brandkit_register_public_stylesheet();
 
     // Login page (anonymous): generated stylesheet + self-healing of the
     // native logo files, see plugin_brandkit_display_login().

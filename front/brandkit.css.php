@@ -34,8 +34,9 @@
  */
 
 // Public stylesheet: it only exposes the logos already shown on the login
-// page. GLPI 11 reads the strategy registered in setup.php; GLPI 10 reads
-// this variable (its default for plugins is the same).
+// page. GLPI 11 serves it stateless and without checks, as registered in
+// setup.php (brandkit_register_public_stylesheet()); GLPI 10 reads this
+// variable (its default for plugins is the same).
 $SECURITY_STRATEGY = 'no_check';
 
 // GLPI 10 runs this script directly; GLPI 11 boots its kernel first (and the
@@ -45,13 +46,18 @@ if (!defined('GLPI_ROOT')) {
 }
 require_once __DIR__ . '/../inc/login.css.php';
 
-// Nothing here writes to the session: release it at once, so this request
-// never holds or rewrites the session of the page that loaded it.
+// Nothing here needs the session. GLPI 11 does not open it at all; GLPI 10
+// does: drop it WITHOUT writing it back. session_write_close() would save
+// the copy read when this request started, and a page loads this file in
+// parallel with its own requests: with a session handler that does not lock
+// (Redis by default), that stale copy could overwrite the session the page
+// has just saved, e.g. the CSRF token of the password form on screen.
 if (session_status() === PHP_SESSION_ACTIVE) {
-    session_write_close();
+    session_abort();
 }
 
 header('Content-Type: text/css; charset=UTF-8');
+header('X-Content-Type-Options: nosniff');
 
 /**
  * Logged-in pages: header logos and their size, as CSS variables.
@@ -167,5 +173,19 @@ body.navbar-collapsed .navbar-brand .glpi-logo {
 }
 
 CSS;
+
+// The URL only changes with the plugin version, not when a logo is uploaded:
+// browsers keep a copy but must revalidate it, and get a 304 when nothing
+// changed. (Without a session, nothing else sets cache headers on GLPI 11.)
+$etag = '"' . md5($css) . '"';
+header_remove('Pragma');
+header_remove('Expires');
+header('Cache-Control: no-cache');
+header('ETag: ' . $etag);
+$ifNoneMatch = (string) ($_SERVER['HTTP_IF_NONE_MATCH'] ?? '');
+if ($ifNoneMatch !== '' && in_array($etag, array_map('trim', explode(',', $ifNoneMatch)), true)) {
+    http_response_code(304);
+    return;
+}
 
 echo $css;

@@ -700,7 +700,7 @@ function brandkit_save_image($image, string $destination, string $mime, int $qua
         case 'image/webp':
             return function_exists('imagewebp') && @imagewebp($image, $destination, $quality);
         case 'image/jpeg':
-            imageinterlace($image, 1);
+            imageinterlace($image, true);
             return @imagejpeg($image, $destination, $quality);
     }
 
@@ -812,26 +812,84 @@ function brandkit_check_upload(?array $file, array $allowedExtensions, int $maxB
 }
 
 /**
- * Whether a file is a real Windows icon (checks the ICONDIR header).
+ * Whether a file is a real Windows icon.
+ *
+ * GD cannot decode .ico, so the file is published as uploaded (it replaces
+ * GLPI's public favicon): check the whole structure, not just the first
+ * bytes. The ICONDIR header must be followed by its directory entries, each
+ * pointing inside the file, past the directory, to a PNG or BMP (DIB) image.
+ * A file that only starts like an icon (e.g. the 6 header bytes followed by
+ * HTML or a script) is refused.
  */
 function brandkit_is_ico_file(string $path): bool
 {
+    $size = @filesize($path);
+    if ($size === false || $size < 6 + 16 + 8) {
+        return false;
+    }
     $handle = @fopen($path, 'rb');
     if (!$handle) {
         return false;
     }
-    $header = fread($handle, 6);
-    fclose($handle);
-    if ($header === false || strlen($header) !== 6) {
-        return false;
-    }
 
-    $fields = unpack('vreserved/vtype/vcount', $header);
-    return $fields !== false
-        && $fields['reserved'] === 0
-        && $fields['type'] === 1
-        && $fields['count'] > 0
-        && $fields['count'] <= 64;
+    try {
+        $header = fread($handle, 6);
+        if ($header === false || strlen($header) !== 6) {
+            return false;
+        }
+        $fields = unpack('vreserved/vtype/vcount', $header);
+        if (
+            $fields === false
+            || $fields['reserved'] !== 0
+            || $fields['type'] !== 1
+            || $fields['count'] < 1
+            || $fields['count'] > 64
+        ) {
+            return false;
+        }
+
+        $count = $fields['count'];
+        $directoryEnd = 6 + 16 * $count;
+        $directory = fread($handle, 16 * $count);
+        if ($directory === false || strlen($directory) !== 16 * $count) {
+            return false;
+        }
+
+        for ($i = 0; $i < $count; $i++) {
+            $entry = unpack(
+                'Cwidth/Cheight/Ccolors/Creserved/vplanes/vbpp/Vbytes/Voffset',
+                substr($directory, 16 * $i, 16)
+            );
+            if (
+                $entry === false
+                || $entry['reserved'] !== 0
+                || $entry['bytes'] < 8
+                || $entry['offset'] < $directoryEnd
+                || $entry['offset'] + $entry['bytes'] > $size
+            ) {
+                return false;
+            }
+
+            if (fseek($handle, $entry['offset']) !== 0) {
+                return false;
+            }
+            $magic = fread($handle, 8);
+            if ($magic === false || strlen($magic) !== 8) {
+                return false;
+            }
+            $isPng = $magic === "\x89PNG\r\n\x1a\n";
+            // BITMAPINFOHEADER (40 bytes) or one of its later versions.
+            $dibHeaderSize = unpack('Vsize', substr($magic, 0, 4))['size'] ?? 0;
+            $isDib = in_array($dibHeaderSize, [40, 52, 56, 108, 124], true);
+            if (!$isPng && !$isDib) {
+                return false;
+            }
+        }
+
+        return true;
+    } finally {
+        fclose($handle);
+    }
 }
 
 /**
