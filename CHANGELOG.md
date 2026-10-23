@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.4.2
+
+### Fixed
+- GLPI 11: users whose password had expired could not change it. After the
+  login, GLPI opens a partial session (no profile) that only the "Update
+  password" page accepts. The page loaded the Brandkit logo stylesheet
+  (`front/brandkit.css.php`), which went through GLPI's default
+  "authenticated" firewall strategy: GLPI judged the partial session expired
+  and destroyed it, so submitting the form always ended in "The action you
+  have requested is not allowed" (CSRF failure / anonymous user), whatever
+  the password typed.
+  - The logo stylesheet is now declared public (`no_check`) on GLPI 11, and
+    it releases the session right away, so it can no longer destroy or
+    rewrite the session of the page that loads it.
+  - The stylesheet, the menu entry and everything else that needs a logged-in
+    user are only loaded with a complete session (user, profile and entity),
+    not with the partial "password expired" one.
+
 ## 0.4.1
 
 ### Fixed
