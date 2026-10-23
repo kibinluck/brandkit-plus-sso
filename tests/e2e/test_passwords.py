@@ -171,10 +171,12 @@ def main():
         for ok, detail in runs:
             if not ok:
                 print(f"         {detail}")
+                G.annotate(f"password flow {name}", detail)
     errors = [line for line in G.new_log(log_start).splitlines()
               if re.search(r"\b(PHP (Warning|Notice|Deprecated|Fatal)|Uncaught|brandkit)", line, re.I)]
     if errors:
         print("New PHP errors:\n  " + "\n  ".join(errors[:30]))
+        G.annotate("PHP errors", "\n".join(errors[:30]))
         failed += 1
     sys.exit(1 if failed else 0)
 

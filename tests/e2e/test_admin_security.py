@@ -151,5 +151,7 @@ failed = [r for r in results if not r[1]]
 print("Admin pages, uploads and access control")
 for name, ok, info in results:
     print(f"  {'OK  ' if ok else 'FAIL'} {name}" + (f"  [{info}]" if not ok and info != "" else ""))
+    if not ok:
+        G.annotate(name, info)
 print(f"  {len(results) - len(failed)}/{len(results)} passed")
 sys.exit(1 if failed else 0)

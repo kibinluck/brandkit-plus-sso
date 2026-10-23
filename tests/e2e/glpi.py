@@ -137,3 +137,11 @@ def http_login(user, password):
     s.post(f"{BASE}/front/login.php", data={"_glpi_csrf_token": csrf(r.text), "noAUTO": "1",
            "login_name": user, "login_password": password, "submit": ""})
     return s
+
+
+def annotate(title, detail=""):
+    """Surface a failure as a GitHub Actions annotation (readable through the API)."""
+    if os.environ.get("GITHUB_ACTIONS") == "true":
+        text = str(detail).replace("%", "%25").replace("\r", "").replace("\n", "%0A")[:4000]
+        title = str(title).replace(":", " -").replace(",", " ")
+        print(f"::error title={title}::{text or title}", flush=True)

@@ -22,7 +22,7 @@ jobs:
       matrix:
         php: ['8.2', '8.3', '8.4']
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - uses: shivammathur/setup-php@v2
         with:
@@ -68,6 +68,9 @@ jobs:
         options: >-
           --health-cmd="redis-cli ping"
           --health-interval=5s --health-timeout=5s --health-retries=20
+    defaults:
+      run:
+        shell: bash
     env:
       GLPI_VERSION: ${{ matrix.glpi }}
       GLPI_DIR: ${{ github.workspace }}/glpi
@@ -80,7 +83,7 @@ jobs:
       DB_NAME: glpi
       PHP_SESSION_REDIS: tcp://127.0.0.1:6379
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           path: plugin
 
@@ -91,7 +94,7 @@ jobs:
           ini-values: memory_limit=512M
           coverage: none
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
 
@@ -101,6 +104,7 @@ jobs:
           python -m playwright install --with-deps chromium
 
       - name: Install GLPI and the plugin
+        id: setup
         run: plugin/tests/ci/setup-glpi.sh
 
       - name: Favicon validation (against GLPI's own favicon)
@@ -108,15 +112,27 @@ jobs:
 
       - name: Admin pages, uploads and access control
         working-directory: plugin/tests/e2e
-        run: python test_admin_security.py
+        run: python test_admin_security.py 2>&1 | tee "$RUNNER_TEMP/admin.log"
 
       - name: Password changes (all GLPI flows)
+        if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
         working-directory: plugin/tests/e2e
-        run: python test_passwords.py 3
+        run: python test_passwords.py 3 2>&1 | tee "$RUNNER_TEMP/passwords.log"
 
       - name: Password changes with SSO mode on
+        if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
         working-directory: plugin/tests/e2e
-        run: python test_passwords.py 1 --sso
+        run: python test_passwords.py 1 --sso 2>&1 | tee "$RUNNER_TEMP/passwords-sso.log"
+
+      - name: Report failures as annotations
+        if: failure()
+        run: |
+          shopt -s nullglob
+          for f in "$RUNNER_TEMP"/*.log glpi/files/_log/php-errors.log glpi/files/_log/php-server.log; do
+            [ -s "$f" ] || continue
+            msg=$(tail -c 3500 "$f" | sed 's/%/%25/g' | awk '{printf "%s%%0A", $0}')
+            echo "::error title=$(basename "$f")::$msg"
+          done
 
       - name: GLPI logs
         if: failure()
