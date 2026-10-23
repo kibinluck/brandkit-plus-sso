@@ -122,7 +122,12 @@ try:
     check("login page renders", "login_name" in page)
     check("SSO title is HTML-escaped", "<img src=x" not in page)
     m = re.search(r'href="([^"]*css\.php\?file=[^"]*brandkit-login[^"]*)"', page)
-    css = requests.get(G.BASE + m.group(1).replace("&amp;", "&")).text if m else ""
+    css = ""
+    if m:
+        try:
+            css = requests.get(G.BASE + m.group(1).replace("&amp;", "&"), timeout=120).text
+        except requests.RequestException as e:
+            check("login stylesheet request answered", False, f"{m.group(1)}: {e}")
     check("generated login stylesheet compiles", m is not None and len(css) > 1000, len(css))
     outside_strings = re.sub(r"""content: ("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*');""", "content: X;", css)
     check("no CSS injection through text settings",

@@ -128,11 +128,15 @@ jobs:
         if: failure()
         run: |
           shopt -s nullglob
-          for f in "$RUNNER_TEMP"/*.log glpi/files/_log/php-errors.log glpi/files/_log/php-server.log; do
+          for f in "$RUNNER_TEMP"/*.log glpi/files/_log/php-errors.log glpi/files/_log/php-server.log glpi/files/_log/php-server-access.log; do
             [ -s "$f" ] || continue
             msg=$(tail -c 3500 "$f" | sed 's/%/%25/g' | awk '{printf "%s%%0A", $0}')
             echo "::error title=$(basename "$f")::$msg"
           done
+          php -v | head -1
+          url=$(curl -s "$GLPI_URL/?noAUTO=1" | grep -o 'css\.php?file=[^"]*brandkit-login[^"]*' | head -1 | sed 's/&amp;/\&/g')
+          code=$(curl -s -o /dev/null -w '%{http_code} %{size_download}B %{time_total}s' --max-time 120 "$GLPI_URL/front/$url" || echo "curl failed: $?")
+          echo "::error title=login stylesheet probe::$url -> $code"
 
       - name: GLPI logs
         if: failure()
