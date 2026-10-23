@@ -37,7 +37,7 @@ if (!defined('GLPI_ROOT')) {
     die("Sorry. You can't access this file directly");
 }
 
-define('PLUGIN_BRANDKIT_VERSION', '0.4.1');
+define('PLUGIN_BRANDKIT_VERSION', '0.4.2');
 define('PLUGIN_BRANDKIT_MIN_GLPI', '10.0.0');
 // GLPI 12 is not supported yet: GLPI refuses to load the plugin there, which
 // is the safe behaviour until it has been tested.
@@ -61,6 +61,23 @@ function plugin_init_brandkit()
     $PLUGIN_HOOKS['csrf_compliant'][PLUGIN_BRANDKIT_KEY] = true;
 
     $isGlpi11 = brandkit_is_glpi11();
+
+    // GLPI 11 applies the "authenticated" firewall strategy to every legacy
+    // plugin script by default. The logo stylesheet holds nothing private
+    // (the same logos are on the login page) and must never be the request
+    // that destroys a partial session, e.g. the one GLPI opens to let a user
+    // change an expired password. GLPI 10 already serves plugin scripts
+    // without checks.
+    if (
+        class_exists(\Glpi\Http\Firewall::class)
+        && method_exists(\Glpi\Http\Firewall::class, 'addPluginStrategyForLegacyScripts')
+    ) {
+        \Glpi\Http\Firewall::addPluginStrategyForLegacyScripts(
+            PLUGIN_BRANDKIT_KEY,
+            '#^/front/brandkit\.css\.php$#',
+            \Glpi\Http\Firewall::STRATEGY_NO_CHECK
+        );
+    }
 
     // Login page (anonymous): generated stylesheet + self-healing of the
     // native logo files, see plugin_brandkit_display_login().
@@ -119,7 +136,9 @@ function plugin_init_brandkit()
     // Static files live in public/: GLPI 11 serves nothing else.
     $PLUGIN_HOOKS['add_javascript'][PLUGIN_BRANDKIT_KEY] = brandkit_get_public_hook_path('js/brandkit-error.js');
 
-    if (!Session::getLoginUserID()) {
+    // Partial sessions (expired password: user id but no profile) stop here,
+    // like anonymous ones: see brandkit_has_full_session().
+    if (!brandkit_has_full_session()) {
         return;
     }
 

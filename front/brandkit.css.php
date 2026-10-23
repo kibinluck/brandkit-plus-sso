@@ -33,12 +33,23 @@
  * ------------------------------------------------------------------------
  */
 
+// Public stylesheet: it only exposes the logos already shown on the login
+// page. GLPI 11 reads the strategy registered in setup.php; GLPI 10 reads
+// this variable (its default for plugins is the same).
+$SECURITY_STRATEGY = 'no_check';
+
 // GLPI 10 runs this script directly; GLPI 11 boots its kernel first (and the
 // plugin may live outside GLPI's tree, e.g. /var/glpi/marketplace in Docker).
 if (!defined('GLPI_ROOT')) {
     include_once '../../../inc/includes.php';
 }
 require_once __DIR__ . '/../inc/login.css.php';
+
+// Nothing here writes to the session: release it at once, so this request
+// never holds or rewrites the session of the page that loaded it.
+if (session_status() === PHP_SESSION_ACTIVE) {
+    session_write_close();
+}
 
 header('Content-Type: text/css; charset=UTF-8');
 

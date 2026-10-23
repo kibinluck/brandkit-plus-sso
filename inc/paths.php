@@ -44,6 +44,29 @@ if (!defined('PLUGIN_BRANDKIT_KEY')) {
 }
 
 /**
+ * Whether the request runs with a complete GLPI session: a user with an
+ * active profile and entity.
+ *
+ * When a password has expired, GLPI logs the user in with a partial session
+ * (user id, no profile) that only front/updatepassword.php accepts. On
+ * GLPI 11, any other request that goes through the authenticated firewall
+ * strategy considers that session expired and destroys it, so the "Update
+ * password" form can no longer be submitted (CSRF failure / access denied).
+ * Nothing that needs a logged-in user must be loaded in that state.
+ */
+function brandkit_has_full_session(): bool
+{
+    if (!class_exists('Session') || !Session::getLoginUserID()) {
+        return false;
+    }
+    if (method_exists('Session', 'mustChangePassword') && Session::mustChangePassword()) {
+        return false;
+    }
+
+    return isset($_SESSION['glpiactiveprofile']['id']);
+}
+
+/**
  * Whether the running GLPI is 11.x or later.
  */
 function brandkit_is_glpi11(): bool
