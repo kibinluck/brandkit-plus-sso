@@ -44,6 +44,14 @@ if (!defined('PLUGIN_BRANDKIT_KEY')) {
 }
 
 /**
+ * GLPI 12 or later: CSRF is checked from browser headers, without tokens.
+ */
+function brandkit_is_glpi12(): bool
+{
+    return defined('GLPI_VERSION') && version_compare(GLPI_VERSION, '12.0.0-dev', '>=');
+}
+
+/**
  * Whether the running GLPI is 11.x or later.
  */
 function brandkit_is_glpi11(): bool

@@ -1,7 +1,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Brandkit Plus SSO 0.4.0\n"
+"Project-Id-Version: Brandkit Plus SSO 0.5.0\n"
 "Language: es_CO\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -296,7 +296,7 @@ msgstr "Bien"
 msgid "Rounded"
 msgstr "Redondeado"
 
-#: front/index.php:1565
+#: front/index.php:1574
 msgid "Save login page"
 msgstr "Guardar página de inicio de sesión"
 
@@ -634,7 +634,7 @@ msgstr "Color hexagonal personalizado"
 msgid "Save logo sizes"
 msgstr "Guardar tamaños de logotipo"
 
-#: front/index.php:1566
+#: front/index.php:1575
 msgid "Restore defaults"
 msgstr "Restore defaults"
 
@@ -947,27 +947,27 @@ msgid ""
 " back."
 msgstr ""
 
-#: front/index.php:1554
+#: front/index.php:1562
 msgid "Local account access:"
 msgstr ""
 
-#: front/index.php:1557
+#: front/index.php:1565
 msgid ""
 "Save this address: it always shows the user and password fields. It is also "
 "the bypass address of the samlSSO plugin."
 msgstr ""
 
-#: front/index.php:1558
+#: front/index.php:1567
 msgid ""
 "Hiding the fields is visual only: local accounts can still sign in. To "
 "forbid it, change the authentication settings of GLPI or of the SSO plugin."
 msgstr ""
 
-#: inc/login.css.php:3233
+#: inc/login.css.php:3346
 msgid "Back to single sign-on"
 msgstr ""
 
-#: inc/login.css.php:3242
+#: inc/login.css.php:3357 inc/login.css.php:3369
 msgid "Sign in with a local account"
 msgstr ""
 
@@ -1040,4 +1040,53 @@ msgstr ""
 
 #: front/index.php:431
 msgid "Source code"
+msgstr ""
+
+#: front/index.php:1554
+msgid ""
+"samlSSO 1.4 or later is installed: local accounts need the emergency access "
+"key set on the server (the SAMLSSO_BYPASS_TOKEN environment variable or the "
+"PLUGIN_SAMLSSO_BYPASS_TOKEN constant). The \"Sign in with a local account\" "
+"link asks for it. Without a key set on the server, nobody can open the local"
+" account page."
+msgstr ""
+
+#: front/index.php:1556
+msgid "Direct address:"
+msgstr ""
+
+#: front/index.php:1559
+msgid ""
+"Use a long random key and change it after each emergency use: the key "
+"travels in the address, so it shows up in the web server and proxy access "
+"logs."
+msgstr ""
+
+#: inc/login.css.php:3312
+msgid "KEY"
+msgstr ""
+
+#: inc/login.css.php:3393
+msgid "Invalid access key. Try again."
+msgstr ""
+
+#: inc/login.css.php:3401
+msgid "Local account sign-in"
+msgstr ""
+
+#: inc/login.css.php:3402
+msgid ""
+"Enter the emergency access key set on the server for the samlSSO plugin."
+msgstr ""
+
+#: inc/login.css.php:3404
+msgid "Access key"
+msgstr ""
+
+#: inc/login.css.php:3407
+msgid "Cancel"
+msgstr ""
+
+#: inc/login.css.php:3408
+msgid "Continue"
 msgstr ""

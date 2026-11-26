@@ -79,7 +79,7 @@ function brandkit_render_logo_card(string $file, string $label, ?string $info = 
     $uploadId = 'brandkit_logo_' . md5($file);
     $accept = $isFavicon ? '.ico,image/x-icon,image/vnd.microsoft.icon' : 'image/png,image/jpeg,image/webp';
     $logoUrl = brandkit_get_logo_preview_url($file);
-    $csrf = htmlescape(brandkit_get_csrf_token());
+    $csrf = brandkit_csrf_field();
     $e = static fn($value): string => htmlescape((string) $value);
     ?>
     <div class="brandkit-card brandkit-logo-preview brandkit-logo-card">
@@ -88,7 +88,7 @@ function brandkit_render_logo_card(string $file, string $label, ?string $info = 
             <form method="post" enctype="multipart/form-data" action="logo_upload.php">
                 <input type="hidden" name="brandkit_action" value="upload_logo">
                 <input type="hidden" name="logo_target" value="<?php echo $e($file); ?>">
-                <input type="hidden" name="_glpi_csrf_token" value="<?php echo $csrf; ?>">
+                <?php echo $csrf; ?>
                 <input class="brandkit-logo-input" type="file" id="<?php echo $e($uploadId); ?>" name="brandkit_logo" accept="<?php echo $e($accept); ?>">
                 <label class="brandkit-logo-action brandkit-logo-upload" for="<?php echo $e($uploadId); ?>" aria-label="<?php echo $e(__('Upload logo', 'brandkit')); ?>">&#x2B06;</label>
             </form>
@@ -96,7 +96,7 @@ function brandkit_render_logo_card(string $file, string $label, ?string $info = 
                 <form method="post" action="logo_upload.php">
                     <input type="hidden" name="brandkit_action" value="clear_logo">
                     <input type="hidden" name="logo_target" value="<?php echo $e($file); ?>">
-                    <input type="hidden" name="_glpi_csrf_token" value="<?php echo $csrf; ?>">
+                    <?php echo $csrf; ?>
                     <button type="submit" class="brandkit-logo-action brandkit-logo-remove" aria-label="<?php echo $e(__('Remove logo', 'brandkit')); ?>">×</button>
                 </form>
             <?php endif; ?>

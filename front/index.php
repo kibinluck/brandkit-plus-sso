@@ -581,7 +581,7 @@ Html::header(PLUGIN_BRANDKIT_NAME, $_SERVER['PHP_SELF'], 'plugins', 'brandkit');
                     </div>
                 </div>
                 <input type="hidden" name="brandkit_action" value="save_logo_scales">
-                <input type="hidden" name="_glpi_csrf_token" value="<?php echo htmlescape(brandkit_get_csrf_token()); ?>">
+                <?php echo brandkit_csrf_field(); ?>
             </form>
             <?php brandkit_render_logo_section(
                 $faviconGroup['title'],
@@ -1550,11 +1550,20 @@ Html::header(PLUGIN_BRANDKIT_NAME, $_SERVER['PHP_SELF'], 'plugins', 'brandkit');
                             </div>
                             <div class="brandkit-sso-help">
                                 <p><?php echo htmlescape(__('With SSO mode on, the login page hides the user and password fields and shows the SSO button in their place. The fields are only hidden while an SSO button is on the page: if the SSO plugin is disabled, the normal form comes back.', 'brandkit')); ?></p>
-                                <p>
-                                    <strong><?php echo htmlescape(__('Local account access:', 'brandkit')); ?></strong>
-                                    <code><?php echo htmlescape(brandkit_get_sso_bypass_url(true)); ?></code>
-                                </p>
-                                <p><?php echo htmlescape(__('Save this address: it always shows the user and password fields. It is also the bypass address of the samlSSO plugin.', 'brandkit')); ?></p>
+                                <?php if (brandkit_samlsso_bypass_needs_key()) : ?>
+                                    <p><?php echo htmlescape(__('samlSSO 1.4 or later is installed: local accounts need the emergency access key set on the server (the SAMLSSO_BYPASS_TOKEN environment variable or the PLUGIN_SAMLSSO_BYPASS_TOKEN constant). The "Sign in with a local account" link asks for it. Without a key set on the server, nobody can open the local account page.', 'brandkit')); ?></p>
+                                    <p>
+                                        <strong><?php echo htmlescape(__('Direct address:', 'brandkit')); ?></strong>
+                                        <code><?php echo htmlescape(brandkit_get_sso_bypass_url(true, true)); ?></code>
+                                    </p>
+                                    <p><?php echo htmlescape(__('Use a long random key and change it after each emergency use: the key travels in the address, so it shows up in the web server and proxy access logs.', 'brandkit')); ?></p>
+                                <?php else : ?>
+                                    <p>
+                                        <strong><?php echo htmlescape(__('Local account access:', 'brandkit')); ?></strong>
+                                        <code><?php echo htmlescape(brandkit_get_sso_bypass_url(true)); ?></code>
+                                    </p>
+                                    <p><?php echo htmlescape(__('Save this address: it always shows the user and password fields. It is also the bypass address of the samlSSO plugin.', 'brandkit')); ?></p>
+                                <?php endif; ?>
                                 <p><?php echo htmlescape(__('Hiding the fields is visual only: local accounts can still sign in. To forbid it, change the authentication settings of GLPI or of the SSO plugin.', 'brandkit')); ?></p>
                             </div>
                         </div>
@@ -1565,7 +1574,7 @@ Html::header(PLUGIN_BRANDKIT_NAME, $_SERVER['PHP_SELF'], 'plugins', 'brandkit');
                     <button class="submit brandkit-save-login" type="submit" name="brandkit_action" value="save_login_settings"><?php echo htmlescape(__('Save login page', 'brandkit')); ?></button>
                     <button class="submit brandkit-reset-login" type="submit" name="brandkit_action" value="reset_login_defaults"><?php echo htmlescape(__('Restore defaults', 'brandkit')); ?></button>
                 </div>
-                <input type="hidden" name="_glpi_csrf_token" value="<?php echo htmlescape(brandkit_get_csrf_token()); ?>">
+                <?php echo brandkit_csrf_field(); ?>
             </form>
             <script src="<?php echo htmlescape(brandkit_get_public_asset_url('js/admin-login.js') . '?v=' . PLUGIN_BRANDKIT_VERSION); ?>"></script>
         <?php endif; ?>

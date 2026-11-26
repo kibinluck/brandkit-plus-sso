@@ -16,6 +16,13 @@ body.welcome-anonymous form:has(#login_name) > .row {
     align-items: center !important;
 }
 
+/* Same width as the normal login form (the column alone would be 5/12 wide). */
+body.welcome-anonymous form:has(#login_name) > .row > .col-md-5 {
+    width: min(100%, var(--brandkit-login-field-width, 280px)) !important;
+    max-width: 100% !important;
+    flex: none !important;
+}
+
 body.welcome-anonymous form:has(#login_name) > .row > .col-auto {
     width: 100% !important;
     max-width: 100% !important;
