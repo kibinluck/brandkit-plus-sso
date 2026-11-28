@@ -633,11 +633,10 @@ function brandkit_build_login_css(array $settings): string
     $css .= "  --brandkit-login-panel-overflow: {$panelScrollbar};\n";
     $css .= "  --brandkit-login-text-color: {$textColor};\n";
     $css .= "  --brandkit-login-split-color: {$splitRgba};\n";
-    // samlSSO 1.4 key dialog (public/css/brandkit-sso.css): opaque, in the
-    // color of the surface the login text sits on (the card, or the split
-    // panel when the card is transparent), so the login text color reads well.
-    $dialogBg = ($layout === 'classic' || !$panelTransparent) ? $panelColorHex : $splitColorHex;
-    $css .= "  --brandkit-bypass-dialog-bg: {$dialogBg};\n";
+    $css .= "  --brandkit-bypass-dialog-bg: " . brandkit_bypass_dialog_color(
+        ($layout === 'classic' || !$panelTransparent) ? $panelColorHex : $splitColorHex,
+        $textColor
+    ) . ";\n";
     $css .= "  --brandkit-login-split-blur: {$splitBlur}px;\n";
     $css .= "  --brandkit-login-split-width: {$vars['split_width']};\n";
     $css .= "  --brandkit-login-split-left: {$vars['split_left']};\n";
@@ -2916,6 +2915,26 @@ body.horizontal-layout:not(.central):not(.helpdesk) #page .alert .btn * {
 }
 
 CSS;
+}
+
+/**
+ * Background of the samlSSO 1.4 key dialog: opaque, tinted with the color of
+ * the surface the login text sits on (the card, or the split panel when the
+ * card is transparent), over a dark base for light text and a white base
+ * for dark text. The panels themselves are see-through over the wallpaper,
+ * so their color alone can be too light (white text) or too dark (dark
+ * text) on a dialog.
+ */
+function brandkit_bypass_dialog_color(string $surfaceHex, string $textHex): string
+{
+    [$tr, $tg, $tb] = brandkit_hex_to_rgb($textHex);
+    $lightText = (0.2126 * $tr + 0.7152 * $tg + 0.0722 * $tb) / 255 > 0.5;
+    [$br, $bg, $bb] = $lightText ? [17, 24, 39] : [255, 255, 255];
+    $share = $lightText ? 0.25 : 0.35;
+    [$sr, $sg, $sb] = brandkit_hex_to_rgb($surfaceHex);
+    $mix = static fn(int $s, int $b): int => (int) round($s * $share + $b * (1 - $share));
+
+    return sprintf('#%02x%02x%02x', $mix($sr, $br), $mix($sg, $bg), $mix($sb, $bb));
 }
 
 /**
