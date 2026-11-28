@@ -37,7 +37,7 @@ if (!defined('GLPI_ROOT')) {
     die("Sorry. You can't access this file directly");
 }
 
-define('PLUGIN_BRANDKIT_VERSION', '0.5.0');
+define('PLUGIN_BRANDKIT_VERSION', '0.5.1');
 define('PLUGIN_BRANDKIT_MIN_GLPI', '10.0.0');
 // Tested on GLPI 10.0, 11.0 and 12.0. A later major must be tested before
 // it is allowed: GLPI refuses to load the plugin outside this range.

@@ -633,6 +633,11 @@ function brandkit_build_login_css(array $settings): string
     $css .= "  --brandkit-login-panel-overflow: {$panelScrollbar};\n";
     $css .= "  --brandkit-login-text-color: {$textColor};\n";
     $css .= "  --brandkit-login-split-color: {$splitRgba};\n";
+    // samlSSO 1.4 key dialog (public/css/brandkit-sso.css): opaque, in the
+    // color of the surface the login text sits on (the card, or the split
+    // panel when the card is transparent), so the login text color reads well.
+    $dialogBg = ($layout === 'classic' || !$panelTransparent) ? $panelColorHex : $splitColorHex;
+    $css .= "  --brandkit-bypass-dialog-bg: {$dialogBg};\n";
     $css .= "  --brandkit-login-split-blur: {$splitBlur}px;\n";
     $css .= "  --brandkit-login-split-width: {$vars['split_width']};\n";
     $css .= "  --brandkit-login-split-left: {$vars['split_left']};\n";
@@ -2893,18 +2898,18 @@ body.horizontal-layout:not(.central):not(.helpdesk) #page .alert .btn * {
   width: 100%;
   margin-top: 1rem !important;
   padding: 0.6rem 1.25rem !important;
-  background: transparent !important;
+  background: var(--brandkit-login-button-bg) !important;
   border: 1px solid var(--brandkit-login-button-border) !important;
   border-radius: var(--brandkit-login-button-radius) !important;
-  color: var(--brandkit-login-text-color) !important;
+  color: var(--brandkit-login-button-text) !important;
   font-size: calc(var(--brandkit-login-button-text-size) * 0.8);
   font-weight: 600;
   box-shadow: none !important;
   transition: background-color 0.2s ease, color 0.2s ease;
 }
-{$faq} > a.btn:hover {
-  background: var(--brandkit-login-button-bg) !important;
-  color: var(--brandkit-login-button-text) !important;
+{$faq} > a.btn:hover,
+{$faq} > a.btn:focus-visible {
+  filter: brightness(1.12);
 }
 {$faq} > a.btn * {
   color: inherit !important;

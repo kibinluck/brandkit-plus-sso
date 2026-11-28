@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.5.1
+
+### Fixed
+- samlSSO 1.4 key dialog: it was dark (it took the card color of the classic
+  layout, even on split layouts with a light panel). It is now opaque and in
+  the color of the login area, so the login text color reads well.
+- GLPI public FAQ button: always in the login button colors (it only showed
+  them while the mouse was over it).
+
 ## 0.5.0
 
 ### Added
