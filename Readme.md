@@ -81,8 +81,10 @@ extension (already required by GLPI). SSO mode is tested with samlSSO 1.3 and 1.
 samlSSO 1.4 only opens the local account page with an emergency key set on the server. **Set it
 before upgrading samlSSO**, or nobody can sign in with a local account:
 
-- Docker / environment: `SAMLSSO_BYPASS_TOKEN=<long random key>`
-- or in `config/local_define.php`: `define('PLUGIN_SAMLSSO_BYPASS_TOKEN', '<long random key>');`
+- Docker / environment: `SAMLSSO_BYPASS_TOKEN=<long random key>`. With the official `glpi/glpi` image, put
+  it in the `environment:` section of the compose file: GLPI's code folder (`/var/www/glpi`, including
+  its `config/local_define.php`) is recreated with the container.
+- or in GLPI's `config/local_define.php` (classic installs): `define('PLUGIN_SAMLSSO_BYPASS_TOKEN', '<long random key>');`
 
 On the login page, **Sign in with a local account** asks for the key. The direct address is
 `https://your-glpi/?bypass=1&token=<key>`. The key travels in the address, so it shows up in the
@@ -190,8 +192,10 @@ PHP (já exigida pelo GLPI). O modo SSO foi testado com o samlSSO 1.3 e 1.4.
 O samlSSO 1.4 só abre a página de conta local com uma chave de emergência definida no servidor.
 **Defina a chave antes de atualizar o samlSSO**, senão ninguém consegue entrar com conta local:
 
-- Docker / variável de ambiente: `SAMLSSO_BYPASS_TOKEN=<chave longa e aleatória>`
-- ou em `config/local_define.php`: `define('PLUGIN_SAMLSSO_BYPASS_TOKEN', '<chave longa e aleatória>');`
+- Docker / variável de ambiente: `SAMLSSO_BYPASS_TOKEN=<chave longa e aleatória>`. Na imagem oficial
+  `glpi/glpi`, coloque na seção `environment:` do compose: a pasta de código do GLPI (`/var/www/glpi`,
+  inclusive o `config/local_define.php`) é recriada junto com o container.
+- ou no `config/local_define.php` do GLPI (instalações tradicionais): `define('PLUGIN_SAMLSSO_BYPASS_TOKEN', '<chave longa e aleatória>');`
 
 Na tela de login, **Entrar com uma conta local** pede a chave. O endereço direto é
 `https://seu-glpi/?bypass=1&token=<chave>`. A chave vai no endereço e aparece nos logs de acesso do
