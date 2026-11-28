@@ -37,11 +37,11 @@ if (!defined('GLPI_ROOT')) {
     die("Sorry. You can't access this file directly");
 }
 
-define('PLUGIN_BRANDKIT_VERSION', '0.4.1');
+define('PLUGIN_BRANDKIT_VERSION', '0.5.1');
 define('PLUGIN_BRANDKIT_MIN_GLPI', '10.0.0');
-// GLPI 12 is not supported yet: GLPI refuses to load the plugin there, which
-// is the safe behaviour until it has been tested.
-define('PLUGIN_BRANDKIT_MAX_GLPI', '11.0.99');
+// Tested on GLPI 10.0, 11.0 and 12.0. A later major must be tested before
+// it is allowed: GLPI refuses to load the plugin outside this range.
+define('PLUGIN_BRANDKIT_MAX_GLPI', '12.0.99');
 
 define('PLUGIN_BRANDKIT_NAME', 'Brandkit Plus SSO');
 define('PLUGIN_BRANDKIT_FORK_MAINTAINER', 'Bruno Braz');
@@ -58,6 +58,7 @@ function plugin_init_brandkit()
 {
     global $PLUGIN_HOOKS;
 
+    // Needed on GLPI 10/11 (token-based CSRF); ignored by GLPI 12.
     $PLUGIN_HOOKS['csrf_compliant'][PLUGIN_BRANDKIT_KEY] = true;
 
     $isGlpi11 = brandkit_is_glpi11();
@@ -92,10 +93,17 @@ function plugin_init_brandkit()
     // Decided here, server side, so the local form can always be reached.
     // With ?bypass=1 it is the other way round: the page is for local
     // accounts only, so the SSO buttons are hidden instead.
+    // With samlSSO 1.4+, the local account link opens a dialog that asks for
+    // samlSSO's bypass key (public/js/brandkit-bypass.js).
+    $anonymousScripts = [];
+    if (!$isGlpi11) {
+        $anonymousScripts[] = brandkit_get_public_hook_path('js/brandkit-login.js');
+    }
     if (!Session::getLoginUserID()) {
         try {
             if (brandkit_get_sso_settings()['enabled']) {
-                $stylesheet = brandkit_is_sso_bypass_requested() ? 'css/brandkit-sso-local.css' : 'css/brandkit-sso.css';
+                $localPage = brandkit_is_sso_bypass_requested();
+                $stylesheet = $localPage ? 'css/brandkit-sso-local.css' : 'css/brandkit-sso.css';
                 $anonymousHeaderTags[] = [
                     'tag' => 'link',
                     'properties' => [
@@ -103,6 +111,9 @@ function plugin_init_brandkit()
                         'href' => brandkit_get_public_asset_url($stylesheet) . '?v=' . PLUGIN_BRANDKIT_VERSION,
                     ],
                 ];
+                if (!$localPage && brandkit_samlsso_bypass_needs_key()) {
+                    $anonymousScripts[] = brandkit_get_public_hook_path('js/brandkit-bypass.js');
+                }
             }
         } catch (Throwable $e) {
             trigger_error('Brandkit: unable to read the SSO settings: ' . $e->getMessage(), E_USER_WARNING);
@@ -111,8 +122,8 @@ function plugin_init_brandkit()
     if ($anonymousHeaderTags !== []) {
         $PLUGIN_HOOKS['add_header_tag_anonymous_page'][PLUGIN_BRANDKIT_KEY] = $anonymousHeaderTags;
     }
-    if (!$isGlpi11) {
-        $PLUGIN_HOOKS['add_javascript_anonymous_page'][PLUGIN_BRANDKIT_KEY] = brandkit_get_public_hook_path('js/brandkit-login.js');
+    if ($anonymousScripts !== []) {
+        $PLUGIN_HOOKS['add_javascript_anonymous_page'][PLUGIN_BRANDKIT_KEY] = $anonymousScripts;
     }
 
     // Error pages reuse the login look (see public/js/brandkit-error.js).

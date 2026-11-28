@@ -43,6 +43,7 @@ We are publishing the result so other teams don't have to start from scratch.
 - Hides username and password and puts the SSO button in their place, styled like the login button.
 - Only acts when an SSO button is on the page. If samlSSO is disabled, the normal form comes back on its own.
 - Local access at `https://your-glpi/?bypass=1&noAUTO=1`, the same bypass address samlSSO uses. That page hides the SSO button.
+- samlSSO 1.4+: the local account link opens a dialog that asks for samlSSO's emergency key (see below).
 - Configurable button text, icon (the SSO plugin's, the colored Microsoft logo, or none) and colors.
 
 **Fixes**
@@ -72,9 +73,24 @@ We are publishing the result so other teams don't have to start from scratch.
 **Already using the original Brandkit?** The plugin key is the same (`brandkit`). Replace the folder
 and your settings and images stay in place.
 
-**Requirements:** GLPI 10.0 or 11.0, PHP 7.4+ (8.2+ on GLPI 11), the PHP `gd` extension (already
-required by GLPI). GLPI 12 is not supported yet: GLPI will refuse to enable the plugin there until it
-has been tested.
+**Requirements:** GLPI 10.0, 11.0 or 12.0, PHP 7.4+ (8.2+ on GLPI 11, 8.3+ on GLPI 12), the PHP `gd`
+extension (already required by GLPI). SSO mode is tested with samlSSO 1.3 and 1.4.
+
+### Local accounts with samlSSO 1.4
+
+samlSSO 1.4 only opens the local account page with an emergency key set on the server. **Set it
+before upgrading samlSSO**, or nobody can sign in with a local account:
+
+- Docker / environment: `SAMLSSO_BYPASS_TOKEN=<long random key>`. With the official `glpi/glpi` image, put
+  it in the `environment:` section of the compose file: GLPI's code folder (`/var/www/glpi`, including
+  its `config/local_define.php`) is recreated with the container.
+- or in GLPI's `config/local_define.php` (classic installs): `define('PLUGIN_SAMLSSO_BYPASS_TOKEN', '<long random key>');`
+
+On the login page, **Sign in with a local account** asks for the key. The direct address is
+`https://your-glpi/?bypass=1&token=<key>`. The key travels in the address, so it shows up in the
+web server and proxy access logs: use a long random key and change it after each emergency use.
+If samlSSO forces SSO (automatic redirect), open `https://your-glpi/?noAUTO=1` to reach the login
+page.
 
 The web server user needs write access to GLPI's `pics/` folder (`public/pics/` on GLPI 11):
 the plugin replaces GLPI's own logo and favicon files there and publishes the login wallpaper next
@@ -138,6 +154,7 @@ plugin. Publicamos o resultado para que outras equipes não precisem começar do
 - Esconde usuário e senha e coloca o botão SSO no lugar, com o estilo do botão de login.
 - Só age quando há um botão SSO na página. Se o samlSSO for desativado, o formulário normal volta sozinho.
 - Acesso local em `https://seu-glpi/?bypass=1&noAUTO=1`, o mesmo endereço de bypass do samlSSO. Nessa página, o botão SSO some.
+- samlSSO 1.4+: o link de conta local abre uma janela que pede a chave de emergência do samlSSO (veja abaixo).
 - Texto, ícone (o do plugin de SSO, o logo colorido da Microsoft ou nenhum) e cores do botão configuráveis.
 
 **Correções**
@@ -167,9 +184,24 @@ plugin. Publicamos o resultado para que outras equipes não precisem começar do
 **Já usa o Brandkit original?** A chave do plugin é a mesma (`brandkit`). Basta substituir a pasta:
 as configurações e as imagens continuam lá.
 
-**Requisitos:** GLPI 10.0 ou 11.0, PHP 7.4+ (8.2+ no GLPI 11), extensão `gd` do PHP (já exigida pelo
-GLPI). O GLPI 12 ainda não é suportado: o GLPI não deixa habilitar o plugin nessa versão até que ela
-seja testada.
+**Requisitos:** GLPI 10.0, 11.0 ou 12.0, PHP 7.4+ (8.2+ no GLPI 11, 8.3+ no GLPI 12), extensão `gd` do
+PHP (já exigida pelo GLPI). O modo SSO foi testado com o samlSSO 1.3 e 1.4.
+
+#### Contas locais com o samlSSO 1.4
+
+O samlSSO 1.4 só abre a página de conta local com uma chave de emergência definida no servidor.
+**Defina a chave antes de atualizar o samlSSO**, senão ninguém consegue entrar com conta local:
+
+- Docker / variável de ambiente: `SAMLSSO_BYPASS_TOKEN=<chave longa e aleatória>`. Na imagem oficial
+  `glpi/glpi`, coloque na seção `environment:` do compose: a pasta de código do GLPI (`/var/www/glpi`,
+  inclusive o `config/local_define.php`) é recriada junto com o container.
+- ou no `config/local_define.php` do GLPI (instalações tradicionais): `define('PLUGIN_SAMLSSO_BYPASS_TOKEN', '<chave longa e aleatória>');`
+
+Na tela de login, **Entrar com uma conta local** pede a chave. O endereço direto é
+`https://seu-glpi/?bypass=1&token=<chave>`. A chave vai no endereço e aparece nos logs de acesso do
+servidor web e do proxy: use uma chave longa e aleatória e troque-a depois de cada uso de
+emergência. Se o samlSSO estiver forçando o SSO (redirecionamento automático), abra
+`https://seu-glpi/?noAUTO=1` para chegar à tela de login.
 
 O usuário do servidor web precisa de permissão de escrita na pasta `pics/` do GLPI (`public/pics/`
 no GLPI 11): o plugin substitui ali os logos e o favicon do GLPI e publica o papel de parede do

@@ -57,6 +57,20 @@ function brandkit_get_csrf_token(): string
     return (string) Session::getNewCSRFToken(true);
 }
 
+/**
+ * Hidden CSRF field for a form. GLPI 12 validates the browser's
+ * Sec-Fetch-Site/Origin headers instead of tokens (and deprecates
+ * Session::getNewCSRFToken()), so the field is only printed on 10/11.
+ */
+function brandkit_csrf_field(): string
+{
+    if (brandkit_is_glpi12()) {
+        return '';
+    }
+
+    return '<input type="hidden" name="_glpi_csrf_token" value="' . htmlescape(brandkit_get_csrf_token()) . '">';
+}
+
 function brandkit_get_login_defaults(): array
 {
     $defaults = [
@@ -619,6 +633,11 @@ function brandkit_build_login_css(array $settings): string
     $css .= "  --brandkit-login-panel-overflow: {$panelScrollbar};\n";
     $css .= "  --brandkit-login-text-color: {$textColor};\n";
     $css .= "  --brandkit-login-split-color: {$splitRgba};\n";
+    // samlSSO 1.4 key dialog (public/css/brandkit-sso.css): opaque, in the
+    // color of the surface the login text sits on (the card, or the split
+    // panel when the card is transparent), so the login text color reads well.
+    $dialogBg = ($layout === 'classic' || !$panelTransparent) ? $panelColorHex : $splitColorHex;
+    $css .= "  --brandkit-bypass-dialog-bg: {$dialogBg};\n";
     $css .= "  --brandkit-login-split-blur: {$splitBlur}px;\n";
     $css .= "  --brandkit-login-split-width: {$vars['split_width']};\n";
     $css .= "  --brandkit-login-split-left: {$vars['split_left']};\n";
@@ -2178,9 +2197,11 @@ function brandkit_build_login_css(array $settings): string
     $css .= "  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);\n";
     $css .= "  width: 100%;\n";
     $css .= "}\n";
+    // Only the page-level <main>: GLPI 12 also wraps the login card in a
+    // <main>, which must not get a second copy of the wallpaper.
     $css .= "body.welcome-anonymous,\n";
     $css .= "body.welcome-anonymous #page,\n";
-    $css .= "body.welcome-anonymous main {\n";
+    $css .= "body.welcome-anonymous > main {\n";
     $css .= "  background-color: var(--brandkit-login-error-overlay, {$wallpaperOverlayRgba}) !important;\n";
     $css .= "  background-image: linear-gradient(var(--brandkit-login-error-overlay, {$wallpaperOverlayRgba}), var(--brandkit-login-error-overlay, {$wallpaperOverlayRgba})), var(--brandkit-login-error-wallpaper, none) !important;\n";
     $css .= "  background-size: {$wallpaperSizeValue} !important;\n";
@@ -2767,7 +2788,12 @@ function brandkit_build_login_css(array $settings): string
 function brandkit_build_login_footer_css(): string
 {
     $page = 'body.welcome-anonymous:has(#login_name)';
+    $anyPage = 'body.welcome-anonymous';
     $footer = '.text-center.text-muted.mt-3';
+    // GLPI 12 adds a "Help" link after the copyright, in its own block.
+    // (:has() cannot be nested: rules that need it inside another :has()
+    // spell the condition out.)
+    $help = '.text-center.mt-3:not(.text-muted):has(> a > .ti-help)';
 
     return <<<CSS
 /* Brandkit: GLPI copyright footer under the login area, at the bottom */
@@ -2802,6 +2828,35 @@ function brandkit_build_login_footer_css(): string
   {$page} .container-tight:has(> {$footer} > .copyright) > .text-center:first-child,
   {$page} .container-tight > {$footer} {
     margin-top: auto !important;
+  }
+}
+/* Brandkit: GLPI 12 "Help" link, right under the copyright and styled like it
+   (every anonymous page: login, 2FA, errors, password reset) */
+{$anyPage} :is(.container-tight, .flex-fill) > {$help} {
+  margin: 0.25rem auto 1.5rem !important;
+  text-align: center !important;
+  font-size: 0.8rem;
+}
+{$page} :is(.container-tight, .flex-fill) > {$help} {
+  width: min(100%, var(--brandkit-login-field-width));
+}
+{$anyPage} :is(.container-tight, .flex-fill):has(> .text-center.mt-3 > a > .ti-help) .copyright {
+  margin-bottom: 0.25rem !important;
+}
+{$anyPage} :is(.container-tight, .flex-fill) > {$help} > a {
+  color: color-mix(in srgb, var(--brandkit-login-text-color) 75%, transparent) !important;
+  text-decoration: none;
+}
+{$anyPage} :is(.container-tight, .flex-fill) > {$help} > a:hover,
+{$anyPage} :is(.container-tight, .flex-fill) > {$help} > a:focus-visible {
+  color: var(--brandkit-login-text-color) !important;
+  text-decoration: underline;
+}
+@media screen and (min-width: 768px) {
+  {$page} .flex-fill > {$help} {
+    margin-left: var(--brandkit-login-container-left) !important;
+    margin-right: var(--brandkit-login-container-right) !important;
+    transform: translateX(var(--brandkit-login-container-translate));
   }
 }
 
@@ -2843,18 +2898,18 @@ body.horizontal-layout:not(.central):not(.helpdesk) #page .alert .btn * {
   width: 100%;
   margin-top: 1rem !important;
   padding: 0.6rem 1.25rem !important;
-  background: transparent !important;
+  background: var(--brandkit-login-button-bg) !important;
   border: 1px solid var(--brandkit-login-button-border) !important;
   border-radius: var(--brandkit-login-button-radius) !important;
-  color: var(--brandkit-login-text-color) !important;
+  color: var(--brandkit-login-button-text) !important;
   font-size: calc(var(--brandkit-login-button-text-size) * 0.8);
   font-weight: 600;
   box-shadow: none !important;
   transition: background-color 0.2s ease, color 0.2s ease;
 }
-{$faq} > a.btn:hover {
-  background: var(--brandkit-login-button-bg) !important;
-  color: var(--brandkit-login-button-text) !important;
+{$faq} > a.btn:hover,
+{$faq} > a.btn:focus-visible {
+  filter: brightness(1.12);
 }
 {$faq} > a.btn * {
   color: inherit !important;
@@ -3044,7 +3099,8 @@ function brandkit_build_secondary_pages_css(): string
   font-size: 1.4em !important;
   text-align: center !important;
 }
-{$card} input.form-control[name="totp_code[]"]:not([type="checkbox"]):not([type="radio"]) + input[name="totp_code[]"] {
+/* GLPI 12 spaces the digits itself (gap-2 on [data-mfa-code-input]). */
+{$card} :not([data-mfa-code-input]) > input.form-control[name="totp_code[]"]:not([type="checkbox"]):not([type="radio"]) + input[name="totp_code[]"] {
   margin-left: 0.4rem !important;
 }
 {$card} .btn-group .form-control {
@@ -3183,16 +3239,68 @@ function brandkit_write_login_css(?array $settings = null): bool
  */
 const BRANDKIT_SSO_BYPASS_PARAM = 'bypass';
 
-function brandkit_is_sso_bypass_requested(): bool
+/**
+ * samlSSO 1.4+ only opens ?bypass=1 with a server-side secret
+ * (SAMLSSO_BYPASS_TOKEN). Its LoginFlow::hasValidBypassSession() tells
+ * whether the current session went through that check. Plugin class
+ * autoloaders are registered before any plugin init, so it can be called
+ * from plugin_init.
+ */
+function brandkit_samlsso_bypass_needs_key(): bool
+{
+    try {
+        return class_exists('GlpiPlugin\\Samlsso\\LoginFlow')
+            && method_exists('GlpiPlugin\\Samlsso\\LoginFlow', 'hasValidBypassSession');
+    } catch (Throwable $e) {
+        return false;
+    }
+}
+
+function brandkit_has_samlsso_bypass_session(): bool
+{
+    try {
+        return (bool) call_user_func(['GlpiPlugin\\Samlsso\\LoginFlow', 'hasValidBypassSession']);
+    } catch (Throwable $e) {
+        return false;
+    }
+}
+
+function brandkit_is_bypass_param_set(): bool
 {
     return isset($_GET[BRANDKIT_SSO_BYPASS_PARAM]) && (string) $_GET[BRANDKIT_SSO_BYPASS_PARAM] === '1';
+}
+
+/**
+ * Should the login page show the local (user/password) form?
+ * With samlSSO 1.4+, only when samlSSO accepted the bypass key for this
+ * session: otherwise samlSSO keeps the password field hidden and a page
+ * without the SSO button would be a dead end.
+ */
+function brandkit_is_sso_bypass_requested(): bool
+{
+    if (!brandkit_is_bypass_param_set()) {
+        return false;
+    }
+
+    return !brandkit_samlsso_bypass_needs_key() || brandkit_has_samlsso_bypass_session();
+}
+
+/**
+ * A bypass key was sent and samlSSO 1.4+ refused it.
+ */
+function brandkit_is_sso_bypass_rejected(): bool
+{
+    return brandkit_is_bypass_param_set()
+        && (isset($_GET['token']) || isset($_GET['bypass_token']))
+        && brandkit_samlsso_bypass_needs_key()
+        && !brandkit_has_samlsso_bypass_session();
 }
 
 /**
  * Login page URL that shows the local (user/password) form.
  * noAUTO=1 also stops GLPI/samlSSO automatic SSO redirections.
  */
-function brandkit_get_sso_bypass_url(bool $absolute = false): string
+function brandkit_get_sso_bypass_url(bool $absolute = false, bool $withKeyPlaceholder = false): string
 {
     $base = brandkit_get_glpi_root_doc();
     if ($absolute) {
@@ -3200,6 +3308,13 @@ function brandkit_get_sso_bypass_url(bool $absolute = false): string
         if (is_string($urlBase) && $urlBase !== '') {
             $base = rtrim($urlBase, '/');
         }
+    }
+
+    if ($withKeyPlaceholder) {
+        // samlSSO 1.4+, shown to administrators as a template (never with the
+        // real key). Without noAUTO, samlSSO redirects to the clean
+        // ?bypass=1&noAUTO=1 address once the key is accepted.
+        return $base . '/?' . BRANDKIT_SSO_BYPASS_PARAM . '=1&token=' . __('KEY', 'brandkit');
     }
 
     return $base . '/?' . BRANDKIT_SSO_BYPASS_PARAM . '=1&noAUTO=1';
@@ -3240,10 +3355,64 @@ function brandkit_render_sso_login_extras(): string
     if ($sso['title'] !== '') {
         $html .= '<div class="brandkit-sso-title">' . htmlescape($sso['title']) . '</div>';
     }
+
+    if (!brandkit_samlsso_bypass_needs_key()) {
+        if ($sso['local_link']) {
+            $html .= '<a class="brandkit-local-login" href="' . htmlescape(brandkit_get_sso_bypass_url()) . '">'
+                . htmlescape(__('Sign in with a local account', 'brandkit')) . '</a>';
+        }
+
+        return $html;
+    }
+
+    // samlSSO 1.4+: the link opens a dialog that asks for the bypass key.
+    // Not a <button>: brandkit-sso.css tells an SSO button is on the page
+    // from the buttons in this area.
+    $rejected = brandkit_is_sso_bypass_rejected();
     if ($sso['local_link']) {
-        $html .= '<a class="brandkit-local-login" href="' . htmlescape(brandkit_get_sso_bypass_url()) . '">'
+        $html .= '<a class="brandkit-local-login" href="#" role="button" data-brandkit-bypass>'
             . htmlescape(__('Sign in with a local account', 'brandkit')) . '</a>';
+    }
+    if ($sso['local_link'] || $rejected) {
+        $html .= brandkit_render_bypass_dialog_template($rejected);
     }
 
     return $html;
+}
+
+/**
+ * Dialog that asks for samlSSO's bypass key. It sits in a <template> because
+ * this markup is printed inside GLPI's login <form>, where a nested form is
+ * not allowed; public/js/brandkit-bypass.js moves it to <body>.
+ *
+ * The dialog form is a plain GET form to /?bypass=1&noAuto=1&token=…:
+ * samlSSO checks the key and, when it is right, redirects to
+ * /?bypass=1&noAUTO=1 (the key leaves the address bar). noAuto keeps
+ * samlSSO from sending the browser to the identity provider when the key
+ * is wrong. Brandkit never stores the key.
+ */
+function brandkit_render_bypass_dialog_template(bool $rejected): string
+{
+    $root = brandkit_get_glpi_root_doc() . '/';
+    $error = $rejected
+        ? '<p class="brandkit-bypass-error" role="alert">' . htmlescape(__('Invalid access key. Try again.', 'brandkit')) . '</p>'
+        : '';
+
+    return '<template id="brandkit-bypass-template"' . ($rejected ? ' data-rejected="1"' : '') . '>'
+        . '<dialog class="brandkit-bypass-dialog" aria-labelledby="brandkit-bypass-title">'
+        . '<form method="get" action="' . htmlescape($root) . '">'
+        . '<input type="hidden" name="' . BRANDKIT_SSO_BYPASS_PARAM . '" value="1">'
+        . '<input type="hidden" name="noAuto" value="1">'
+        . '<h2 id="brandkit-bypass-title">' . htmlescape(__('Local account sign-in', 'brandkit')) . '</h2>'
+        . '<p>' . htmlescape(__('Enter the emergency access key set on the server for the samlSSO plugin.', 'brandkit')) . '</p>'
+        . $error
+        . '<label for="brandkit-bypass-key">' . htmlescape(__('Access key', 'brandkit')) . '</label>'
+        . '<input type="password" id="brandkit-bypass-key" name="token" required autocomplete="current-password" spellcheck="false">'
+        . '<div class="brandkit-bypass-actions">'
+        . '<button type="button" class="btn brandkit-bypass-cancel" data-brandkit-bypass-cancel>' . htmlescape(__('Cancel', 'brandkit')) . '</button>'
+        . '<button type="submit" class="btn btn-primary brandkit-bypass-submit">' . htmlescape(__('Continue', 'brandkit')) . '</button>'
+        . '</div>'
+        . '</form>'
+        . '</dialog>'
+        . '</template>';
 }

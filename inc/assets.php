@@ -700,7 +700,7 @@ function brandkit_save_image($image, string $destination, string $mime, int $qua
         case 'image/webp':
             return function_exists('imagewebp') && @imagewebp($image, $destination, $quality);
         case 'image/jpeg':
-            imageinterlace($image, 1);
+            imageinterlace($image, true);
             return @imagejpeg($image, $destination, $quality);
     }
 

@@ -1,5 +1,45 @@
 # Changelog
 
+## 0.5.1
+
+### Fixed
+- samlSSO 1.4 key dialog: it was dark (it took the card color of the classic
+  layout, even on split layouts with a light panel). It is now opaque and in
+  the color of the login area, so the login text color reads well.
+- GLPI public FAQ button: always in the login button colors (it only showed
+  them while the mouse was over it).
+
+## 0.5.0
+
+### Added
+- **GLPI 12 support** (tested on 12.0.2). The same version keeps working on
+  GLPI 10.0 and 11.0, so it can be installed before migrating.
+- **samlSSO 1.4 support.** samlSSO 1.4 only opens the local account page
+  (`?bypass=1`) with an emergency key set on the server
+  (`SAMLSSO_BYPASS_TOKEN` environment variable or `PLUGIN_SAMLSSO_BYPASS_TOKEN`
+  constant). With it, "Sign in with a local account" opens a dialog that asks
+  for the key; a wrong key shows an error and the dialog again. samlSSO checks
+  the key; Brandkit never stores it. With samlSSO 1.3 nothing changes.
+
+### Changed
+- SSO mode with samlSSO 1.4: the local account page (user/password form only)
+  is shown when samlSSO accepted the key for the session, not just because the
+  address has `?bypass=1`. Opening that address without the key showed a page
+  with neither the SSO button nor the password field.
+- SSO mode, local account page: the form has the same width as the normal
+  login form (the title no longer wraps).
+
+### Fixed
+- GLPI 12: the plugin no longer stops GLPI with a fatal error when its menu
+  loads (`$rightname` is now declared typed by GLPI).
+- GLPI 12: no CSRF token in the plugin forms (GLPI 12 checks the browser
+  headers instead and deprecates the token API).
+- GLPI 12 login page: the wallpaper was painted a second time over the login
+  area (GLPI 12 wraps the login card in a second `<main>`), and the new "Help"
+  link sat outside the login area. It now sits under the copyright, in the
+  same style.
+- GLPI 12 two-factor page: the code digits got double spacing.
+
 ## 0.4.1
 
 ### Fixed

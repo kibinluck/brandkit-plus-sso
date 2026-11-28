@@ -46,7 +46,9 @@ require_once __DIR__ . '/paths.php';
  */
 class PluginBrandkitConfig extends CommonGLPI
 {
-    public static $rightname = 'config';
+    // No $rightname here: GLPI 12 declares it typed (string) and GLPI 10/11
+    // untyped, so redeclaring it breaks one or the other (fatal error at
+    // class load). Rights are enforced by canView()/canCreate() below.
 
     public static function getTypeName($nb = 0)
     {
